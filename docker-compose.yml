@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://cloudpos:cloudpos_password@postgres:5432/cloudpos?schema=public}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-your-secret-key-change-in-production}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - cloudpos-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudpos-postgres
+    environment:
+      POSTGRES_USER: cloudpos
+      POSTGRES_PASSWORD: cloudpos_password
+      POSTGRES_DB: cloudpos
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudpos -d cloudpos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - cloudpos-network
+
+volumes:
+  postgres-data:
+
+networks:
+  cloudpos-network:
+    driver: bridge

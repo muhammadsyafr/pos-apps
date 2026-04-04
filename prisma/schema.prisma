@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("CASHIER")
+  sales     Sale[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  sku       String   @unique
+  imageUrl  String?
+  costPrice Float
+  sellPrice Float
+  stock     Int      @default(0)
+  minStock  Int      @default(5)
+  category  String
+  tags      Tag[]
+  saleItems SaleItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id    String    @id @default(cuid())
+  name  String    @unique
+  color String    @default("#3B82F6")
+  tags  Tag[]
+}
+
+model Tag {
+  id         String     @id @default(cuid())
+  name       String     @unique
+  categoryId String?
+  category   Category?  @relation(fields: [categoryId], references: [id])
+  products   Product[]
+}
+
+model Sale {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  totalAmount  Float
+  cashPaid     Float
+  changeGiven  Float
+  paymentMethod String     @default("CASH")
+  items        SaleItem[]
+  createdAt    DateTime    @default(now())
+}
+
+model SaleItem {
+  id        String  @id @default(cuid())
+  saleId    String
+  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+}
+
+model PrinterSettings {
+  id           String   @id @default("default")
+  storeName    String   @default("CloudPOS")
+  storeAddress String   @default("Jl. Toko No. 123")
+  storePhone   String   @default("081234567890")
+  logoUrl      String?
+  paperWidth   Int      @default(58)
+  printerName  String?
+  printerAddress String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
