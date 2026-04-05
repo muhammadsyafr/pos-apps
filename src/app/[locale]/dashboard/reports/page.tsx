@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -96,54 +95,42 @@ export default function ReportsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center">Loading reports...</div>
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading reports...</div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Sales Reports</h1>
-          <p className="text-slate-500">View and analyze your sales history</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
+          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
         </div>
-        <Button onClick={exportToXLSX} className="signature-gradient">
+        <Button onClick={exportToXLSX}>
           <Download className="w-4 h-4 mr-2" />
           Export XLSX
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatIDR(totalRevenue)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">{t("totalProfit")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatIDR(totalProfit)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{filteredSales.length}</div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
+          <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(totalRevenue)}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
+          <p className="text-2xl font-black text-green-700 dark:text-green-400 mt-1">{formatIDR(totalProfit)}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{filteredSales.length}</p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
               <Input
                 placeholder="Search by ID or cashier..."
                 value={search}
@@ -152,19 +139,26 @@ export default function ReportsPage() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-slate-400" />
+              <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500" />
               <Input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-40"
+                className="w-40 dark:[color-scheme:dark] rounded-xl py-2.5 shadow-sm"
               />
-              <span className="text-slate-400">to</span>
+              <span className="text-slate-400 dark:text-slate-500">to</span>
               <Input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-40"
+                className="w-40 dark:[color-scheme:dark] rounded-xl py-2.5 shadow-sm"
+              />
+              <span className="text-slate-400 dark:text-slate-500">to</span>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-40 dark:[color-scheme:dark] rounded-xl py-2.5 shadow-sm"
               />
               {(dateFrom || dateTo) && (
                 <Button
@@ -180,8 +174,8 @@ export default function ReportsPage() {
               )}
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-5">
           <Table>
             <TableHeader>
               <TableRow>
@@ -196,11 +190,11 @@ export default function ReportsPage() {
             <TableBody>
               {filteredSales.map((sale) => (
                 <TableRow key={sale.id}>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="whitespace-nowrap text-slate-900 dark:text-slate-50">
                     {new Date(sale.createdAt).toLocaleString()}
                   </TableCell>
-                  <TableCell className="font-mono text-xs">{sale.id.slice(0, 8)}</TableCell>
-                  <TableCell>{sale.user.name}</TableCell>
+                  <TableCell className="font-mono text-xs text-slate-600 dark:text-slate-400">{sale.id.slice(0, 8)}</TableCell>
+                  <TableCell className="text-slate-900 dark:text-slate-50">{sale.user.name}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {sale.items.slice(0, 2).map((item, i) => (
@@ -213,7 +207,7 @@ export default function ReportsPage() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="font-bold">{formatIDR(sale.totalAmount)}</TableCell>
+                  <TableCell className="font-bold text-slate-900 dark:text-slate-50">{formatIDR(sale.totalAmount)}</TableCell>
                   <TableCell>
                     <Badge variant={sale.paymentMethod === "CASH" ? "default" : "secondary"}>
                       {sale.paymentMethod}
@@ -224,13 +218,13 @@ export default function ReportsPage() {
             </TableBody>
           </Table>
           {filteredSales.length === 0 && (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
               <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p>No sales found</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

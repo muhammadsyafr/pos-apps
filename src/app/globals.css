@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --color-surface: 248 96% 97%;
@@ -27,6 +29,50 @@
     
     --color-outline: 225 10% 50%;
     --color-outline-variant: 225 10% 80%;
+
+    --color-card: 0 0% 100%;
+    --color-card-foreground: 222 47% 11%;
+    --color-muted: 210 40% 96%;
+    --color-muted-foreground: 215 16% 47%;
+    --color-input: 214 32% 91%;
+    --color-border: 214 32% 91%;
+    --color-ring: 222 84% 55%;
+  }
+
+  .dark {
+    --color-surface: 240 20% 8%;
+    --color-surface-container-low: 240 15% 10%;
+    --color-surface-container: 240 10% 12%;
+    --color-surface-container-high: 240 8% 14%;
+    --color-surface-container-highest: 240 6% 16%;
+    --color-surface-container-lowest: 0 0% 5%;
+    
+    --color-primary: 222 100% 65%;
+    --color-primary-container: 222 100% 40%;
+    --color-on-primary: 222 100% 10%;
+    --color-on-primary-container: 220 100% 90%;
+    
+    --color-secondary: 217 37% 70%;
+    --color-secondary-container: 217 37% 30%;
+    
+    --color-tertiary: 18 100% 60%;
+    --color-tertiary-container: 18 100% 25%;
+    --color-tertiary-fixed: 18 100% 25%;
+    --color-on-tertiary-fixed: 18 100% 85%;
+    
+    --color-on-surface: 215 20% 90%;
+    --color-on-surface-variant: 225 15% 70%;
+    
+    --color-outline: 225 10% 50%;
+    --color-outline-variant: 225 10% 25%;
+
+    --color-card: 222 47% 11%;
+    --color-card-foreground: 210 40% 98%;
+    --color-muted: 217 33% 18%;
+    --color-muted-foreground: 215 20% 65%;
+    --color-input: 217 33% 18%;
+    --color-border: 217 33% 18%;
+    --color-ring: 224 76% 48%;
   }
 }
 
@@ -43,6 +89,11 @@
     background-color: rgb(243 244 246);
     color: rgb(25 28 30);
     -webkit-font-smoothing: antialiased;
+  }
+
+  .dark body {
+    background-color: rgb(15 23 42);
+    color: rgb(241 245 249);
   }
 }
 

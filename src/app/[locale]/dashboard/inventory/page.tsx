@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -163,7 +162,7 @@ export default function InventoryPage() {
   }
 
   if (loading || categoriesLoading) {
-    return <div className="p-8 text-center">{tCommon("loading")}</div>
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">{tCommon("loading")}</div>
   }
 
   const lowStockCount = products.filter((p) => p.stock <= p.minStock).length
@@ -172,8 +171,8 @@ export default function InventoryPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-slate-500">{t("description")}</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
+          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
         </div>
         <Button onClick={openAddDialog}>
           <Plus className="w-4 h-4 mr-2" />
@@ -182,21 +181,19 @@ export default function InventoryPage() {
       </div>
 
       {lowStockCount > 0 && (
-        <Card className="border-yellow-500 bg-yellow-50">
-          <CardContent className="pt-6">
-            <p className="text-yellow-800">
-              <Badge variant="warning" className="mr-2">{lowStockCount}</Badge>
-              {lowStockCount} {t("lowStockMessage")}
-            </p>
-          </CardContent>
-        </Card>
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-500 dark:border-yellow-700 rounded-xl p-5">
+          <p className="text-yellow-800 dark:text-yellow-400">
+            <Badge variant="warning" className="mr-2">{lowStockCount}</Badge>
+            {lowStockCount} {t("lowStockMessage")}
+          </p>
+        </div>
       )}
 
-      <Card>
-        <CardHeader>
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
           <div className="flex items-center gap-4">
             <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
               <Input
                 placeholder={t("searchPlaceholder")}
                 value={search}
@@ -218,8 +215,8 @@ export default function InventoryPage() {
               </SelectContent>
             </Select>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-5">
           <Table>
             <TableHeader>
               <TableRow>
@@ -236,7 +233,7 @@ export default function InventoryPage() {
             <TableBody>
               {filteredProducts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-slate-500">
+                  <TableCell colSpan={8} className="text-center py-8 text-slate-500 dark:text-slate-400">
                     {t("noProducts")}
                   </TableCell>
                 </TableRow>
@@ -244,21 +241,21 @@ export default function InventoryPage() {
                 filteredProducts.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 overflow-hidden flex items-center justify-center">
                         {product.imageUrl ? (
                           <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                         ) : (
-                          <Package className="w-5 h-5 text-slate-400" />
+                          <Package className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell className="text-slate-500">{product.sku}</TableCell>
+                    <TableCell className="font-medium text-slate-900 dark:text-slate-50">{product.name}</TableCell>
+                    <TableCell className="text-slate-500 dark:text-slate-400">{product.sku}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{product.category}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{formatIDR(product.costPrice)}</TableCell>
-                    <TableCell className="text-right">{formatIDR(product.sellPrice)}</TableCell>
+                    <TableCell className="text-right text-slate-900 dark:text-slate-50">{formatIDR(product.costPrice)}</TableCell>
+                    <TableCell className="text-right text-slate-900 dark:text-slate-50">{formatIDR(product.sellPrice)}</TableCell>
                     <TableCell className="text-right">
                       <Badge
                         variant={product.stock === 0 ? "destructive" : product.stock <= product.minStock ? "warning" : "default"}
@@ -281,17 +278,17 @@ export default function InventoryPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{isEditMode ? t("editProduct") : t("addProduct")}</DialogTitle>
+            <DialogTitle className="text-slate-900 dark:text-slate-50">{isEditMode ? t("editProduct") : t("addProduct")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">{t("productName")}</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("productName")}</label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -299,7 +296,7 @@ export default function InventoryPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">{t("sku")}</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("sku")}</label>
               <Input
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
@@ -308,7 +305,7 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">{t("costPrice")}</label>
+                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("costPrice")}</label>
                 <Input
                   type="text"
                   value={formData.costPrice ? formatNumberIDR(Number(formData.costPrice)) : ""}
@@ -320,7 +317,7 @@ export default function InventoryPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("sellPrice")}</label>
+                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("sellPrice")}</label>
                 <Input
                   type="text"
                   value={formData.sellPrice ? formatNumberIDR(Number(formData.sellPrice)) : ""}
@@ -334,7 +331,7 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">{t("stock")}</label>
+                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("stock")}</label>
                 <Input
                   type="number"
                   value={formData.stock}
@@ -343,7 +340,7 @@ export default function InventoryPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("minStock")}</label>
+                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("minStock")}</label>
                 <Input
                   type="number"
                   value={formData.minStock}
@@ -353,7 +350,7 @@ export default function InventoryPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">{t("category")}</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("category")}</label>
               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder={t("selectCategory")} />
@@ -368,7 +365,7 @@ export default function InventoryPage() {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">{t("imageUrl")}</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("imageUrl")}</label>
               <Input
                 value={formData.imageUrl}
                 onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}

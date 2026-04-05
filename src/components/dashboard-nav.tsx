@@ -31,8 +31,8 @@ export function DashboardNav() {
           href={`/${locale}${item.href}`}
           className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             isActive(item.href)
-              ? "text-blue-600 bg-blue-50"
-              : "text-slate-600 hover:text-blue-600 hover:bg-blue-50"
+              ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+              : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
           }`}
         >
           {item.label}

@@ -31,7 +31,7 @@ export default function LanguageSwitcher() {
     <select
       value={locale}
       onChange={onSelectChange}
-      className="bg-transparent text-sm font-medium text-slate-600 hover:text-slate-900 cursor-pointer outline-none"
+      className="bg-transparent text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-50 cursor-pointer outline-none"
     >
       <option value="en">English</option>
       <option value="id">Indonesia</option>

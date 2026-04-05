@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -161,23 +160,23 @@ export default function PrinterSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-slate-500">{t("description")}</p>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
+          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
                 <Bluetooth className="w-5 h-5" />
                 {t("bluetoothPrinter")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
               {!isBluetoothSupported ? (
-                <div className="p-4 bg-yellow-50 rounded-lg text-yellow-800 text-sm">
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-yellow-800 dark:text-yellow-400 text-sm">
                   {t("bluetoothNotSupported")}
                 </div>
               ) : (
@@ -206,13 +205,13 @@ export default function PrinterSettingsPage() {
                           }}
                           className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                             selectedDevice?.id === device.id 
-                              ? "border-blue-500 bg-blue-50" 
-                              : "hover:bg-slate-50"
+                              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30" 
+                              : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <Printer className="w-4 h-4" />
-                            <span className="font-medium">{device.name || "Unknown Device"}</span>
+                            <span className="font-medium text-slate-900 dark:text-slate-50">{device.name || "Unknown Device"}</span>
                           </div>
                         </div>
                       ))}
@@ -220,31 +219,31 @@ export default function PrinterSettingsPage() {
                   )}
                   
                   {config.printerName && (
-                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <p className="text-sm text-green-800">
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm text-green-800 dark:text-green-400">
                         <strong>{t("connectedTo")}:</strong> {config.printerName}
                       </p>
                     </div>
                   )}
                 </>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
                 <Upload className="w-5 h-5" />
                 {t("receiptLogo")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50">
+                <div className="w-20 h-20 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-700">
                   {config.logoUrl ? (
                     <img src={config.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                   ) : (
-                    <Upload className="w-8 h-8 text-slate-400" />
+                    <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
                   )}
                 </div>
                 <div className="flex-1">
@@ -266,17 +265,17 @@ export default function PrinterSettingsPage() {
                   {t("removeLogo")}
                 </Button>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
                 <Save className="w-5 h-5" />
                 {t("storeInfo")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
               <div>
                 <Label>{t("storeName")}</Label>
                 <Input 
@@ -306,7 +305,7 @@ export default function PrinterSettingsPage() {
                 <select 
                   value={config.paperWidth}
                   onChange={(e) => setConfig(prev => ({ ...prev, paperWidth: Number(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg"
                 >
                   <option value={58}>58mm</option>
                   <option value={80}>80mm</option>
@@ -316,25 +315,26 @@ export default function PrinterSettingsPage() {
               <Button onClick={handleSave} className="w-full" disabled={saveStatus === "saving"}>
                 {saveStatus === "saving" ? tCommon("loading") : saveStatus === "saved" ? t("saved") : t("saveConfig")}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
                 <PrinterIcon className="w-5 h-5" />
                 {t("receiptPreview")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h2>
+            </div>
+            <div className="p-5">
               <div 
                 className="bg-white border-2 border-slate-800 rounded-sm p-4 mx-auto"
                 style={{ 
                   width: config.paperWidth === 58 ? "280px" : "380px",
                   fontFamily: "'Courier New', monospace",
-                  fontSize: "11px"
+                  fontSize: "11px",
+                  color: "#000"
                 }}
               >
                 <div className="text-center border-b border-dashed border-slate-400 pb-2 mb-2">
@@ -377,8 +377,8 @@ export default function PrinterSettingsPage() {
                   <div className="text-xs">Anda</div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 signature-gradient">
@@ -51,38 +51,38 @@ export default function LoginPage() {
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
           </div>
-          <h1 className="text-3xl font-black font-headline tracking-tight text-slate-900">CloudPOS</h1>
-          <p className="text-slate-500 font-medium mt-1">Enterprise Suite</p>
+          <h1 className="text-3xl font-black font-headline tracking-tight text-slate-900 dark:text-slate-50">CloudPOS</h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Enterprise Suite</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">{t("signIn")}</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-8">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-6">{t("signIn")}</h2>
           
           <form onSubmit={onSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium">
+              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm font-medium">
                 {error}
               </div>
             )}
             
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t("email")}</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("email")}</label>
               <input
                 name="email"
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-50 focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 placeholder="admin@cloudpos.com"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t("password")}</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("password")}</label>
               <input
                 name="password"
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-50 focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 placeholder="••••••••"
               />
             </div>
@@ -96,8 +96,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <p className="text-xs text-slate-400 text-center">
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
+            <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
               Demo: admin@cloudpos.com / admin123
             </p>
           </div>
