@@ -5,12 +5,10 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DatePicker } from "@/components/ui/date-picker"
-import { Search, FileText, Download } from "lucide-react"
+import { Search, FileText, Download, Calendar } from "lucide-react"
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
-import { format } from "date-fns"
 
 interface Sale {
   id: string
@@ -29,8 +27,8 @@ export default function ReportsPage() {
   const [sales, setSales] = useState<Sale[]>([])
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
-  const [dateFrom, setDateFrom] = useState<Date | undefined>()
-  const [dateTo, setDateTo] = useState<Date | undefined>()
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
 
   useEffect(() => {
     async function fetchSales() {
@@ -53,8 +51,11 @@ export default function ReportsPage() {
       s.user.name.toLowerCase().includes(search.toLowerCase())
 
     const saleDate = new Date(s.createdAt)
-    const matchesFrom = dateFrom ? saleDate >= dateFrom : true
-    const matchesTo = dateTo ? saleDate <= new Date(dateTo.getTime() + 86400000 - 1) : true
+    const fromDate = dateFrom ? new Date(dateFrom) : null
+    const toDate = dateTo ? new Date(dateTo + "T23:59:59") : null
+
+    const matchesFrom = fromDate ? saleDate >= fromDate : true
+    const matchesTo = toDate ? saleDate <= toDate : true
 
     return matchesSearch && matchesFrom && matchesTo
   })
@@ -86,8 +87,8 @@ export default function ReportsPage() {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, "Sales Report")
 
-    const dateFromStr = dateFrom ? `_from_${format(dateFrom, "yyyy-MM-dd")}` : ""
-    const dateToStr = dateTo ? `_to_${format(dateTo, "yyyy-MM-dd")}` : ""
+    const dateFromStr = dateFrom ? `_from_${dateFrom}` : ""
+    const dateToStr = dateTo ? `_to_${dateTo}` : ""
     const fileName = `sales_report${dateFromStr}${dateToStr}.xlsx`
 
     XLSX.writeFile(wb, fileName)
@@ -139,29 +140,39 @@ export default function ReportsPage() {
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
-                <DatePicker
-                  date={dateFrom}
-                  onSelect={setDateFrom}
-                  placeholder="Select start date"
-                  label="From Date"
-                />
-              </div>
-              
-              <div className="flex items-center justify-center sm:mt-6">
-                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">
+                  From Date
+                </label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-blue-400 pointer-events-none z-10" />
+                  <Input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
+                  />
                 </div>
               </div>
               
+              <div className="flex items-center justify-center sm:mt-7">
+                <svg className="w-4 h-4 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+              
               <div className="flex-1">
-                <DatePicker
-                  date={dateTo}
-                  onSelect={setDateTo}
-                  placeholder="Select end date"
-                  label="To Date"
-                />
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">
+                  To Date
+                </label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-blue-400 pointer-events-none z-10" />
+                  <Input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
+                  />
+                </div>
               </div>
               
               {(dateFrom || dateTo) && (
@@ -169,10 +180,10 @@ export default function ReportsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setDateFrom(undefined)
-                    setDateTo(undefined)
+                    setDateFrom("")
+                    setDateTo("")
                   }}
-                  className="self-start sm:self-center sm:mt-6"
+                  className="self-start sm:self-end h-10"
                 >
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

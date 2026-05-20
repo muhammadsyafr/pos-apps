@@ -17,15 +17,13 @@ export function MobileNav({ isAdmin }: MobileNavProps) {
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 px-2 py-2 z-30">
       <div className="flex items-center justify-around">
         <Link href={`/${locale}/pos`} className="flex flex-col items-center gap-1 px-3 py-2 text-blue-600 dark:text-blue-400">
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 5H7v2h2V5zm4 8h-2v2h2v-2zm-8 2h2v-2H5v2zm10-4h2v2h-2v-2zm-4 0h2v-2h-2v2zm0-4h2V7h-2v2zm-4 2h2v-2H7v2zm8 0 h2v-2h-2v2zm0 4h2v-2h-2v2zm-4-4h2v-2h-2v2zm0 4h2v-2h-2v2zm-8-8h2v-2H7v2zm0 4h2v-2H7v2z" /></svg>
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 5H7v2h2V5zm4 8h-2v2h2v-2zm-8 2h2v-2H5v2zm10-4h2v2h-2v-2zm-4 0h2v-2h-2v2zm0-4h2V7h-2v2zm-4 2h2v-2H7v2zm8 0h2v-2h-2v2zm0 4h2v-2h-2v2zm-4-4h2v-2h-2v2zm0 4h2v-2h-2v2zm-8-8h2v-2H7v2zm0 4h2v-2H7v2z" /></svg>
           <span className="text-[10px] font-medium">Sales</span>
         </Link>
-        {isAdmin && (
-          <Link href={`/${locale}/dashboard`} className="flex flex-col items-center gap-1 px-3 py-2 text-slate-600 dark:text-slate-400">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" /></svg>
-            <span className="text-[10px] font-medium">Dashboard</span>
-          </Link>
-        )}
+        <Link href={`/${locale}/dashboard`} className="flex flex-col items-center gap-1 px-3 py-2 text-slate-600 dark:text-slate-400">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" /></svg>
+          <span className="text-[10px] font-medium">Dashboard</span>
+        </Link>
         <button 
           onClick={() => signOut({ callbackUrl: `/${locale}/login` })}
           className="flex flex-col items-center gap-1 px-3 py-2 text-slate-600 dark:text-slate-400"

@@ -1,6 +1,6 @@
 "use client"
 
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import { Home, ShoppingCart, Package, MoreHorizontal } from "lucide-react"
 import { useState } from "react"
@@ -10,6 +10,8 @@ export function MobileNav() {
   const segments = pathname.split("/")
   const locale = segments[1] || "en"
   const [showMore, setShowMore] = useState(false)
+  const { data: session } = useSession()
+  const isCashier = session?.user?.role === "CASHIER"
 
   const isActive = (path: string) => pathname.includes(path)
 
@@ -29,17 +31,19 @@ export function MobileNav() {
             <span className="text-[10px] font-medium">Home</span>
           </a>
           
-          <a 
-            href={`/${locale}/dashboard/inventory`} 
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-              isActive('/inventory') 
-                ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
-          >
-            <Package className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Stock</span>
-          </a>
+          {!isCashier && (
+            <a 
+              href={`/${locale}/dashboard/inventory`} 
+              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                isActive('/inventory') 
+                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <Package className="w-5 h-5" />
+              <span className="text-[10px] font-medium">Stock</span>
+            </a>
+          )}
           
           <a 
             href={`/${locale}/pos`} 
@@ -53,17 +57,19 @@ export function MobileNav() {
             <span className="text-[10px] font-bold">Sales</span>
           </a>
           
-          <a 
-            href={`/${locale}/dashboard/reports`} 
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
-              isActive('/reports') 
-                ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" /></svg>
-            <span className="text-[10px] font-medium">Reports</span>
-          </a>
+          {!isCashier && (
+            <a 
+              href={`/${locale}/dashboard/reports`} 
+              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                isActive('/reports') 
+                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30' 
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" /></svg>
+              <span className="text-[10px] font-medium">Reports</span>
+            </a>
+          )}
           
           <button 
             onClick={() => setShowMore(!showMore)}
@@ -84,14 +90,16 @@ export function MobileNav() {
           <div className="fixed inset-0 bg-black/20 z-40 lg:hidden" onClick={() => setShowMore(false)} />
           <div className="lg:hidden fixed bottom-16 right-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 w-48">
             <div className="py-2">
-              <a 
-                href={`/${locale}/dashboard/categories`}
-                onClick={() => setShowMore(false)}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z" /></svg>
-                Categories
-              </a>
+              {!isCashier && (
+                <a 
+                  href={`/${locale}/dashboard/categories`}
+                  onClick={() => setShowMore(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z" /></svg>
+                  Categories
+                </a>
+              )}
               <a 
                 href={`/${locale}/dashboard/settings`}
                 onClick={() => setShowMore(false)}

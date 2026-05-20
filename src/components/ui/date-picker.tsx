@@ -28,7 +28,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
       setPosition({
         top: rect.bottom + window.scrollY + 8,
         left: rect.left + window.scrollX,
-        width: 280 // Fixed width for calendar
+        width: rect.width
       })
     }
   }, [isOpen])
@@ -41,7 +41,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
         style={{
           top: `${position.top}px`,
           left: `${position.left}px`,
-          minWidth: `${position.width}px`
+          width: 'auto'
         }}
       >
         <DayPicker
@@ -53,17 +53,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
           }}
           className="rdp-custom"
         />
-        <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-          <Button
-            size="sm"
-            onClick={() => {
-              onSelect?.(new Date())
-              setIsOpen(false)
-            }}
-            className="w-full"
-          >
-            Today
-          </Button>
+        <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 w-full">
           <Button
             variant="outline"
             size="sm"
@@ -71,9 +61,19 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
               onSelect?.(undefined)
               setIsOpen(false)
             }}
-            className="w-full"
+            className="w-full text-xs h-8"
           >
             Clear
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              onSelect?.(new Date())
+              setIsOpen(false)
+            }}
+            className="w-full text-xs h-8"
+          >
+            Today
           </Button>
         </div>
       </div>

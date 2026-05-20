@@ -1,6 +1,6 @@
 /* Custom Date Picker Styles */
 .rdp-custom {
-  --rdp-cell-size: 36px;
+  --rdp-cell-size: 30px;
   --rdp-accent-color: #3b82f6;
   --rdp-background-color: #eff6ff;
 }
@@ -21,32 +21,40 @@
 
 .rdp-custom .rdp-caption {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
   position: relative;
+  margin-bottom: 0.5rem;
 }
 
 .rdp-custom .rdp-caption_label {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
 }
 
 .rdp-custom .rdp-nav {
   display: flex;
   gap: 0.25rem;
+  position: absolute;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 0.25rem;
 }
 
 .rdp-custom .rdp-nav_button {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
-  border-radius: 0.375rem;
+  border-radius: 0.25rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 0.2s;
+  cursor: pointer;
 }
 
 .rdp-custom .rdp-nav_button:hover {
@@ -59,13 +67,11 @@
 }
 
 .rdp-custom .rdp-nav_button_previous {
-  position: absolute;
-  left: 0.25rem;
+  position: static;
 }
 
 .rdp-custom .rdp-nav_button_next {
-  position: absolute;
-  right: 0.25rem;
+  position: static;
 }
 
 .rdp-custom .rdp-table {
@@ -76,10 +82,12 @@
 
 .rdp-custom .rdp-head_cell {
   color: rgb(100 116 139);
-  font-weight: 400;
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.75rem;
   text-align: center;
-  padding: 0.25rem;
+  padding: 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .dark .rdp-custom .rdp-head_cell {
@@ -88,18 +96,19 @@
 
 .rdp-custom .rdp-cell {
   text-align: center;
-  padding: 0;
+  padding: 0.125rem;
+  width: 14.28%;
 }
 
 .rdp-custom .rdp-day {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 100%;
+  aspect-ratio: 1;
   padding: 0;
-  border-radius: 0.375rem;
-  display: inline-flex;
+  border-radius: 0.25rem;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   transition: background-color 0.2s;
 }
 
@@ -122,12 +131,15 @@
 }
 
 .rdp-custom .rdp-day_today:not(.rdp-day_selected) {
-  background-color: rgb(241 245 249);
+  background-color: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
   font-weight: 600;
 }
 
 .dark .rdp-custom .rdp-day_today:not(.rdp-day_selected) {
-  background-color: rgb(51 65 85);
+  border-color: #60a5fa;
+  color: #60a5fa;
 }
 
 .rdp-custom .rdp-day_outside {

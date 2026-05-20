@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { formatIDR } from "@/lib/currency"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "lucide-react"
@@ -32,6 +33,7 @@ interface Product {
 export default function DashboardPage() {
   const t = useTranslations("dashboard")
   const tCommon = useTranslations("common")
+  const { data: session } = useSession()
   const [stats, setStats] = useState<Stats>({ totalRevenue: 0, totalSales: 0, totalProfit: 0, totalProducts: 0 })
   const [recentSales, setRecentSales] = useState<Sale[]>([])
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([])
@@ -39,6 +41,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const pathname = usePathname()
   const locale = pathname.split("/")[1] || "en"
+  
+  const isCashier = session?.user?.role === "CASHIER"
 
   useEffect(() => {
     async function fetchData() {
@@ -93,28 +97,34 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
-          <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(stats.totalRevenue)}</p>
-          <p className="text-xs text-green-600 dark:text-green-400 font-bold mt-2">+14.2% {t("vsYesterday")}</p>
-        </div>
+        {!isCashier && (
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
+            <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(stats.totalRevenue)}</p>
+            <p className="text-xs text-green-600 dark:text-green-400 font-bold mt-2">+14.2% {t("vsYesterday")}</p>
+          </div>
+        )}
         <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
           <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{stats.totalSales}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{stats.totalSales > 0 ? `Avg: ${formatIDR(stats.totalRevenue / stats.totalSales)}` : t('noTransactions')}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm sm:col-span-2 lg:col-span-1">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{formatIDR(stats.totalProfit)}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{stats.totalProducts} {t("productsInCatalog")}</p>
-        </div>
+        {!isCashier && (
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm sm:col-span-2 lg:col-span-1">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{formatIDR(stats.totalProfit)}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{stats.totalProducts} {t("productsInCatalog")}</p>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
           <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
             <h2 className="font-bold text-slate-900 dark:text-slate-50">{t("recentSales")}</h2>
-            <a href={`/${locale}/dashboard/reports`} className="text-xs font-bold text-blue-600 dark:text-blue-400">{t("viewAll")}</a>
+            {!isCashier && (
+              <a href={`/${locale}/dashboard/reports`} className="text-xs font-bold text-blue-600 dark:text-blue-400">{t("viewAll")}</a>
+            )}
           </div>
           <div className="divide-y divide-slate-50 dark:divide-slate-700">
             {recentSales.length === 0 ? (
@@ -134,7 +144,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="space-y-4">
-          {lowStockProducts.length > 0 && (
+          {!isCashier && lowStockProducts.length > 0 && (
             <div className="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-xl border-l-4 border-orange-500">
               <h3 className="font-bold text-orange-900 dark:text-orange-400 mb-3">{t("lowStockAlert")}</h3>
               <div className="space-y-2">
@@ -167,23 +177,25 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900 dark:bg-slate-700 rounded-xl overflow-hidden">
-        <div className="flex flex-col lg:flex-row">
-          <div className="p-6 lg:p-8 flex-1 flex flex-col justify-center">
-            <h3 className="text-xl font-black text-white">{t("ctaTitle")}</h3>
-            <p className="text-slate-400 dark:text-slate-300 mt-2 text-sm">{t("ctaDescription")}</p>
-            <button className="mt-4 px-6 py-2 bg-white dark:bg-slate-50 text-slate-900 dark:text-slate-900 rounded-lg font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-200 self-start">{t("exploreFeatures")}</button>
-          </div>
-          <div className="relative w-full lg:w-48 h-40 lg:h-auto flex-shrink-0">
-            <Image
-              src="/assets/cashier2.jpg"
-              alt="CloudPOS Cashier"
-              fill
-              className="object-cover"
-            />
+      {!isCashier && (
+        <div className="bg-slate-900 dark:bg-slate-700 rounded-xl overflow-hidden">
+          <div className="flex flex-col lg:flex-row">
+            <div className="p-6 lg:p-8 flex-1 flex flex-col justify-center">
+              <h3 className="text-xl font-black text-white">{t("ctaTitle")}</h3>
+              <p className="text-slate-400 dark:text-slate-300 mt-2 text-sm">{t("ctaDescription")}</p>
+              <button className="mt-4 px-6 py-2 bg-white dark:bg-slate-50 text-slate-900 dark:text-slate-900 rounded-lg font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-200 self-start">{t("exploreFeatures")}</button>
+            </div>
+            <div className="relative w-full lg:w-48 h-40 lg:h-auto flex-shrink-0">
+              <Image
+                src="/assets/cashier2.jpg"
+                alt="CloudPOS Cashier"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

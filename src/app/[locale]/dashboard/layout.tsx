@@ -22,9 +22,6 @@ export default async function DashboardLayout({
   const isAdmin = session.user?.role === "ADMIN"
   const isCashier = session.user?.role === "CASHIER"
 
-  if (isCashier) redirect(`/${locale}/pos`)
-  if (!isAdmin) redirect(`/${locale}/pos`)
-
   const userRole = session.user?.role === "ADMIN" ? "Store Manager" : "Cashier"
 
   return (
