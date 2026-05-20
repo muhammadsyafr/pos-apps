@@ -98,7 +98,7 @@ export default function POSPage() {
     setCart(prev => prev.map(item => {
       if (item.id === id) {
         const newQty = item.quantity + delta
-        if (newQty <= 0 || newQty > item.stock) return item
+        if (newQty > item.stock) return item
         return { ...item, quantity: newQty }
       }
       return item
@@ -272,19 +272,18 @@ export default function POSPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 lg:bottom-auto lg:top-16 lg:left-auto lg:right-0 lg:w-96 lg:min-w-96 lg:h-[calc(100vh-4rem)] bg-slate-100 dark:bg-slate-900 flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 shadow-xl lg:shadow-none z-20">
-        <div className="p-4 lg:p-6 border-b border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-headline font-bold text-lg text-slate-900 dark:text-slate-50">{t("currentOrder")}</h3>
+      <div id="cart-order" className="fixed bottom-16 left-0 right-0 h-auto max-h-[450px] lg:max-h-full lg:bottom-auto lg:top-16 lg:left-auto lg:right-0 lg:w-96 lg:min-w-96 lg:h-[calc(100vh-4rem)] bg-slate-100 dark:bg-slate-900 flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 shadow-xl lg:shadow-none z-20">
+        <div className="flex-shrink-0 p-3 lg:p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between">
+            <h3 className="font-headline font-bold text-base lg:text-lg text-slate-900 dark:text-slate-50">{t("currentOrder")}</h3>
             {cart.length > 0 && <button onClick={() => setCart([])} className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline">{t("clearAll")}</button>}
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{cart.length} {t("items")}</p>
         </div>
 
-        <div className="flex-1 overflow-auto p-4 lg:p-6 space-y-3">
+        <div className="flex-1 overflow-y-auto p-3 lg:p-6 space-y-2 min-h-0 max-h-[200px] lg:max-h-full">
           {cart.length === 0 ? (
-            <div className="text-center py-8 lg:py-12">
-              <svg className="w-12 lg:w-16 h-12 lg:h-16 mx-auto text-slate-300 dark:text-slate-600 mb-3 lg:mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" /></svg>
+            <div className="text-center py-6 lg:py-12">
+              <svg className="w-10 lg:w-16 h-10 lg:h-16 mx-auto text-slate-300 dark:text-slate-600 mb-2 lg:mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" /></svg>
               <p className="text-sm text-slate-500 dark:text-slate-400">{t("noItemsInCart")}</p>
             </div>
           ) : (
@@ -307,12 +306,12 @@ export default function POSPage() {
           )}
         </div>
 
-        <div className="p-4 lg:p-6 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
-          <div className="space-y-2 mb-3 lg:mb-4">
-            <div className="flex justify-between text-sm"><span className="text-slate-500 dark:text-slate-400">{t("subtotal")}</span><span className="font-headline font-bold text-slate-900 dark:text-slate-50">{formatIDR(subtotal)}</span></div>
-            <div className="flex justify-between text-base lg:text-lg"><span className="font-headline font-bold text-slate-900 dark:text-slate-50">{t("total")}</span><span className="font-headline font-black text-blue-700 dark:text-blue-400 text-lg lg:text-xl">{formatIDR(subtotal)}</span></div>
+        <div id="total" className="flex-shrink-0 p-3 lg:p-6 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex justify-between text-xs lg:text-sm mb-2">
+            <span className="text-slate-500 dark:text-slate-400">{t("total")}</span>
+            <span className="font-headline font-black text-blue-700 dark:text-blue-400 text-base lg:text-xl">{formatIDR(subtotal)}</span>
           </div>
-          <button onClick={() => setIsCheckoutOpen(true)} disabled={cart.length === 0} className="w-full signature-gradient text-white py-3 lg:py-4 rounded-xl font-headline font-bold text-base lg:text-lg shadow-lg shadow-blue-700/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50">
+          <button onClick={() => setIsCheckoutOpen(true)} disabled={cart.length === 0} className="w-full signature-gradient text-white py-2.5 lg:py-4 rounded-xl font-headline font-bold text-sm lg:text-lg shadow-lg shadow-blue-700/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50">
             {t("checkout")} {formatIDR(subtotal)}
           </button>
         </div>

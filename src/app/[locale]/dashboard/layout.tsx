@@ -5,7 +5,6 @@ import Link from "next/link"
 import { DashboardNav } from "@/components/dashboard-nav"
 import { UserMenu } from "@/components/user-menu"
 import { MobileNav } from "@/components/mobile-nav"
-import LanguageSwitcher from "@/components/language-switcher"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export default async function DashboardLayout({
@@ -46,7 +45,6 @@ export default async function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
-            <LanguageSwitcher />
             <ThemeToggle />
             
             <button className="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
