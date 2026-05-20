@@ -171,5 +171,10 @@
     "saveConfig": "Simpan Konfigurasi",
     "saved": "Tersimpan!",
     "receiptPreview": "Pratinjau Struk"
+  },
+  "settings": {
+    "title": "Pengaturan",
+    "description": "Kelola pengaturan aplikasi Anda",
+    "language": "Bahasa"
   }
 }

@@ -13,7 +13,7 @@ function DatabasePinger() {
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem enableColorScheme={false}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <DatabasePinger />
         {children}
       </ThemeProvider>

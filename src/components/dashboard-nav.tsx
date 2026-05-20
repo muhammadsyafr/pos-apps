@@ -20,7 +20,6 @@ export function DashboardNav() {
     { href: "/dashboard/inventory", label: "Inventory" },
     { href: "/dashboard/categories", label: "Categories" },
     { href: "/dashboard/reports", label: "Reports" },
-    { href: "/dashboard/printer", label: "Printer" },
   ]
 
   return (

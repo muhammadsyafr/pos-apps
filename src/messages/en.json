@@ -171,5 +171,10 @@
     "saveConfig": "Save Configuration",
     "saved": "Saved!",
     "receiptPreview": "Receipt Preview"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your application settings",
+    "language": "Language"
   }
 }

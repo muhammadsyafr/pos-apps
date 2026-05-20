@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth"
 import Link from "next/link"
 import { UserMenu } from "@/components/user-menu"
 import { MobileNav } from "@/components/pos-mobile-nav"
-import LanguageSwitcher from "@/components/language-switcher"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export default async function POSLayout({
@@ -36,7 +35,6 @@ export default async function POSLayout({
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
-            <LanguageSwitcher />
             <ThemeToggle />
             
             {isAdmin && (
