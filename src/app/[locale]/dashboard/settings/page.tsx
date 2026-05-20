@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,6 +33,9 @@ export default function SettingsPage() {
   const tCommon = useTranslations("common")
   const locale = useLocale()
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+  const isCashier = session?.user?.role === "CASHIER"
+  const isLoading = status === "loading"
   
   const [config, setConfig] = useState<PrinterSettings>({
     id: "default",
@@ -196,7 +200,12 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-slate-500 dark:text-slate-400">{tCommon("loading")}</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
           {/* Language Settings */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
@@ -229,162 +238,168 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Bluetooth Printer */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-                <Bluetooth className="w-5 h-5" />
-                {tPrinter("bluetoothPrinter")}
-              </h2>
-            </div>
-            <div className="p-5 space-y-4">
-              {!isBluetoothSupported ? (
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-yellow-800 dark:text-yellow-400 text-sm">
-                  {tPrinter("bluetoothNotSupported")}
-                </div>
-              ) : (
-                <>
-                  <Button 
-                    onClick={handleScanBluetooth} 
-                    disabled={scanning}
-                    className="w-full"
-                  >
-                    {scanning ? tPrinter("scanning") : tPrinter("scanPrinter")}
-                  </Button>
-                  
-                  {scannedDevices.length > 0 && (
-                    <div className="space-y-2">
-                      <Label>{tPrinter("availablePrinters")}</Label>
-                      {scannedDevices.map((device, index) => (
-                        <div 
-                          key={index}
-                          onClick={() => {
-                            setSelectedDevice(device)
-                            setConfig(prev => ({
-                              ...prev,
-                              printerName: device.name || "Unknown",
-                              printerAddress: device.id
-                            }))
-                          }}
-                          className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                            selectedDevice?.id === device.id 
-                              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30" 
-                              : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Printer className="w-4 h-4" />
-                            <span className="font-medium text-slate-900 dark:text-slate-50">{device.name || "Unknown Device"}</span>
+          {/* Bluetooth Printer - Hidden for Cashier */}
+          {!isCashier && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                  <Bluetooth className="w-5 h-5" />
+                  {tPrinter("bluetoothPrinter")}
+                </h2>
+              </div>
+              <div className="p-5 space-y-4">
+                {!isBluetoothSupported ? (
+                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-yellow-800 dark:text-yellow-400 text-sm">
+                    {tPrinter("bluetoothNotSupported")}
+                  </div>
+                ) : (
+                  <>
+                    <Button 
+                      onClick={handleScanBluetooth} 
+                      disabled={scanning}
+                      className="w-full"
+                    >
+                      {scanning ? tPrinter("scanning") : tPrinter("scanPrinter")}
+                    </Button>
+                    
+                    {scannedDevices.length > 0 && (
+                      <div className="space-y-2">
+                        <Label>{tPrinter("availablePrinters")}</Label>
+                        {scannedDevices.map((device, index) => (
+                          <div 
+                            key={index}
+                            onClick={() => {
+                              setSelectedDevice(device)
+                              setConfig(prev => ({
+                                ...prev,
+                                printerName: device.name || "Unknown",
+                                printerAddress: device.id
+                              }))
+                            }}
+                            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                              selectedDevice?.id === device.id 
+                                ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30" 
+                                : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Printer className="w-4 h-4" />
+                              <span className="font-medium text-slate-900 dark:text-slate-50">{device.name || "Unknown Device"}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {config.printerName && (
-                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                      <p className="text-sm text-green-800 dark:text-green-400">
-                        <strong>{tPrinter("connectedTo")}:</strong> {config.printerName}
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
+                        ))}
+                      </div>
+                    )}
+                    
+                    {config.printerName && (
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p className="text-sm text-green-800 dark:text-green-400">
+                          <strong>{tPrinter("connectedTo")}:</strong> {config.printerName}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Receipt Logo */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-                <Upload className="w-5 h-5" />
-                {tPrinter("receiptLogo")}
-              </h2>
-            </div>
-            <div className="p-5 space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-700">
-                  {config.logoUrl ? (
-                    <img src={config.logoUrl} alt="Logo" className="w-full h-full object-contain" />
-                  ) : (
-                    <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
-                  )}
+          {/* Receipt Logo - Hidden for Cashier */}
+          {!isCashier && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  {tPrinter("receiptLogo")}
+                </h2>
+              </div>
+              <div className="p-5 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-700">
+                    {config.logoUrl ? (
+                      <img src={config.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                    ) : (
+                      <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <Label>{tPrinter("uploadLogo")}</Label>
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <Label>{tPrinter("uploadLogo")}</Label>
+                {config.logoUrl && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setConfig(prev => ({ ...prev, logoUrl: "" }))}
+                  >
+                    {tPrinter("removeLogo")}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Store Info - Hidden for Cashier */}
+          {!isCashier && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                  <Save className="w-5 h-5" />
+                  {tPrinter("storeInfo")}
+                </h2>
+              </div>
+              <div className="p-5 space-y-4">
+                <div>
+                  <Label>{tPrinter("storeName")}</Label>
                   <Input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="mt-1"
+                    value={config.storeName}
+                    onChange={(e) => setConfig(prev => ({ ...prev, storeName: e.target.value }))}
+                    placeholder="Toko Anda"
                   />
                 </div>
-              </div>
-              {config.logoUrl && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setConfig(prev => ({ ...prev, logoUrl: "" }))}
-                >
-                  {tPrinter("removeLogo")}
+                <div>
+                  <Label>{tPrinter("storeAddress")}</Label>
+                  <Input 
+                    value={config.storeAddress}
+                    onChange={(e) => setConfig(prev => ({ ...prev, storeAddress: e.target.value }))}
+                    placeholder="Jl. Alamat No. 123"
+                  />
+                </div>
+                <div>
+                  <Label>{tPrinter("storePhone")}</Label>
+                  <Input 
+                    value={config.storePhone}
+                    onChange={(e) => setConfig(prev => ({ ...prev, storePhone: e.target.value }))}
+                    placeholder="081234567890"
+                  />
+                </div>
+                <div>
+                  <Label>{tPrinter("paperWidth")}</Label>
+                  <select 
+                    value={config.paperWidth}
+                    onChange={(e) => setConfig(prev => ({ ...prev, paperWidth: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg"
+                  >
+                    <option value={58}>58mm</option>
+                    <option value={80}>80mm</option>
+                  </select>
+                </div>
+                
+                <Button onClick={handleSave} className="w-full" disabled={saveStatus === "saving"}>
+                  {saveStatus === "saving" ? tCommon("loading") : saveStatus === "saved" ? tPrinter("saved") : tPrinter("saveConfig")}
                 </Button>
-              )}
+              </div>
             </div>
-          </div>
-
-          {/* Store Info */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-                <Save className="w-5 h-5" />
-                {tPrinter("storeInfo")}
-              </h2>
-            </div>
-            <div className="p-5 space-y-4">
-              <div>
-                <Label>{tPrinter("storeName")}</Label>
-                <Input 
-                  value={config.storeName}
-                  onChange={(e) => setConfig(prev => ({ ...prev, storeName: e.target.value }))}
-                  placeholder="Toko Anda"
-                />
-              </div>
-              <div>
-                <Label>{tPrinter("storeAddress")}</Label>
-                <Input 
-                  value={config.storeAddress}
-                  onChange={(e) => setConfig(prev => ({ ...prev, storeAddress: e.target.value }))}
-                  placeholder="Jl. Alamat No. 123"
-                />
-              </div>
-              <div>
-                <Label>{tPrinter("storePhone")}</Label>
-                <Input 
-                  value={config.storePhone}
-                  onChange={(e) => setConfig(prev => ({ ...prev, storePhone: e.target.value }))}
-                  placeholder="081234567890"
-                />
-              </div>
-              <div>
-                <Label>{tPrinter("paperWidth")}</Label>
-                <select 
-                  value={config.paperWidth}
-                  onChange={(e) => setConfig(prev => ({ ...prev, paperWidth: Number(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg"
-                >
-                  <option value={58}>58mm</option>
-                  <option value={80}>80mm</option>
-                </select>
-              </div>
-              
-              <Button onClick={handleSave} className="w-full" disabled={saveStatus === "saving"}>
-                {saveStatus === "saving" ? tCommon("loading") : saveStatus === "saved" ? tPrinter("saved") : tPrinter("saveConfig")}
-              </Button>
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Receipt Preview */}
+        {/* Receipt Preview - Always visible */}
         <div>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm sticky top-6">
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
@@ -447,6 +462,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }

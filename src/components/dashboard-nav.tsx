@@ -2,11 +2,15 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export function DashboardNav() {
   const pathname = usePathname()
   const segments = pathname.split("/")
   const locale = segments[1] || "en"
+  const { data: session } = useSession()
+  
+  const isCashier = session?.user?.role === "CASHIER"
   
   const isActive = (href: string) => {
     const fullHref = `/${locale}${href}`
@@ -14,13 +18,17 @@ export function DashboardNav() {
     return pathname.startsWith(fullHref)
   }
 
-  const navItems = [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/pos", label: "Sales" },
-    { href: "/dashboard/inventory", label: "Inventory" },
-    { href: "/dashboard/categories", label: "Categories" },
-    { href: "/dashboard/reports", label: "Reports" },
+  const allNavItems = [
+    { href: "/dashboard", label: "Overview", roles: ["ADMIN", "CASHIER"] },
+    { href: "/pos", label: "Sales", roles: ["ADMIN", "CASHIER"] },
+    { href: "/dashboard/inventory", label: "Inventory", roles: ["ADMIN"] },
+    { href: "/dashboard/categories", label: "Categories", roles: ["ADMIN"] },
+    { href: "/dashboard/reports", label: "Reports", roles: ["ADMIN"] },
   ]
+
+  const navItems = allNavItems.filter(item => 
+    item.roles.includes(session?.user?.role || "CASHIER")
+  )
 
   return (
     <nav className="hidden lg:flex items-center gap-1">
