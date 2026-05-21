@@ -5,6 +5,7 @@ const prisma = new PrismaClient()
 
 async function main() {
   const hashedPassword = await bcrypt.hash("admin123", 10)
+  const hashedCashierPassword = await bcrypt.hash("cashier123", 10)
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@cloudpos.com" },
@@ -23,17 +24,19 @@ async function main() {
     create: {
       name: "Cashier",
       email: "cashier@cloudpos.com",
-      password: hashedPassword,
+      password: hashedCashierPassword,
       role: "CASHIER",
     },
   })
 
   const products = [
-    { name: "Coffee", sku: "COF001", costPrice: 1.5, sellPrice: 3.0, stock: 100, minStock: 10, category: "Beverages" },
-    { name: "Sandwich", sku: "SAN001", costPrice: 2.5, sellPrice: 5.0, stock: 50, minStock: 5, category: "Food" },
-    { name: "Chips", sku: "CHP001", costPrice: 0.5, sellPrice: 1.5, stock: 80, minStock: 15, category: "Snacks" },
-    { name: "Soda", sku: "SOD001", costPrice: 0.75, sellPrice: 2.0, stock: 60, minStock: 10, category: "Beverages" },
-    { name: "Water", sku: "WAT001", costPrice: 0.25, sellPrice: 1.0, stock: 100, minStock: 20, category: "Beverages" },
+    { name: "Coffee", sku: "COF001", costPrice: 2000, sellPrice: 5000, stock: 100, minStock: 10, category: "Beverages", imageUrl: "https://picsum.photos/seed/coffee/200/300" },
+    { name: "Sandwich", sku: "SAN001", costPrice: 2500, sellPrice: 5000, stock: 50, minStock: 5, category: "Food", imageUrl: "https://picsum.photos/seed/sandwich/200/300" },
+    { name: "Chips", sku: "CHP001", costPrice: 500, sellPrice: 1500, stock: 80, minStock: 15, category: "Snacks", imageUrl: "https://picsum.photos/seed/chips/200/300" },
+    { name: "Soda", sku: "SOD001", costPrice: 750, sellPrice: 2000, stock: 60, minStock: 10, category: "Beverages", imageUrl: "https://picsum.photos/seed/soda/200/300" },
+    { name: "Water", sku: "WAT001", costPrice: 250, sellPrice: 1000, stock: 100, minStock: 20, category: "Beverages", imageUrl: "https://picsum.photos/seed/water/200/300" },
+    { name: "Cake", sku: "CAK001", costPrice: 3000, sellPrice: 6000, stock: 30, minStock: 5, category: "Food", imageUrl: "https://picsum.photos/seed/cake/200/300" },
+    { name: "Juice", sku: "JUI001", costPrice: 1500, sellPrice: 3500, stock: 40, minStock: 5, category: "Beverages", imageUrl: "https://picsum.photos/seed/juice/200/300" },
   ]
 
   for (const product of products) {

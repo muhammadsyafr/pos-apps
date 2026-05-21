@@ -4,6 +4,8 @@ import "./globals.css"
 import { Providers } from "@/components/providers"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getLocale } from "next-intl/server"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -20,6 +22,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "CloudPOS - Enterprise Suite",
   description: "Point of Sale & Inventory Management",
+  icons: { icon: "/favicon.svg" },
 }
 
 export default async function RootLayout({
@@ -36,6 +39,8 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
