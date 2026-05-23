@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { writeFile, mkdir } from "fs/promises"
-import { existsSync } from "fs"
-import path from "path"
+import { supabase } from "@/lib/supabase"
 
 const MAX_FILE_SIZE = 500 * 1024
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"]
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads")
+const BUCKET_NAME = "product-images"
 
 export async function POST(request: Request) {
   try {
@@ -31,22 +29,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "File too large. Maximum size is 500KB" }, { status: 400 })
     }
 
-    if (!existsSync(UPLOAD_DIR)) {
-      await mkdir(UPLOAD_DIR, { recursive: true })
-    }
-
     const ext = file.name.split(".").pop() || "jpg"
     const timestamp = Date.now()
     const filename = `${timestamp}-${Math.random().toString(36).substring(2, 8)}.${ext}`
-    const filepath = path.join(UPLOAD_DIR, filename)
+
+    if (!supabase) {
+      return NextResponse.json({ error: "Supabase not configured" }, { status: 500 })
+    }
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    await writeFile(filepath, buffer)
 
-    const imageUrl = `/uploads/${filename}`
+    const { data, error } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: false,
+      })
 
-    return NextResponse.json({ imageUrl })
+    if (error) {
+      console.error("Supabase upload error:", error)
+      return NextResponse.json({ error: "Failed to upload to storage", details: error.message }, { status: 500 })
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filename)
+
+    return NextResponse.json({ imageUrl: urlData.publicUrl })
   } catch (error) {
     console.error("Upload error:", error)
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
