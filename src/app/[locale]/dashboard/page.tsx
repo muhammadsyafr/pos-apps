@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const [topSellers, setTopSellers] = useState<TopSeller[]>([])
   const [period, setPeriod] = useState("today")
   const [loading, setLoading] = useState(true)
+  const [filterLoading, setFilterLoading] = useState(false)
   const pathname = usePathname()
   const locale = pathname.split("/")[1] || "en"
   
@@ -79,12 +80,19 @@ export default function DashboardPage() {
         console.error("Failed to fetch data:", error)
       } finally {
         setLoading(false)
+        setFilterLoading(false)
       }
     }
     fetchData()
   }, [period])
 
   if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+
+  if (filterLoading) return (
     <div className="flex items-center justify-center h-64">
       <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
@@ -97,7 +105,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
           <p className="text-slate-500 dark:text-slate-400">{t("welcome")}</p>
         </div>
-        <Select value={period} onValueChange={setPeriod}>
+        <Select value={period} onValueChange={(v) => { setFilterLoading(true); setPeriod(v) }}>
           <SelectTrigger className="w-40 justify-start gap-2">
             <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
             <SelectValue />

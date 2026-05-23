@@ -10,6 +10,7 @@ import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight } from 
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
+import { useSession } from "next-auth/react"
 
 interface Sale {
   id: string
@@ -25,6 +26,8 @@ interface Sale {
 export default function ReportsPage() {
   const t = useTranslations("reports")
   const tCommon = useTranslations("common")
+  const { data: session } = useSession()
+  const isCashier = session?.user?.role === "CASHIER"
   const [sales, setSales] = useState<Sale[]>([])
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
@@ -107,10 +110,12 @@ export default function ReportsPage() {
           <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
           <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
         </div>
-        <Button onClick={exportToXLSX}>
-          <Download className="w-4 h-4 mr-2" />
-          Export XLSX
-        </Button>
+        {!isCashier && (
+          <Button onClick={exportToXLSX}>
+            <Download className="w-4 h-4 mr-2" />
+            Export XLSX
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -118,10 +123,12 @@ export default function ReportsPage() {
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
           <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(totalRevenue)}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
-          <p className="text-2xl font-black text-green-700 dark:text-green-400 mt-1">{formatIDR(totalProfit)}</p>
-        </div>
+        {!isCashier && (
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
+            <p className="text-2xl font-black text-green-700 dark:text-green-400 mt-1">{formatIDR(totalProfit)}</p>
+          </div>
+        )}
         <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
           <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{filteredSales.length}</p>

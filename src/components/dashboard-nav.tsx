@@ -23,7 +23,7 @@ export function DashboardNav() {
     { href: "/pos", label: "Sales", roles: ["ADMIN", "CASHIER"] },
     { href: "/dashboard/inventory", label: "Inventory", roles: ["ADMIN"] },
     { href: "/dashboard/categories", label: "Categories", roles: ["ADMIN"] },
-    { href: "/dashboard/reports", label: "Reports", roles: ["ADMIN"] },
+    { href: "/dashboard/reports", label: "Reports", roles: ["ADMIN", "CASHIER"] },
   ]
 
   const navItems = allNavItems.filter(item => 

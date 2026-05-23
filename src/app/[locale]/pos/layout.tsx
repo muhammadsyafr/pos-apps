@@ -32,16 +32,13 @@ export default async function POSLayout({
               </div>
               <span className="text-xl font-black tracking-tight font-headline text-blue-800 dark:text-blue-400 hidden sm:block">CloudPOS</span>
             </Link>
+            <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-xl font-medium text-sm transition-all">
+              Overview
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
             <ThemeToggle />
-            
-            <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center gap-2 px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-xl font-medium text-sm transition-all">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" /></svg>
-              Dashboard
-            </Link>
-
             <UserMenu userName={session.user?.name || "User"} userRole={userRole} />
           </div>
         </div>

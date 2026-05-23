@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { formatIDR } from "@/lib/currency"
-import { Printer, Bluetooth, Upload, Save, PrinterIcon, Globe, Settings as SettingsIcon } from "lucide-react"
+import { Printer, Bluetooth, Upload, Save, PrinterIcon, Globe, Settings as SettingsIcon, Users, Pencil, Trash2, Plus, Loader2 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
 
 interface PrinterSettings {
   id: string
@@ -25,6 +28,21 @@ interface ReceiptItem {
   name: string
   quantity: number
   price: number
+}
+
+interface User {
+  id: string
+  name: string
+  email: string
+  role: string
+  createdAt: string
+}
+
+interface UserFormData {
+  name: string
+  email: string
+  password: string
+  role: string
 }
 
 export default function SettingsPage() {
@@ -64,6 +82,14 @@ export default function SettingsPage() {
   const previewCash = 100000
   const previewChange = previewCash - previewSubtotal
 
+  const [users, setUsers] = useState<User[]>([])
+  const [usersLoading, setUsersLoading] = useState(false)
+  const [userDialogOpen, setUserDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [userForm, setUserForm] = useState<UserFormData>({ name: "", email: "", password: "", role: "CASHIER" })
+  const [userSaving, setUserSaving] = useState(false)
+  const [userError, setUserError] = useState("")
+
   const languages = [
     { code: "en", label: "English", flag: "🇺🇸" },
     { code: "id", label: "Indonesia", flag: "🇮🇩" },
@@ -81,6 +107,27 @@ export default function SettingsPage() {
     }
     fetchConfig()
   }, [])
+
+  const fetchUsers = async () => {
+    setUsersLoading(true)
+    try {
+      const res = await fetch("/api/users")
+      if (res.ok) {
+        const data = await res.json()
+        setUsers(data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error)
+    } finally {
+      setUsersLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!isCashier) {
+      fetchUsers()
+    }
+  }, [isCashier])
 
   useEffect(() => {
     if (!navigator.bluetooth) {
@@ -185,6 +232,69 @@ export default function SettingsPage() {
         setConfig(prev => ({ ...prev, logoUrl: event.target?.result as string }))
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const openUserDialog = (user?: User) => {
+    if (user) {
+      setEditingUser(user)
+      setUserForm({ name: user.name, email: user.email, password: "", role: user.role })
+    } else {
+      setEditingUser(null)
+      setUserForm({ name: "", email: "", password: "", role: "CASHIER" })
+    }
+    setUserError("")
+    setUserDialogOpen(true)
+  }
+
+  const closeUserDialog = () => {
+    setUserDialogOpen(false)
+    setEditingUser(null)
+    setUserForm({ name: "", email: "", password: "", role: "CASHIER" })
+    setUserError("")
+  }
+
+  const handleSaveUser = async () => {
+    setUserSaving(true)
+    setUserError("")
+    try {
+      const url = editingUser ? `/api/users/${editingUser.id}` : "/api/users"
+      const method = editingUser ? "PUT" : "POST"
+      const body: { name: string; email: string; role: string; password?: string } = { name: userForm.name, email: userForm.email, role: userForm.role }
+      if (userForm.password) body.password = userForm.password
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      })
+
+      if (res.ok) {
+        closeUserDialog()
+        fetchUsers()
+      } else {
+        const data = await res.json()
+        setUserError(data.error || "Failed to save user")
+      }
+    } catch (error) {
+      setUserError("Failed to save user")
+    } finally {
+      setUserSaving(false)
+    }
+  }
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user?")) return
+    try {
+      const res = await fetch(`/api/users/${userId}`, { method: "DELETE" })
+      if (res.ok) {
+        fetchUsers()
+      } else {
+        const data = await res.json()
+        alert(data.error || "Failed to delete user")
+      }
+    } catch (error) {
+      alert("Failed to delete user")
     }
   }
 
@@ -397,6 +507,53 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+
+          {/* User Management - Admin Only */}
+          {!isCashier && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  User Management
+                </h2>
+                <Button size="sm" onClick={() => openUserDialog()} className="gap-1">
+                  <Plus className="w-4 h-4" />
+                  Add User
+                </Button>
+              </div>
+              <div className="p-5">
+                {usersLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  </div>
+                ) : users.length === 0 ? (
+                  <p className="text-center text-slate-500 dark:text-slate-400 py-4">No users found</p>
+                ) : (
+                  <div className="space-y-3">
+                    {users.map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-slate-900 dark:text-slate-50">{user.name}</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
+                            {user.role}
+                          </Badge>
+                          <Button variant="ghost" size="sm" onClick={() => openUserDialog(user)}>
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user.id)} className="text-red-600 hover:text-red-700 dark:text-red-400">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Receipt Preview - Always visible */}
@@ -463,6 +620,68 @@ export default function SettingsPage() {
         </div>
       </div>
       )}
+
+      <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingUser ? "Edit User" : "Add New User"}</DialogTitle>
+            <DialogDescription>
+              {editingUser ? "Update the user's information below." : "Enter the new user's details below."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {userError && (
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm rounded-lg">
+                {userError}
+              </div>
+            )}
+            <div>
+              <Label>Name</Label>
+              <Input
+                value={userForm.name}
+                onChange={(e) => setUserForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="John Doe"
+              />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={userForm.email}
+                onChange={(e) => setUserForm(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="john@example.com"
+              />
+            </div>
+            <div>
+              <Label>Password {editingUser && "(leave blank to keep current)"}</Label>
+              <Input
+                type="password"
+                value={userForm.password}
+                onChange={(e) => setUserForm(prev => ({ ...prev, password: e.target.value }))}
+                placeholder={editingUser ? "••••••••" : "Enter password"}
+              />
+            </div>
+            <div>
+              <Label>Role</Label>
+              <Select value={userForm.role} onValueChange={(v) => setUserForm(prev => ({ ...prev, role: v }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="CASHIER">Cashier</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={closeUserDialog}>Cancel</Button>
+            <Button onClick={handleSaveUser} disabled={userSaving}>
+              {userSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
