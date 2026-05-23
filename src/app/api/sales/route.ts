@@ -11,21 +11,53 @@ function formatIDR(amount: number): string {
   }).format(amount)
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const sales = await db.sale.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        user: { select: { name: true } },
-        items: { include: { product: { select: { name: true, costPrice: true } } } },
-      },
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get("page") || "1")
+    const pageSize = parseInt(searchParams.get("pageSize") || "10")
+    const dateFrom = searchParams.get("dateFrom")
+    const dateTo = searchParams.get("dateTo")
+    const search = searchParams.get("search")
+
+    const where: Record<string, unknown> = {}
+
+    if (dateFrom || dateTo) {
+      where.createdAt = {}
+      if (dateFrom) (where.createdAt as Record<string, unknown>).gte = new Date(dateFrom)
+      if (dateTo) (where.createdAt as Record<string, unknown>).lte = new Date(dateTo + "T23:59:59")
+    }
+
+    if (search) {
+      where.OR = [
+        { id: { contains: search, mode: "insensitive" } },
+        { user: { name: { contains: search, mode: "insensitive" } } },
+      ]
+    }
+
+    const [sales, total] = await Promise.all([
+      db.sale.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          user: { select: { name: true } },
+          items: { include: { product: { select: { name: true, costPrice: true } } } },
+        },
+      }),
+      db.sale.count({ where }),
+    ])
+
+    return NextResponse.json({
+      sales,
+      pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },
     })
-    return NextResponse.json(sales)
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch sales" }, { status: 500 })
   }

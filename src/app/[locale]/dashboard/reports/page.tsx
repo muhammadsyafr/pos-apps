@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import React from "react"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Pagination } from "@/components/ui/pagination"
 import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight } from "lucide-react"
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
@@ -23,6 +24,15 @@ interface Sale {
   items: { product: { name: string; costPrice: number }; quantity: number; price: number }[]
 }
 
+interface PaginationInfo {
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+}
+
+const PAGE_SIZE = 10
+
 export default function ReportsPage() {
   const t = useTranslations("reports")
   const tCommon = useTranslations("common")
@@ -34,39 +44,57 @@ export default function ReportsPage() {
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
   const [expandedSale, setExpandedSale] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+
+  const pageSize = PAGE_SIZE
+  const totalPages = Math.ceil(totalItems / pageSize)
+
+  const fetchSales = useCallback(async (pageNum: number) => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams({ page: String(pageNum), pageSize: String(pageSize) })
+      if (dateFrom) params.set("dateFrom", dateFrom)
+      if (dateTo) params.set("dateTo", dateTo)
+      if (search) params.set("search", search)
+
+      const res = await fetch(`/api/sales?${params}`)
+      const data = await res.json()
+      if (data.sales) {
+        setSales(data.sales)
+        setTotalItems(data.pagination?.total || 0)
+      } else {
+        setSales([])
+        setTotalItems(0)
+      }
+    } catch (error) {
+      console.error("Failed to fetch sales:", error)
+    } finally {
+      setLoading(false)
+    }
+  }, [dateFrom, dateTo, search])
 
   useEffect(() => {
-    async function fetchSales() {
-      try {
-        const res = await fetch("/api/sales")
-        const data = await res.json()
-        setSales(data)
-      } catch (error) {
-        console.error("Failed to fetch sales:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchSales()
-  }, [])
+    fetchSales(page)
+  }, [page, fetchSales])
 
-  const filteredSales = sales.filter((s) => {
-    const matchesSearch =
-      s.id.toLowerCase().includes(search.toLowerCase()) ||
-      s.user.name.toLowerCase().includes(search.toLowerCase())
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    setPage(1)
+  }
 
-    const saleDate = new Date(s.createdAt)
-    const fromDate = dateFrom ? new Date(dateFrom) : null
-    const toDate = dateTo ? new Date(dateTo + "T23:59:59") : null
+  const handleDateFromChange = (value: string) => {
+    setDateFrom(value)
+    setPage(1)
+  }
 
-    const matchesFrom = fromDate ? saleDate >= fromDate : true
-    const matchesTo = toDate ? saleDate <= toDate : true
+  const handleDateToChange = (value: string) => {
+    setDateTo(value)
+    setPage(1)
+  }
 
-    return matchesSearch && matchesFrom && matchesTo
-  })
-
-  const totalRevenue = filteredSales.reduce((sum, s) => sum + s.totalAmount, 0)
-  const totalProfit = filteredSales.reduce((sum, sale) => {
+  const totalRevenue = sales.reduce((sum, s) => sum + s.totalAmount, 0)
+  const totalProfit = sales.reduce((sum, sale) => {
     return (
       sum +
       sale.items.reduce((itemSum, item) => {
@@ -77,7 +105,7 @@ export default function ReportsPage() {
   }, 0)
 
   const exportToXLSX = () => {
-    const exportData = filteredSales.map((sale) => ({
+    const exportData = sales.map((sale) => ({
       Date: new Date(sale.createdAt).toLocaleString(),
       "Transaction ID": sale.id,
       Cashier: sale.user.name,
@@ -131,7 +159,7 @@ export default function ReportsPage() {
         )}
         <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{filteredSales.length}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{totalItems}</p>
         </div>
       </div>
 
@@ -143,7 +171,7 @@ export default function ReportsPage() {
               <Input
                 placeholder="Search by ID or cashier..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -157,7 +185,7 @@ export default function ReportsPage() {
                   <Input
                     type="date"
                     value={dateFrom}
-                    onChange={(e) => setDateFrom(e.target.value)}
+                    onChange={(e) => handleDateFromChange(e.target.value)}
                     className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
                   />
                 </div>
@@ -178,7 +206,7 @@ export default function ReportsPage() {
                   <Input
                     type="date"
                     value={dateTo}
-                    onChange={(e) => setDateTo(e.target.value)}
+                    onChange={(e) => handleDateToChange(e.target.value)}
                     className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
                   />
                 </div>
@@ -191,6 +219,7 @@ export default function ReportsPage() {
                   onClick={() => {
                     setDateFrom("")
                     setDateTo("")
+                    setPage(1)
                   }}
                   className="self-start sm:self-end h-10"
                 >
@@ -217,7 +246,7 @@ export default function ReportsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredSales.map((sale) => (
+              {sales.map((sale) => (
                 <React.Fragment key={sale.id}>
                   <TableRow className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50" onClick={() => setExpandedSale(expandedSale === sale.id ? null : sale.id)}>
                     <TableCell>
@@ -329,12 +358,18 @@ export default function ReportsPage() {
               ))}
             </TableBody>
           </Table>
-          {filteredSales.length === 0 && (
+          {sales.length === 0 && !loading && (
             <div className="text-center py-8 text-slate-500 dark:text-slate-400">
               <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p>No sales found</p>
             </div>
           )}
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={setPage}
+          />
         </div>
       </div>
     </div>

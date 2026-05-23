@@ -61,9 +61,12 @@ export default function DashboardPage() {
           fetch("/api/products"),
           fetch(`/api/sales/top-sellers?period=${period}`)
         ])
-        const sales: Sale[] = await salesRes.json()
-        const products: Product[] = await productsRes.json()
-        const topSellersData: TopSeller[] = await topSellersRes.json()
+        const salesData = await salesRes.json()
+        const sales: Sale[] = salesData.sales || []
+        const productsData = await productsRes.json()
+        const products: Product[] = Array.isArray(productsData) ? productsData : []
+        const topSellersJson = await topSellersRes.json()
+        const topSellersData: TopSeller[] = Array.isArray(topSellersJson) ? topSellersJson : []
 
         const now = new Date()
         let filteredSales = sales

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -93,6 +93,31 @@ export default function InventoryPage() {
   )
 
   const handleSubmit = async () => {
+    if (!formData.name.trim()) {
+      alert("Product name is required")
+      return
+    }
+    if (!formData.sku.trim()) {
+      alert("SKU is required")
+      return
+    }
+    if (!formData.category) {
+      alert("Category is required")
+      return
+    }
+    if (formData.stock === "" || parseInt(formData.stock) < 0) {
+      alert("Stock cannot be empty or negative")
+      return
+    }
+    if (!formData.costPrice || parseFloat(formData.costPrice) <= 0) {
+      alert("Cost price is required and must be greater than 0")
+      return
+    }
+    if (!formData.sellPrice || parseFloat(formData.sellPrice) <= 0) {
+      alert("Sell price is required and must be greater than 0")
+      return
+    }
+
     try {
       if (isEditMode) {
         await fetch(`/api/products/${formData.id}`, {
@@ -159,6 +184,41 @@ export default function InventoryPage() {
   const openAddDialog = () => {
     resetForm()
     setIsDialogOpen(true)
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 500 * 1024) {
+      alert("File too large. Maximum size is 500KB")
+      return
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    if (!allowedTypes.includes(file.type)) {
+      alert("Invalid file type. Allowed: JPEG, PNG, GIF, WebP")
+      return
+    }
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.imageUrl) {
+        setFormData((prev) => ({ ...prev, imageUrl: data.imageUrl }))
+      } else {
+        alert(data.error || "Upload failed")
+      }
+    } catch (error) {
+      console.error("Upload error:", error)
+      alert("Failed to upload image")
+    }
   }
 
   if (loading || categoriesLoading) {
@@ -365,12 +425,32 @@ export default function InventoryPage() {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("imageUrl")}</label>
-              <Input
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                placeholder="https://..."
-              />
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">Product Image</label>
+              <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                {formData.imageUrl ? (
+                  <div className="relative">
+                    <img src={formData.imageUrl} alt="Preview" className="w-full h-40 object-contain rounded-lg" />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center cursor-pointer py-4">
+                    <ImagePlus className="w-8 h-8 text-slate-400 mb-2" />
+                    <span className="text-sm text-slate-500 dark:text-slate-400">Click to upload (max 500KB)</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
           </div>
           <DialogFooter>
