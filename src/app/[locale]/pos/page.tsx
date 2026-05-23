@@ -359,7 +359,7 @@ export default function POSPage() {
           <DialogHeader><DialogTitle className="text-center font-headline font-bold text-xl">{t("paymentSuccess")}</DialogTitle></DialogHeader>
           <div className="py-4 lg:py-6 text-center">
             <div className="w-14 lg:w-16 h-14 lg:h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4"><svg className="w-7 lg:w-8 h-7 lg:h-8 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg></div>
-            <p className="text-2xl font-black font-headline text-slate-900 dark:text-slate-50">{formatIDR(subtotal)}</p>
+            <p className="text-2xl font-black font-headline text-slate-900 dark:text-slate-50">{formatIDR(lastTransaction?.subtotal ?? subtotal)}</p>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("transactionCompleted")}</p>
           </div>
           <DialogFooter className="flex-col gap-2">

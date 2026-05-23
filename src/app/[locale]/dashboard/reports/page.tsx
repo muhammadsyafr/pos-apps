@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pagination } from "@/components/ui/pagination"
-import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight } from "lucide-react"
+import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight, Printer } from "lucide-react"
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
@@ -125,6 +125,68 @@ export default function ReportsPage() {
     const fileName = `sales_report${dateFromStr}${dateToStr}.xlsx`
 
     XLSX.writeFile(wb, fileName)
+  }
+
+  const handlePrintReceipt = (sale: Sale) => {
+    const now = new Date(sale.createdAt)
+    const dateStr = now.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
+    const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
+
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) return
+
+    const itemsHtml = sale.items.map(item => `
+      <div style="display:flex;justify-content:space-between;margin:4px 0">
+        <div>${item.product.name} x${item.quantity}</div>
+        <div>${formatIDR(item.price * item.quantity)}</div>
+      </div>
+    `).join("")
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Receipt - ${sale.id}</title>
+          <style>
+            body {
+              font-family: 'Courier New', monospace;
+              font-size: 11px;
+              width: 80mm;
+              margin: 0 auto;
+              padding: 5px;
+            }
+            .h { text-align: center; }
+            .d { border-bottom: 1px dashed #000; margin: 6px 0; }
+            .t { font-weight: bold; display: flex; justify-content: space-between; }
+            .f { display: flex; justify-content: space-between; font-size: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="h">
+            <div style="font-size:12px;font-weight:bold">CloudPOS</div>
+          </div>
+          <div class="d"></div>
+          <div class="f"><span>${dateStr}</span><span>${timeStr}</span></div>
+          <div class="f"><span>Kasir:</span><span>${sale.user.name}</span></div>
+          <div class="f"><span>ID:</span><span>${sale.id.slice(0, 8)}</span></div>
+          <div class="d"></div>
+          ${itemsHtml}
+          <div class="d"></div>
+          <div class="t"><span>TOTAL</span><span>${formatIDR(sale.totalAmount)}</span></div>
+          ${sale.paymentMethod === "CASH" ? `
+          <div class="f"><span>Tunai</span><span>${formatIDR(sale.cashPaid)}</span></div>
+          <div class="f"><span>Kembalian</span><span>${formatIDR(sale.changeGiven)}</span></div>
+          ` : `
+          <div class="f"><span>Metode</span><span>${sale.paymentMethod}</span></div>
+          `}
+          <div class="d"></div>
+          <div class="h" style="font-size:10px">
+            Terima kasih atas kunjungan<br/>Anda
+          </div>
+        </body>
+      </html>
+    `)
+    printWindow.document.close()
+    printWindow.print()
   }
 
   if (loading) {
@@ -303,6 +365,13 @@ export default function ReportsPage() {
                                 {sale.paymentMethod}
                               </Badge>
                             </div>
+                          </div>
+
+                          <div className="flex justify-end">
+                            <Button size="sm" onClick={() => handlePrintReceipt(sale)} className="gap-1.5">
+                              <Printer className="w-3.5 h-3.5" />
+                              Print Receipt
+                            </Button>
                           </div>
 
                           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
