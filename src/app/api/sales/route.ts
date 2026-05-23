@@ -3,6 +3,14 @@ import { db } from "@/lib/db"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
+function formatIDR(amount: number): string {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(amount)
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -75,6 +83,23 @@ export async function POST(request: Request) {
             stock: {
               decrement: item.quantity,
             },
+          },
+        })
+      }
+
+      const adminUsers = await tx.user.findMany({
+        where: { role: "ADMIN" },
+        select: { id: true },
+      })
+
+      for (const admin of adminUsers) {
+        await tx.notification.create({
+          data: {
+            type: "SALE",
+            title: "New Sale Transaction",
+            message: `Sale #${sale.id.slice(0, 8)} completed for ${formatIDR(totalAmount)} by ${session.user.name}`,
+            relatedId: sale.id,
+            userId: userId,
           },
         })
       }

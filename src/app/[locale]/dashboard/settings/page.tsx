@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { formatIDR } from "@/lib/currency"
-import { Printer, Bluetooth, Upload, Save, PrinterIcon, Globe, Settings as SettingsIcon, Users, Pencil, Trash2, Plus, Loader2 } from "lucide-react"
+import { Printer, Bluetooth, Upload, Save, PrinterIcon, Globe, Settings as SettingsIcon, Users, Edit3, Trash2, Plus, Loader2 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
@@ -541,7 +541,7 @@ export default function SettingsPage() {
                             {user.role}
                           </Badge>
                           <Button variant="ghost" size="sm" onClick={() => openUserDialog(user)}>
-                            <Pencil className="w-4 h-4" />
+                            <Edit3 className="w-4 h-4" />
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user.id)} className="text-red-600 hover:text-red-700 dark:text-red-400">
                             <Trash2 className="w-4 h-4" />

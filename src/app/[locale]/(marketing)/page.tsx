@@ -2,10 +2,13 @@
 
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export default function MarketingPage() {
   const params = useParams()
   const locale = params.locale as string
+  const { data: session } = useSession()
+  const isLoggedIn = !!session
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -19,10 +22,10 @@ export default function MarketingPage() {
           <span className="text-xl font-black font-headline tracking-tight text-slate-900 dark:text-slate-50">CloudPOS</span>
         </div>
         <Link
-          href={`/${locale}/login`}
+          href={isLoggedIn ? `/${locale}/dashboard` : `/${locale}/login`}
           className="px-6 py-2.5 signature-gradient text-white rounded-xl font-headline font-bold shadow-lg shadow-blue-700/20 hover:-translate-y-0.5 transition-all"
         >
-          Sign In
+          {isLoggedIn ? "Dashboard" : "Sign In"}
         </Link>
       </nav>
 
