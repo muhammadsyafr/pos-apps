@@ -182,10 +182,10 @@ export default function InventoryPage() {
 
       {lowStockCount > 0 && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-500 dark:border-yellow-700 rounded-xl p-5">
-          <p className="text-yellow-800 dark:text-yellow-400">
-            <Badge variant="warning" className="mr-2">{lowStockCount}</Badge>
-            {lowStockCount} {t("lowStockMessage")}
-          </p>
+          <div className="text-yellow-800 dark:text-yellow-400 flex items-center gap-2">
+            <Badge variant="warning">{lowStockCount}</Badge>
+            <span>{lowStockCount} {t("lowStockMessage")}</span>
+          </div>
         </div>
       )}
 
@@ -268,8 +268,8 @@ export default function InventoryPage() {
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(product)}>
                           <Edit2 className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)} className="hover:bg-red-50 dark:hover:bg-red-950/30">
+                          <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                         </Button>
                       </div>
                     </TableCell>

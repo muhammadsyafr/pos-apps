@@ -96,11 +96,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-            <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
-              Demo: admin@cloudpos.com / admin123
-            </p>
-          </div>
         </div>
       </div>
     </div>

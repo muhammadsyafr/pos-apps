@@ -30,6 +30,13 @@ interface Product {
   minStock: number
 }
 
+interface TopSeller {
+  productId: string
+  name: string
+  totalSold: number
+  percentage: number
+}
+
 export default function DashboardPage() {
   const t = useTranslations("dashboard")
   const tCommon = useTranslations("common")
@@ -37,6 +44,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<Stats>({ totalRevenue: 0, totalSales: 0, totalProfit: 0, totalProducts: 0 })
   const [recentSales, setRecentSales] = useState<Sale[]>([])
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([])
+  const [topSellers, setTopSellers] = useState<TopSeller[]>([])
   const [period, setPeriod] = useState("today")
   const [loading, setLoading] = useState(true)
   const pathname = usePathname()
@@ -47,9 +55,14 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [salesRes, productsRes] = await Promise.all([fetch("/api/sales"), fetch("/api/products")])
+        const [salesRes, productsRes, topSellersRes] = await Promise.all([
+          fetch("/api/sales"),
+          fetch("/api/products"),
+          fetch(`/api/sales/top-sellers?period=${period}`)
+        ])
         const sales: Sale[] = await salesRes.json()
         const products: Product[] = await productsRes.json()
+        const topSellersData: TopSeller[] = await topSellersRes.json()
 
         const now = new Date()
         let filteredSales = sales
@@ -61,6 +74,7 @@ export default function DashboardPage() {
         setStats({ totalRevenue, totalSales: filteredSales.length, totalProfit: totalRevenue * 0.4, totalProducts: products.length })
         setRecentSales(filteredSales.slice(0, 4))
         setLowStockProducts(products.filter(p => p.stock <= p.minStock).slice(0, 3))
+        setTopSellers(topSellersData)
       } catch (error) {
         console.error("Failed to fetch data:", error)
       } finally {
@@ -161,17 +175,22 @@ export default function DashboardPage() {
           <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
             <h3 className="font-bold text-slate-900 dark:text-slate-50 mb-4">{t("topSellers")}</h3>
             <div className="space-y-3">
-              {["Coffee", "Sandwich", "Chips", "Soda"].map((name, i) => (
-                <div key={name} className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400">{i + 1}</div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{name}</p>
-                    <div className="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-1">
-                      <div className="bg-blue-600 dark:bg-blue-400 h-full rounded-full" style={{ width: `${90 - i * 20}%` }}></div>
+              {topSellers.length === 0 ? (
+                <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">{t("noData")}</p>
+              ) : (
+                topSellers.map((item, i) => (
+                  <div key={item.productId} className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400">{i + 1}</div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{item.name}</p>
+                      <div className="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-1">
+                        <div className="bg-blue-600 dark:bg-blue-400 h-full rounded-full" style={{ width: `${item.percentage}%` }}></div>
+                      </div>
                     </div>
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{item.totalSold}</span>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

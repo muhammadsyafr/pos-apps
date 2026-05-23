@@ -203,8 +203,8 @@ export default function CategoriesPage() {
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(cat)}>
                     <Edit2 className="w-4 h-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)}>
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(cat.id)} className="hover:bg-red-50 dark:hover:bg-red-950/30">
+                    <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                   </Button>
                 </div>
               </div>
@@ -238,8 +238,8 @@ export default function CategoriesPage() {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(tag)}>
                       <Edit2 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(tag.id)}>
-                      <Trash2 className="w-4 h-4 text-red-500" />
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(tag.id)} className="hover:bg-red-50 dark:hover:bg-red-950/30">
+                      <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                     </Button>
                   </div>
                 </div>
