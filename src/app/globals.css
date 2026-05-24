@@ -40,45 +40,49 @@
   }
 
   .dark {
-    --color-surface: 240 20% 8%;
-    --color-surface-container-low: 240 15% 10%;
-    --color-surface-container: 240 10% 12%;
-    --color-surface-container-high: 240 8% 14%;
-    --color-surface-container-highest: 240 6% 16%;
-    --color-surface-container-lowest: 0 0% 5%;
-    
-    --color-primary: 222 100% 65%;
-    --color-primary-container: 222 100% 40%;
-    --color-on-primary: 222 100% 10%;
-    --color-on-primary-container: 220 100% 90%;
-    
-    --color-secondary: 217 37% 70%;
-    --color-secondary-container: 217 37% 30%;
-    
-    --color-tertiary: 18 100% 60%;
-    --color-tertiary-container: 18 100% 25%;
-    --color-tertiary-fixed: 18 100% 25%;
-    --color-on-tertiary-fixed: 18 100% 85%;
-    
-    --color-on-surface: 215 20% 90%;
-    --color-on-surface-variant: 225 15% 70%;
-    
-    --color-outline: 225 10% 50%;
-    --color-outline-variant: 225 10% 25%;
+    --color-surface: 220 20% 8%;
+    --color-surface-container-low: 220 18% 12%;
+    --color-surface-container: 220 16% 16%;
+    --color-surface-container-high: 220 14% 22%;
+    --color-surface-container-highest: 220 12% 28%;
+    --color-surface-container-lowest: 220 10% 36%;
 
-    --color-card: 222 47% 11%;
-    --color-card-foreground: 210 40% 98%;
-    --color-muted: 217 33% 18%;
-    --color-muted-foreground: 215 20% 65%;
-    --color-input: 217 33% 18%;
-    --color-border: 217 33% 18%;
-    --color-ring: 224 76% 48%;
+    --color-primary: 217 100% 70%;
+    --color-primary-container: 217 80% 45%;
+    --color-on-primary: 217 100% 10%;
+    --color-on-primary-container: 217 100% 95%;
+
+    --color-secondary: 215 30% 65%;
+    --color-secondary-container: 215 25% 25%;
+
+    --color-tertiary: 25 100% 60%;
+    --color-tertiary-container: 25 80% 30%;
+    --color-tertiary-fixed: 25 60% 30%;
+    --color-on-tertiary-fixed: 25 100% 90%;
+
+    --color-on-surface: 220 15% 92%;
+    --color-on-surface-variant: 220 12% 65%;
+
+    --color-outline: 220 10% 45%;
+    --color-outline-variant: 220 10% 25%;
+
+    --color-card: 220 20% 12%;
+    --color-card-foreground: 220 15% 92%;
+    --color-muted: 220 18% 16%;
+    --color-muted-foreground: 220 12% 60%;
+    --color-input: 220 18% 20%;
+    --color-border: 220 16% 22%;
+    --color-ring: 217 80% 60%;
   }
 }
 
 @layer base {
   * {
-    border-color: rgba(180, 185, 200, 0.15);
+    border-color: hsl(214 32% 91% / 0.15);
+  }
+
+  .dark * {
+    border-color: hsl(217 33% 18% / 0.6);
   }
   
   html {
@@ -86,14 +90,14 @@
   }
   
   body {
-    background-color: rgb(243 244 246);
+    background-color: hsl(248 96% 97%);
     color: rgb(25 28 30);
     -webkit-font-smoothing: antialiased;
   }
 
   .dark body {
-    background-color: rgb(15 23 42);
-    color: rgb(241 245 249);
+    background-color: rgb(16 17 24);
+    color: rgb(230 235 245);
   }
 }
 
@@ -335,3 +339,62 @@
 .dark .rdp-custom .rdp-day_disabled {
   color: rgb(71 85 105);
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(2deg); }
+  66% { transform: translateY(6px) rotate(-1deg); }
+}
+
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-left {
+  animation: reveal-left 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.reveal-right {
+  animation: reveal-right 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.reveal-up {
+  animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-fill-mode: both;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }

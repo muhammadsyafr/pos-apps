@@ -177,5 +177,72 @@
     "title": "Pengaturan",
     "description": "Kelola pengaturan aplikasi Anda",
     "language": "Bahasa"
+  },
+  "marketing": {
+    "heroTitle": "Point of Sale, Didefinisikan Ulang",
+    "heroSubtitle": "Untuk generasi ritel berikutnya.",
+    "heroDescription": "CloudPOS menghadirkan manajemen inventaris kelas enterprise, analitik real-time, dan checkout mulus dalam satu antarmuka yang indah. Dibangun untuk bisnis Indonesia yang siap berkembang.",
+    "getStarted": "Mulai Gratis",
+    "viewDemo": "Lihat Demo",
+    "navSignIn": "Masuk",
+    "navDashboard": "Dasbor",
+    "features": {
+      "title": "Semua yang Anda butuhkan untuk menjalankan toko",
+      "subtitle": "Dirancang untuk kecepatan, dibangun untuk skala.",
+      "fast": {
+        "title": "Checkout Kilat",
+        "description": "Proses transaksi dalam kurang dari 3 detik. Barcode, QRIS, dan tunai — semua dalam satu alur lancar."
+      },
+      "analytics": {
+        "title": "Intelijen Real-time",
+        "description": "Dasbor langsung melacak pendapatan, margin, dan stok. Tahu angka Anda sebelum shift berakhir."
+      },
+      "secure": {
+        "title": "Keamanan Enterprise",
+        "description": "Enkripsi end-to-end dengan akses berbasis peran. Data Anda tetap milik Anda, selalu."
+      },
+      "inventory": {
+        "title": "Inventaris Cerdas",
+        "description": "Peringatan stok rendah, saran pemesanan ulang otomatis, dan pelacakan multi-gudang menjaga rak tetap penuh."
+      },
+      "offline": {
+        "title": "Bekerja Offline",
+        "description": "Tetap berjualan meskipun internet mati. Sinkronisasi otomatis saat Anda kembali online."
+      },
+      "multiStore": {
+        "title": "Siap Multi-Toko",
+        "description": "Kelola setiap outlet dari satu dasbor. Pelaporan terpadu di seluruh lokasi."
+      }
+    },
+    "stats": {
+      "title": "Dipercaya oleh bisnis di seluruh Indonesia",
+      "transactions": "Transaksi Diproses",
+      "uptime": "SLA Uptime",
+      "stores": "Toko Aktif",
+      "cities": "Kota"
+    },
+    "cta": {
+      "title": "Siap mentransformasi toko Anda?",
+      "description": "Bergabunglah dengan ribuan pedagang Indonesia yang menjalankan bisnis mereka di CloudPOS. Tanpa kartu kredit.",
+      "button": "Mulai Uji Coba Gratis",
+      "secondary": "Hubungi Sales"
+    },
+    "footer": {
+      "product": "Produk",
+      "company": "Perusahaan",
+      "legal": "Hukum",
+      "overview": "Ringkasan",
+      "pos": "Point of Sale",
+      "inventory": "Inventaris",
+      "analytics": "Analitik",
+      "pricing": "Harga",
+      "about": "Tentang",
+      "careers": "Karir",
+      "blog": "Blog",
+      "contact": "Kontak",
+      "privacy": "Kebijakan Privasi",
+      "terms": "Syarat Layanan",
+      "copyright": "© 2026 CloudPOS. Hak cipta dilindungi."
+    }
   }
 }

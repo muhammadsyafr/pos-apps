@@ -1,0 +1,6 @@
+export { MarketingNav } from "./marketing-nav"
+export { HeroSection } from "./hero-section"
+export { FeatureSection } from "./feature-section"
+export { StatsSection } from "./stats-section"
+export { CTASection } from "./cta-section"
+export { Footer } from "./footer"

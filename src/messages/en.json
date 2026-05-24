@@ -177,5 +177,72 @@
     "title": "Settings",
     "description": "Manage your application settings",
     "language": "Language"
+  },
+  "marketing": {
+    "heroTitle": "Point of Sale, Redefined",
+    "heroSubtitle": "For the next generation of retail.",
+    "heroDescription": "CloudPOS brings enterprise-grade inventory management, real-time analytics, and seamless checkout into a single, beautiful interface. Built for Indonesian businesses ready to scale.",
+    "getStarted": "Get Started Free",
+    "viewDemo": "View Demo",
+    "navSignIn": "Sign In",
+    "navDashboard": "Dashboard",
+    "features": {
+      "title": "Everything you need to run your store",
+      "subtitle": "Designed for speed, built for scale.",
+      "fast": {
+        "title": "Lightning Checkout",
+        "description": "Process transactions in under 3 seconds. Barcode scanning, QRIS, and cash — all in one fluid flow."
+      },
+      "analytics": {
+        "title": "Real-time Intelligence",
+        "description": "Live dashboards track revenue, margins, and stock levels. Know your numbers before your shift ends."
+      },
+      "secure": {
+        "title": "Enterprise Security",
+        "description": "End-to-end encryption with role-based access. Your data stays yours, always."
+      },
+      "inventory": {
+        "title": "Smart Inventory",
+        "description": "Low-stock alerts, auto-reorder suggestions, and multi-warehouse tracking keep shelves full."
+      },
+      "offline": {
+        "title": "Works Offline",
+        "description": "Keep selling even when the internet drops. Syncs automatically when you're back online."
+      },
+      "multiStore": {
+        "title": "Multi-Store Ready",
+        "description": "Manage every outlet from one dashboard. Unified reporting across locations."
+      }
+    },
+    "stats": {
+      "title": "Trusted by businesses across Indonesia",
+      "transactions": "Transactions Processed",
+      "uptime": "Uptime SLA",
+      "stores": "Active Stores",
+      "cities": "Cities"
+    },
+    "cta": {
+      "title": "Ready to transform your store?",
+      "description": "Join thousands of Indonesian merchants who run their business on CloudPOS. No credit card required.",
+      "button": "Start Free Trial",
+      "secondary": "Talk to Sales"
+    },
+    "footer": {
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "overview": "Overview",
+      "pos": "Point of Sale",
+      "inventory": "Inventory",
+      "analytics": "Analytics",
+      "pricing": "Pricing",
+      "about": "About",
+      "careers": "Careers",
+      "blog": "Blog",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "copyright": "© 2026 CloudPOS. All rights reserved."
+    }
   }
 }
