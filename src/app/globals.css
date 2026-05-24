@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-canvas-night: #000000;
-  --color-canvas-night-elevated: #0a0a0a;
+  --color-canvas-night: #0d0d0d;
+  --color-canvas-night-elevated: #171717;
   --color-canvas-light: #ffffff;
   --color-canvas-cream: #fbfbf5;
   --color-surface-elevated-dark: #1e2c31;

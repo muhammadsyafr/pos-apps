@@ -566,7 +566,7 @@ export default function SettingsPage() {
             </div>
             <div className="p-5">
               <div 
-                className="bg-canvas-light dark:bg-canvas-night-elevated border-2 border-hairline-light dark:border-hairline-dark rounded-sm p-4 mx-auto"
+                className="bg-white dark:bg-neutral-100 border border-neutral-200 dark:border-neutral-300 shadow-sm rounded-md p-4 mx-auto"
                 style={{ 
                   width: config.paperWidth === 58 ? "280px" : "380px",
                   fontFamily: "'Courier New', monospace",
@@ -574,7 +574,7 @@ export default function SettingsPage() {
                   color: "#000"
                 }}
               >
-                <div className="text-center border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
+                <div className="text-center border-b border-dashed border-neutral-300 pb-2 mb-2">
                   {config.logoUrl && (
                     <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto mb-2 object-contain" />
                   )}
@@ -587,9 +587,13 @@ export default function SettingsPage() {
                   20 May 2026 22:13 | Kasir: Admin
                 </div>
                 
-                <div className="border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
+                <div className="mb-2 border border-neutral-300 rounded-sm overflow-hidden">
+                  <div className="grid grid-cols-[1fr_auto] gap-2 px-2 py-1 text-[10px] font-bold border-b border-neutral-300 bg-neutral-50">
+                    <span>Item</span>
+                    <span>Total</span>
+                  </div>
                   {previewItems.map((item, index) => (
-                    <div key={index} className="flex justify-between text-xs">
+                    <div key={index} className="grid grid-cols-[1fr_auto] gap-2 px-2 py-1 text-xs border-b border-neutral-200 last:border-b-0">
                       <span>{item.name} x{item.quantity}</span>
                       <span>{formatIDR(item.price * item.quantity)}</span>
                     </div>
@@ -609,7 +613,7 @@ export default function SettingsPage() {
                   <span>{formatIDR(previewChange)}</span>
                 </div>
                 
-                <div className="text-center border-t border-dashed border-hairline-light dark:border-hairline-dark pt-2 mt-2">
+                <div className="text-center border-t border-dashed border-neutral-300 pt-2 mt-2">
                   <div className="text-xs">Terima kasih atas kunjungan</div>
                   <div className="text-xs">Anda</div>
                 </div>

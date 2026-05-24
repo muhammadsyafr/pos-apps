@@ -349,7 +349,10 @@ export default function POSPage() {
               <SelectTrigger className="w-full sm:w-40 bg-canvas-light dark:bg-canvas-night-elevated rounded-full border border-hairline-light dark:border-hairline-dark">
                 <SelectValue placeholder={t("allCategories")} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent
+                sideOffset={0}
+                className="data-[side=bottom]:translate-y-0 !animate-none !transition-none"
+              >
                 <SelectItem value="all">{t("allCategories")}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
@@ -359,7 +362,7 @@ export default function POSPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto">
+        <div className="pos-products-scroll flex-1 overflow-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 lg:g-4">
             {filteredProducts.map(product => (
               <button key={product.id} onClick={() => addToCart(product)} disabled={product.stock === 0} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl lg:rounded-xl p-3 lg:p-4 text-left hover:shadow-lg transition-all disabled:opacity-50 group">

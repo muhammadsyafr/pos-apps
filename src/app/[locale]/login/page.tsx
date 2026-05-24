@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-canvas-cream dark:bg-canvas-night p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 bg-ink dark:bg-on-dark">
             <svg className="w-8 h-8 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">

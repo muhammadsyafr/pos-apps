@@ -4,12 +4,12 @@ name: Shopifi-design-analysis
 description: An inspired interpretation of Shopifi's design language — a cinematic commerce platform that runs two parallel design tracks. The marketing-hero and product-narrative pages live on near-black canvases with full-bleed photography of merchants, giant Neue Haas Grotesk display type at thin weights, and a single black-pill CTA stroked in white. The transactional pages (pricing, signup, dashboards) flip to a cream-mint canvas with pastel aloe and pistachio greens, the same pill button vocabulary, and Inter for UI body. The two tracks share typographic DNA but diverge sharply in canvas polarity — and that choice is the brand.
 
 colors:
-  primary: "#000000"
+  primary: "#0d0d0d"
   ink: "#000000"
   on-primary: "#ffffff"
   on-dark: "#ffffff"
-  canvas-night: "#000000"
-  canvas-night-elevated: "#0a0a0a"
+  canvas-night: "#0d0d0d"
+  canvas-night-elevated: "#171717"
   canvas-light: "#ffffff"
   canvas-cream: "#fbfbf5"
   surface-elevated-dark: "#1e2c31"
