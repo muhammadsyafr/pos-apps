@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { ChevronDown, Globe } from "lucide-react"
 
+const localeSet = new Set(["en", "id"])
+
 export default function LanguageSwitcher() {
   const locale = useLocale()
   const pathname = usePathname()
@@ -23,18 +25,15 @@ export default function LanguageSwitcher() {
       return
     }
 
-    const segments = pathname.split("/")
-    const currentLocale = segments[1]
+    const segments = pathname.split("/").filter(Boolean)
+    const rest = [...segments]
 
-    let newPath: string
-    if (currentLocale === "en" || currentLocale === "id") {
-      segments[1] = nextLocale
-      newPath = segments.join("/")
-    } else {
-      newPath = `/${nextLocale}${pathname}`
-    }
+    if (rest[0] && localeSet.has(rest[0])) rest.shift()
+    if (rest[0] && localeSet.has(rest[0])) rest.shift()
 
-    window.location.href = newPath
+    const newPath = `/${[nextLocale, ...rest].join("/")}`
+
+    window.location.assign(newPath)
   }
 
   return (

@@ -2,8 +2,10 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { HeroSection } from "@/components/marketing/hero-section"
+import { MerchantShowcase } from "@/components/marketing/merchant-showcase"
 import { FeatureSection } from "@/components/marketing/feature-section"
 import { StatsSection } from "@/components/marketing/stats-section"
+import { Testimonials } from "@/components/marketing/testimonials"
 import { CTASection } from "@/components/marketing/cta-section"
 import { Footer } from "@/components/marketing/footer"
 
@@ -30,11 +32,13 @@ export default async function MarketingPage({ params }: Props) {
   const { locale } = await params
 
   return (
-    <div className="min-h-screen bg-canvas-night text-on-dark">
+    <div className="min-h-screen bg-canvas-cream text-ink">
       <MarketingNav />
       <HeroSection />
+      <MerchantShowcase />
       <FeatureSection />
       <StatsSection />
+      <Testimonials />
       <CTASection locale={locale} />
       <Footer locale={locale} />
     </div>

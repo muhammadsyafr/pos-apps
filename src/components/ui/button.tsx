@@ -8,8 +8,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-on-primary hover:bg-shade-70 active:bg-shade-70",
-        primary: "bg-primary text-on-primary hover:bg-shade-70 active:bg-shade-70",
+        default: "bg-aloe-10 text-ink hover:opacity-85 dark:bg-aloe-10 dark:text-ink",
+        primary: "bg-aloe-10 text-ink hover:opacity-85 dark:bg-aloe-10 dark:text-ink",
         outline: "border-2 border-on-dark bg-transparent text-on-dark hover:bg-on-dark/10",
         "outline-light": "border border-ink bg-canvas-light text-ink hover:bg-shade-30",
         aloe: "bg-aloe-10 text-ink hover:opacity-85",

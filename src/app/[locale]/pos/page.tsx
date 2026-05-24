@@ -424,9 +424,9 @@ export default function POSPage() {
       </div>
 
       <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
-        <DialogContent className="max-w-sm lg:max-w-md">
+        <DialogContent>
           <DialogHeader><DialogTitle className="font-display font-bold text-xl">{t("completePayment")}</DialogTitle></DialogHeader>
-          <div className="space-y-4 lg:space-y-6 py-4">
+          <div className="px-8 py-6 space-y-4">
             <div className="flex justify-between items-center p-3 lg:p-4 bg-canvas-cream dark:bg-canvas-night rounded-xl">
               <span className="font-display font-bold text-base lg:text-lg text-ink dark:text-on-dark">{t("total")}</span>
               <span className="font-display font-black text-ink dark:text-on-dark text-xl lg:text-2xl">{formatIDR(subtotal)}</span>
@@ -461,7 +461,7 @@ export default function POSPage() {
       </Dialog>
 
       <Dialog open={isReceiptOpen} onOpenChange={setIsReceiptOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent>
           <DialogHeader><DialogTitle className="text-center font-display font-bold text-xl">{t("paymentSuccess")}</DialogTitle></DialogHeader>
           <div className="py-4 lg:py-6 text-center">
             <div className="w-14 lg:w-16 h-14 lg:h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4"><svg className="w-7 lg:w-8 h-7 lg:h-8 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg></div>
@@ -469,7 +469,7 @@ export default function POSPage() {
             <p className="text-sm text-shade-50 dark:text-shade-40 mt-1">{t("transactionCompleted")}</p>
           </div>
           <DialogFooter className="flex-col gap-2">
-            <button onClick={handlePrint} className="w-full signature-gradient text-white py-2.5 lg:py-3 rounded-xl font-display font-bold flex items-center justify-center gap-2 text-sm lg:text-base">
+            <button onClick={handlePrint} className="w-full bg-aloe-10 text-ink py-2.5 lg:py-3 rounded-full font-[550] flex items-center justify-center gap-2 text-sm lg:text-base hover:opacity-85">
               <svg className="w-4 lg:w-5 h-4 lg:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z" /></svg>
               {t("printReceipt")}
             </button>

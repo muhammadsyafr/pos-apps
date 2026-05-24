@@ -182,13 +182,30 @@
     "language": "Language"
   },
   "marketing": {
-    "heroTitle": "Point of Sale, Redefined",
+    "heroTitle": "The smarter way to run your store",
     "heroSubtitle": "For the next generation of retail.",
     "heroDescription": "CloudPOS brings enterprise-grade inventory management, real-time analytics, and seamless checkout into a single, beautiful interface. Built for Indonesian businesses ready to scale.",
+    "heroBadge": "CloudPOS - Point of Sale for Indonesia",
+    "heroNoCard": "No credit card required. Start free today.",
+    "heroDashboard": "Dashboard",
+    "heroGreeting": "Good morning!",
+    "heroToday": "Today",
+    "heroRecentTransactions": "Recent Transactions",
+    "heroPayment": "Payment",
+    "heroPaymentSuccess": "Success",
+    "heroRevenueToday": "Revenue Today",
     "getStarted": "Get Started Free",
     "viewDemo": "View Demo",
     "navSignIn": "Sign In",
     "navDashboard": "Dashboard",
+    "navFeatures": "Features",
+    "navPricing": "Pricing",
+    "navAbout": "About",
+    "merchant": {
+      "eyebrow": "Trusted by thousands of businesses",
+      "title": "From Jakarta to Papua, CloudPOS powers Indonesia's fastest growing stores",
+      "note": "500+ stores across Indonesia processing 2.4M+ transactions"
+    },
     "features": {
       "title": "Everything you need to run your store",
       "subtitle": "Designed for speed, built for scale.",
@@ -219,10 +236,32 @@
     },
     "stats": {
       "title": "Trusted by businesses across Indonesia",
+      "subtitle": "The numbers speak for themselves",
       "transactions": "Transactions Processed",
       "uptime": "Uptime SLA",
       "stores": "Active Stores",
       "cities": "Cities"
+    },
+    "testimonials": {
+      "eyebrow": "What merchants say",
+      "title": "Loved by thousands of Indonesian businesses",
+      "items": {
+        "1": {
+          "quote": "CloudPOS transformed how we run three outlets. Inventory syncs instantly, and the QRIS checkout is incredibly fast. Our customers love it.",
+          "name": "Budi Santoso",
+          "business": "Kedai Kopi Nusantara - 3 locations"
+        },
+        "2": {
+          "quote": "The real-time dashboard saves me hours every week. I finally know what's selling and what's not without manually checking every report.",
+          "name": "Sari Dewi",
+          "business": "Butik Fashion Indonesia"
+        },
+        "3": {
+          "quote": "Switching from our old POS to CloudPOS took less than a day. The team was super helpful and the system just works.",
+          "name": "Ahmad Rizki",
+          "business": "Toko Elektronik Jaya"
+        }
+      }
     },
     "cta": {
       "title": "Ready to transform your store?",
@@ -245,6 +284,7 @@
       "contact": "Contact",
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
+      "brandDescription": "Enterprise-grade point of sale and inventory management for Indonesian businesses.",
       "copyright": "© 2026 CloudPOS. All rights reserved."
     }
   }

@@ -138,18 +138,16 @@ export default function SettingsPage() {
   const handleLanguageChange = (nextLocale: string) => {
     if (locale === nextLocale) return
 
-    const segments = pathname.split("/")
-    const currentLocale = segments[1]
+    const localeSet = new Set(["en", "id"])
+    const segments = pathname.split("/").filter(Boolean)
+    const rest = [...segments]
 
-    let newPath: string
-    if (currentLocale === "en" || currentLocale === "id") {
-      segments[1] = nextLocale
-      newPath = segments.join("/")
-    } else {
-      newPath = `/${nextLocale}${pathname}`
-    }
+    if (rest[0] && localeSet.has(rest[0])) rest.shift()
+    if (rest[0] && localeSet.has(rest[0])) rest.shift()
 
-    window.location.href = newPath
+    const newPath = `/${[nextLocale, ...rest].join("/")}`
+
+    window.location.assign(newPath)
   }
 
   const handleScanBluetooth = async () => {
@@ -178,12 +176,13 @@ export default function SettingsPage() {
         printerName: device.name || "Unknown Printer",
         printerAddress: device.id
       }))
-    } catch (error: any) {
-      let errorMessage = error.message || "Failed to scan for printers"
+    } catch (error: unknown) {
+      const err = error as { message?: string; name?: string }
+      let errorMessage = err.message || "Failed to scan for printers"
       
-      if (error.name === "NotFoundError") {
+      if (err.name === "NotFoundError") {
         errorMessage = "No printer found. Make sure your printer is turned on and in pairing mode."
-      } else if (error.name === "SecurityError") {
+      } else if (err.name === "SecurityError") {
         errorMessage = "Bluetooth permission denied. Please allow Bluetooth access when prompted."
       } else if (errorMessage.includes("Web Bluetooth")) {
         errorMessage = "Web Bluetooth API is disabled. Please enable it in chrome://flags '#enable-experimental-web-platform-features' or use Chrome/Edge browser."
