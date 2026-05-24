@@ -21,7 +21,7 @@ interface Sale {
   paymentMethod: string
   createdAt: string
   user: { name: string }
-  items: { product: { name: string; costPrice: number }; quantity: number; price: number }[]
+  items: { product: { name: string }; quantity: number; price: number; costPrice: number }[]
 }
 
 interface PaginationInfo {
@@ -46,6 +46,13 @@ export default function ReportsPage() {
   const [expandedSale, setExpandedSale] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
+  const [printerConfig, setPrinterConfig] = useState({
+    storeName: "CloudPOS",
+    storeAddress: "Jl. Toko No. 123",
+    storePhone: "081234567890",
+    logoUrl: "",
+    paperWidth: 58
+  })
 
   const pageSize = PAGE_SIZE
   const totalPages = Math.ceil(totalItems / pageSize)
@@ -76,6 +83,22 @@ export default function ReportsPage() {
 
   useEffect(() => {
     fetchSales(page)
+    async function fetchPrinterConfig() {
+      try {
+        const res = await fetch("/api/printers")
+        const data = await res.json()
+        setPrinterConfig({
+          storeName: data.storeName || "CloudPOS",
+          storeAddress: data.storeAddress || "Jl. Toko No. 123",
+          storePhone: data.storePhone || "081234567890",
+          logoUrl: data.logoUrl || "",
+          paperWidth: data.paperWidth || 58
+        })
+      } catch (error) {
+        console.error("Failed to fetch printer config:", error)
+      }
+    }
+    fetchPrinterConfig()
   }, [page, fetchSales])
 
   const handleSearchChange = (value: string) => {
@@ -98,7 +121,7 @@ export default function ReportsPage() {
     return (
       sum +
       sale.items.reduce((itemSum, item) => {
-        const cost = item.product.costPrice || 0
+        const cost = item.costPrice || 0
         return itemSum + (item.price - cost) * item.quantity
       }, 0)
     )
@@ -142,6 +165,8 @@ export default function ReportsPage() {
       </div>
     `).join("")
 
+    const paperWidth = printerConfig.paperWidth === 58 ? "58mm" : "80mm"
+
     printWindow.document.write(`
       <html>
         <head>
@@ -150,7 +175,7 @@ export default function ReportsPage() {
             body {
               font-family: 'Courier New', monospace;
               font-size: 11px;
-              width: 80mm;
+              width: ${paperWidth};
               margin: 0 auto;
               padding: 5px;
             }
@@ -158,11 +183,16 @@ export default function ReportsPage() {
             .d { border-bottom: 1px dashed #000; margin: 6px 0; }
             .t { font-weight: bold; display: flex; justify-content: space-between; }
             .f { display: flex; justify-content: space-between; font-size: 10px; }
+            .title { font-size: 14px; font-weight: bold; }
+            .logo { max-width: 60px; max-height: 40px; margin-bottom: 5px; }
           </style>
         </head>
         <body>
           <div class="h">
-            <div style="font-size:12px;font-weight:bold">CloudPOS</div>
+            ${printerConfig.logoUrl ? `<img src="${printerConfig.logoUrl}" class="logo" />` : ""}
+            <div class="title">${printerConfig.storeName || "CloudPOS"}</div>
+            <div style="font-size:10px">${printerConfig.storeAddress || "Jl. Toko No. 123"}</div>
+            <div style="font-size:10px">Telp: ${printerConfig.storePhone || "081234567890"}</div>
           </div>
           <div class="d"></div>
           <div class="f"><span>${dateStr}</span><span>${timeStr}</span></div>
@@ -379,7 +409,9 @@ export default function ReportsPage() {
                               <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50">Items Purchased</h4>
                             </div>
                             <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                              {sale.items.map((item, i) => (
+                              {sale.items.map((item, i) => {
+                                const itemProfit = (item.price - (item.costPrice || 0)) * item.quantity
+                                return (
                                 <div key={`${sale.id}-item-${i}`} className="px-3 py-2 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50">
                                   <div className="flex items-center gap-2 flex-1 min-w-0">
                                     <div className="w-6 h-6 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
@@ -389,10 +421,14 @@ export default function ReportsPage() {
                                   </div>
                                   <div className="flex items-center gap-3 flex-shrink-0">
                                     <span className="text-xs text-slate-500 dark:text-slate-400">{formatIDR(item.price)}</span>
+                                    {!isCashier && (
+                                      <span className="text-xs text-green-600 dark:text-green-400 min-w-[60px] text-right">+{formatIDR(itemProfit)}</span>
+                                    )}
                                     <span className="text-sm font-semibold text-slate-900 dark:text-slate-50 min-w-[80px] text-right">{formatIDR(item.price * item.quantity)}</span>
                                   </div>
                                 </div>
-                              ))}
+                                )
+                              })}
                             </div>
                             <div className="px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700">
                               <div className="space-y-1.5">
@@ -416,6 +452,12 @@ export default function ReportsPage() {
                                   <span className="font-bold text-slate-900 dark:text-slate-50">Total</span>
                                   <span className="font-bold text-lg text-blue-600 dark:text-blue-400">{formatIDR(sale.totalAmount)}</span>
                                 </div>
+                                {!isCashier && (
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500 dark:text-slate-400">Profit</span>
+                                    <span className="font-semibold text-green-600 dark:text-green-400">{formatIDR(sale.items.reduce((sum, item) => sum + (item.price - (item.costPrice || 0)) * item.quantity, 0))}</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>

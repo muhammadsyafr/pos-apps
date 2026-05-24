@@ -48,7 +48,7 @@ export async function GET(request: Request) {
         take: pageSize,
         include: {
           user: { select: { name: true } },
-          items: { include: { product: { select: { name: true, costPrice: true } } } },
+          items: { include: { product: { select: { name: true } } } },
         },
       }),
       db.sale.count({ where }),
@@ -100,12 +100,14 @@ export async function POST(request: Request) {
       })
 
       for (const item of items) {
+        const product = await tx.product.findUnique({ where: { id: item.id } })
         await tx.saleItem.create({
           data: {
             saleId: sale.id,
             productId: item.id,
             quantity: item.quantity,
             price: item.price,
+            costPrice: product?.costPrice || 0,
           },
         })
 

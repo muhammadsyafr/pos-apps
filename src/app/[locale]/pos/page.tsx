@@ -58,7 +58,8 @@ export default function POSPage() {
           fetch("/api/categories"),
           fetch("/api/printers"),
         ])
-        setProducts(await productsRes.json())
+        const productsData = await productsRes.json()
+        setProducts(Array.isArray(productsData) ? productsData : [])
         setCategories(await categoriesRes.json())
         const printerData = await printerRes.json()
         setPrinterConfig({
@@ -146,7 +147,8 @@ export default function POSPage() {
         setCashPaid("")
         
         const productsRes = await fetch("/api/products")
-        setProducts(await productsRes.json())
+        const productsData = await productsRes.json()
+        setProducts(Array.isArray(productsData) ? productsData : [])
       }
     } catch (error) {
       console.error("Checkout error:", error)
