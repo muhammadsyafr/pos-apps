@@ -6,6 +6,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
+import { fetchProductsWithCache, fetchCategoriesWithCache, processSaleOffline, getPendingSales } from "@/hooks/useOffline"
+import { useOffline } from "@/hooks/useOffline"
+import { WifiOff, Database } from "lucide-react"
 
 interface Product {
   id: string
@@ -30,6 +33,7 @@ export default function POSPage() {
   const t = useTranslations("pos")
   const tCommon = useTranslations("common")
   const { data: session } = useSession()
+  const { isOnline, pendingCount } = useOffline()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
@@ -49,26 +53,34 @@ export default function POSPage() {
     logoUrl: "",
     paperWidth: 58
   })
+  const [dataFromCache, setDataFromCache] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [productsRes, categoriesRes, printerRes] = await Promise.all([
-          fetch("/api/products"),
-          fetch("/api/categories"),
-          fetch("/api/printers"),
+        const [productsResult, categoriesResult] = await Promise.all([
+          fetchProductsWithCache(),
+          fetchCategoriesWithCache(),
         ])
-        const productsData = await productsRes.json()
-        setProducts(Array.isArray(productsData) ? productsData : [])
-        setCategories(await categoriesRes.json())
-        const printerData = await printerRes.json()
-        setPrinterConfig({
-          storeName: printerData.storeName,
-          storeAddress: printerData.storeAddress,
-          storePhone: printerData.storePhone,
-          logoUrl: printerData.logoUrl || "",
-          paperWidth: printerData.paperWidth
-        })
+        setProducts(productsResult.products)
+        setCategories(categoriesResult.categories)
+        setDataFromCache(productsResult.fromCache || categoriesResult.fromCache)
+        
+        try {
+          const printerRes = await fetch("/api/printers")
+          if (printerRes.ok) {
+            const printerData = await printerRes.json()
+            setPrinterConfig({
+              storeName: printerData.storeName,
+              storeAddress: printerData.storeAddress,
+              storePhone: printerData.storePhone,
+              logoUrl: printerData.logoUrl || "",
+              paperWidth: printerData.paperWidth
+            })
+          }
+        } catch (e) {
+          console.log("Printer config unavailable, using defaults")
+        }
       } catch (error) {
         console.error("Failed to fetch data:", error)
       } finally {
@@ -114,6 +126,38 @@ export default function POSPage() {
     setProcessing(true)
     
     try {
+      if (!isOnline) {
+        const result = await processSaleOffline(
+          cart,
+          paymentMethod,
+          parseFloat(cashPaid) || 0,
+          change,
+          subtotal
+        )
+        if (result.queued) {
+          setLastTransaction({
+            cart: [...cart],
+            subtotal,
+            cashPaid: parseFloat(cashPaid) || 0,
+            change
+          })
+          setIsCheckoutOpen(false)
+          setIsReceiptOpen(true)
+          setCart([])
+          setCashPaid("")
+          setProducts(prev => prev.map(p => {
+            const cartItem = cart.find(c => c.id === p.id)
+            if (cartItem) {
+              return { ...p, stock: Math.max(0, p.stock - cartItem.quantity) }
+            }
+            return p
+          }))
+          const pending = await getPendingSales()
+          window.dispatchEvent(new CustomEvent('pending-count-updated', { detail: pending.length }))
+          return
+        }
+      }
+
       const response = await fetch("/api/sales", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -146,9 +190,8 @@ export default function POSPage() {
         setCart([])
         setCashPaid("")
         
-        const productsRes = await fetch("/api/products")
-        const productsData = await productsRes.json()
-        setProducts(Array.isArray(productsData) ? productsData : [])
+        const productsResult = await fetchProductsWithCache()
+        setProducts(productsResult.products)
       }
     } catch (error) {
       console.error("Checkout error:", error)
@@ -228,6 +271,48 @@ export default function POSPage() {
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>
 
+  if (products.length === 0 && dataFromCache) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center p-4">
+        <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">No Products Available</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+          {isOnline 
+            ? "Products couldn't be loaded. Please check your connection and refresh the page."
+            : "You're offline and no products are cached. Please connect to the internet to load products."}
+        </p>
+        {isOnline && (
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700"
+          >
+            Refresh Page
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center p-4">
+        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">No Products</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Add products in the Inventory section first.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)] lg:min-h-screen">
       <div className="flex-1 flex flex-col p-4 lg:pr-96 lg:p-6 pb-40 lg:pb-6 overflow-hidden">
@@ -236,6 +321,25 @@ export default function POSPage() {
             <h2 className="text-xl lg:text-2xl font-black font-headline text-slate-900 dark:text-slate-50">{t("title")}</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 hidden sm:block">{t("selectItems")}</p>
           </div>
+          {(dataFromCache || !isOnline || pendingCount > 0) && (
+            <div className="flex items-center gap-2 text-xs">
+              {!isOnline && (
+                <span className="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-1 rounded-full">
+                  <WifiOff className="w-3 h-3" /> Offline
+                </span>
+              )}
+              {dataFromCache && isOnline && (
+                <span className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-full">
+                  <Database className="w-3 h-3" /> Cached
+                </span>
+              )}
+              {pendingCount > 0 && (
+                <span className="flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
+                  {pendingCount} pending
+                </span>
+              )}
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row gap-2">
             <div className="flex items-center bg-white dark:bg-slate-800 rounded-full px-3 lg:px-4 py-2 w-full sm:w-48 lg:w-64 border border-slate-200 dark:border-slate-700">
               <svg className="w-4 lg:w-5 h-4 lg:h-5 text-slate-400 dark:text-slate-500 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg>

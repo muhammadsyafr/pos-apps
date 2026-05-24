@@ -4,6 +4,8 @@ import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "next-themes"
 import { ReactNode } from "react"
 import { useDatabasePinger } from "@/lib/useDatabasePinger"
+import { OfflineProvider } from "@/hooks/useOffline"
+import { SyncStatus } from "@/components/sync-status"
 
 function DatabasePinger() {
   useDatabasePinger(true)
@@ -14,8 +16,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <DatabasePinger />
-        {children}
+        <OfflineProvider>
+          <DatabasePinger />
+          <SyncStatus />
+          {children}
+        </OfflineProvider>
       </ThemeProvider>
     </SessionProvider>
   )
