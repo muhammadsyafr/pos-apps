@@ -43,59 +43,68 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-canvas-cream dark:bg-canvas-night p-4">
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 signature-gradient">
-            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 bg-ink dark:bg-on-dark">
+            <svg className="w-8 h-8 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
           </div>
-          <h1 className="text-3xl font-black font-headline tracking-tight text-slate-900 dark:text-slate-50">CloudPOS</h1>
-          <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">Enterprise Suite</p>
+          <h1 className="font-display font-[330] text-[55px] leading-[1.16] text-ink dark:text-on-dark">
+            CloudPOS
+          </h1>
+          <p className="font-[420] text-[16px] leading-[1.5] text-shade-50 dark:text-shade-40 mt-1">
+            Enterprise Suite
+          </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-8">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-6">{t("signIn")}</h2>
-          
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-8 elevation-3 dark:elevation-1">
+          <h2 className="font-display font-[500] text-[24px] leading-[1.14] tracking-[0.36px] text-ink dark:text-on-dark mb-6">
+            {t("signIn")}
+          </h2>
+
           <form onSubmit={onSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm font-medium">
+              <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg font-[420] text-sm">
                 {error}
               </div>
             )}
-            
+
             <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("email")}</label>
+              <label className="block font-[550] text-[16px] leading-[1.5] text-ink dark:text-on-dark mb-2">
+                {t("email")}
+              </label>
               <input
                 name="email"
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-50 focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                className="w-full px-3 py-2.5 rounded-lg border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night text-ink dark:text-on-dark font-[420] text-[16px] leading-[1.5] focus:outline-none focus:ring-2 focus:ring-ink/20 focus:border-ink transition-all placeholder:text-shade-50 dark:placeholder:text-shade-50"
                 placeholder="admin@cloudpos.com"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("password")}</label>
+              <label className="block font-[550] text-[16px] leading-[1.5] text-ink dark:text-on-dark mb-2">
+                {t("password")}
+              </label>
               <input
                 name="password"
                 type="password"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-50 focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                className="w-full px-3 py-2.5 rounded-lg border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night text-ink dark:text-on-dark font-[420] text-[16px] leading-[1.5] focus:outline-none focus:ring-2 focus:ring-ink/20 focus:border-ink transition-all placeholder:text-shade-50 dark:placeholder:text-shade-50"
                 placeholder="••••••••"
               />
             </div>
-            
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full signature-gradient text-white py-3 rounded-xl font-headline font-bold shadow-lg shadow-blue-700/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50"
+              className="w-full btn-primary-pill disabled:opacity-50"
             >
               {loading ? tCommon("loading") : t("signIn")}
             </button>
           </form>
-
         </div>
       </div>
     </div>

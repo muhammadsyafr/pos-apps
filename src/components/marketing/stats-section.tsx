@@ -4,15 +4,15 @@ import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
 
 const stats = [
-  { key: "transactions", value: 2.4, suffix: "M+", decimals: 1 },
-  { key: "uptime", value: 99.9, suffix: "%", decimals: 1 },
-  { key: "stores", value: 500, suffix: "+", decimals: 0 },
-  { key: "cities", value: 120, suffix: "+", decimals: 0 },
+  { value: 2.4, suffix: "M+", label: "Transactions processed", decimals: 1 },
+  { value: 99.9, suffix: "%", label: "Uptime guarantee", decimals: 1 },
+  { value: 500, suffix: "+", label: "Active stores", decimals: 0 },
+  { value: 120, suffix: "+", label: "Cities covered", decimals: 0 },
 ]
 
 function AnimatedCounter({ target, decimals, suffix }: { target: number; decimals: number; suffix: string }) {
   const [count, setCount] = useState(0)
-  const ref = useRef<HTMLSpanElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const triggered = useRef(false)
 
   useEffect(() => {
@@ -28,53 +28,53 @@ function AnimatedCounter({ target, decimals, suffix }: { target: number; decimal
           const animate = (now: number) => {
             const elapsed = now - start
             const progress = Math.min(elapsed / duration, 1)
-            const eased = 1 - Math.pow(1 - progress, 3)
+            const eased = 1 - Math.pow(1 - progress, 4)
             setCount(eased * target)
             if (progress < 1) requestAnimationFrame(animate)
           }
           requestAnimationFrame(animate)
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [target])
 
   return (
-    <span ref={ref}>
-      {count.toFixed(decimals)}
-      {suffix}
-    </span>
+    <div ref={ref} className="font-display font-[700] text-[48px] sm:text-[56px] lg:text-[64px] leading-[1.0] tracking-[-0.02em] text-[#1a1a1a]">
+      {count.toFixed(decimals)}{suffix}
+    </div>
   )
 }
 
 export function StatsSection() {
   const t = useTranslations("marketing")
 
-  return (
-    <section className="relative py-24 bg-surface dark:bg-surface overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-      </div>
+  const localizedStats = [
+    { ...stats[0], label: t("stats.transactions") },
+    { ...stats[1], label: t("stats.uptime") },
+    { ...stats[2], label: t("stats.stores") },
+    { ...stats[3], label: t("stats.cities") },
+  ]
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold font-headline text-on-surface/60">
+  return (
+    <section className="py-24 bg-white">
+      <div className="mx-auto max-w-7xl px-8 sm:px-12 lg:px-16">
+        <div className="text-center mb-14">
+          <h2 className="font-display font-[600] text-[28px] sm:text-[36px] lg:text-[44px] leading-[1.15] tracking-[-0.01em] text-ink mb-3">
             {t("stats.title")}
           </h2>
+          <p className="font-[400] text-base sm:text-lg text-shade-60 mx-auto">
+            {t("stats.subtitle")}
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat) => (
-            <div key={stat.key} className="text-center">
-              <div className="text-4xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tight text-primary">
-                <AnimatedCounter target={stat.value} decimals={stat.decimals} suffix={stat.suffix} />
-              </div>
-              <div className="mt-2 text-sm font-semibold tracking-wider uppercase text-on-surface-variant/50">
-                {t(`stats.${stat.key}` as any)}
-              </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {localizedStats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <AnimatedCounter target={stat.value} decimals={stat.decimals} suffix={stat.suffix} />
+              <p className="text-[14px] text-shade-60 mt-2">{stat.label}</p>
             </div>
           ))}
         </div>

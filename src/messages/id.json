@@ -1,6 +1,9 @@
 {
   "common": {
     "loading": "Memuat...",
+    "notFound": "Halaman tidak ditemukan",
+    "notFoundDescription": "Halaman yang Anda cari tidak ada atau telah dipindahkan.",
+    "backHome": "Kembali ke Beranda",
     "save": "Simpan",
     "cancel": "Batal",
     "delete": "Hapus",
@@ -179,13 +182,30 @@
     "language": "Bahasa"
   },
   "marketing": {
-    "heroTitle": "Point of Sale, Didefinisikan Ulang",
+    "heroTitle": "Cara cerdas mengelola toko Anda",
     "heroSubtitle": "Untuk generasi ritel berikutnya.",
     "heroDescription": "CloudPOS menghadirkan manajemen inventaris kelas enterprise, analitik real-time, dan checkout mulus dalam satu antarmuka yang indah. Dibangun untuk bisnis Indonesia yang siap berkembang.",
+    "heroBadge": "CloudPOS - Point of Sale untuk Indonesia",
+    "heroNoCard": "Tanpa kartu kredit. Mulai gratis hari ini.",
+    "heroDashboard": "Dasbor",
+    "heroGreeting": "Selamat pagi!",
+    "heroToday": "Hari ini",
+    "heroRecentTransactions": "Transaksi Terbaru",
+    "heroPayment": "Pembayaran",
+    "heroPaymentSuccess": "Berhasil",
+    "heroRevenueToday": "Pendapatan Hari Ini",
     "getStarted": "Mulai Gratis",
     "viewDemo": "Lihat Demo",
     "navSignIn": "Masuk",
     "navDashboard": "Dasbor",
+    "navFeatures": "Fitur",
+    "navPricing": "Harga",
+    "navAbout": "Tentang",
+    "merchant": {
+      "eyebrow": "Dipercaya oleh ribuan bisnis",
+      "title": "Dari Jakarta sampai Papua, CloudPOS mendukung toko-toko Indonesia yang tumbuh paling cepat",
+      "note": "500+ toko di seluruh Indonesia memproses 2.4M+ transaksi"
+    },
     "features": {
       "title": "Semua yang Anda butuhkan untuk menjalankan toko",
       "subtitle": "Dirancang untuk kecepatan, dibangun untuk skala.",
@@ -216,10 +236,32 @@
     },
     "stats": {
       "title": "Dipercaya oleh bisnis di seluruh Indonesia",
+      "subtitle": "Angkanya berbicara sendiri",
       "transactions": "Transaksi Diproses",
       "uptime": "SLA Uptime",
       "stores": "Toko Aktif",
       "cities": "Kota"
+    },
+    "testimonials": {
+      "eyebrow": "Apa kata merchant",
+      "title": "Disukai oleh ribuan bisnis Indonesia",
+      "items": {
+        "1": {
+          "quote": "CloudPOS mengubah cara kami menjalankan tiga outlet. Inventaris sinkron instan, dan checkout QRIS sangat cepat. Pelanggan kami menyukainya.",
+          "name": "Budi Santoso",
+          "business": "Kedai Kopi Nusantara - 3 lokasi"
+        },
+        "2": {
+          "quote": "Dasbor real-time menghemat jam kerja saya setiap minggu. Saya akhirnya tahu produk yang laku dan tidak, tanpa cek laporan manual.",
+          "name": "Sari Dewi",
+          "business": "Butik Fashion Indonesia"
+        },
+        "3": {
+          "quote": "Pindah dari POS lama ke CloudPOS butuh kurang dari sehari. Timnya sangat membantu dan sistemnya langsung jalan.",
+          "name": "Ahmad Rizki",
+          "business": "Toko Elektronik Jaya"
+        }
+      }
     },
     "cta": {
       "title": "Siap mentransformasi toko Anda?",
@@ -242,6 +284,7 @@
       "contact": "Kontak",
       "privacy": "Kebijakan Privasi",
       "terms": "Syarat Layanan",
+      "brandDescription": "Point of sale dan manajemen inventaris kelas enterprise untuk bisnis Indonesia.",
       "copyright": "© 2026 CloudPOS. Hak cipta dilindungi."
     }
   }

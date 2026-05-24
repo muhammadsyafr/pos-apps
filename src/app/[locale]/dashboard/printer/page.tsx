@@ -160,23 +160,23 @@ export default function PrinterSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+          <h1 className="text-2xl font-black text-ink dark:text-on-dark">{t("title")}</h1>
+          <p className="text-shade-50 dark:text-shade-40">{t("description")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <Bluetooth className="w-5 h-5" />
                 {t("bluetoothPrinter")}
               </h2>
             </div>
             <div className="p-5 space-y-4">
               {!isBluetoothSupported ? (
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-yellow-800 dark:text-yellow-400 text-sm">
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl text-yellow-800 dark:text-yellow-400 text-sm">
                   {t("bluetoothNotSupported")}
                 </div>
               ) : (
@@ -203,15 +203,15 @@ export default function PrinterSettingsPage() {
                               printerAddress: device.id
                             }))
                           }}
-                          className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                          className={`p-3 border rounded-xl cursor-pointer transition-colors ${
                             selectedDevice?.id === device.id 
-                              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30" 
-                              : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+                              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-white/10" 
+                              : "border-hairline-light dark:border-hairline-dark hover:bg-shade-30 dark:hover:bg-white/5"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <Printer className="w-4 h-4" />
-                            <span className="font-medium text-slate-900 dark:text-slate-50">{device.name || "Unknown Device"}</span>
+                            <span className="font-medium text-ink dark:text-on-dark">{device.name || "Unknown Device"}</span>
                           </div>
                         </div>
                       ))}
@@ -219,7 +219,7 @@ export default function PrinterSettingsPage() {
                   )}
                   
                   {config.printerName && (
-                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
                       <p className="text-sm text-green-800 dark:text-green-400">
                         <strong>{t("connectedTo")}:</strong> {config.printerName}
                       </p>
@@ -230,20 +230,20 @@ export default function PrinterSettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <Upload className="w-5 h-5" />
                 {t("receiptLogo")}
               </h2>
             </div>
             <div className="p-5 space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-700">
+                <div className="w-20 h-20 border-2 border-dashed border-hairline-light dark:border-hairline-dark dark:border-hairline-dark rounded-xl flex items-center justify-center overflow-hidden bg-canvas-cream dark:bg-canvas-night">
                   {config.logoUrl ? (
                     <img src={config.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                   ) : (
-                    <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                    <Upload className="w-8 h-8 text-shade-50 dark:text-shade-40" />
                   )}
                 </div>
                 <div className="flex-1">
@@ -258,7 +258,7 @@ export default function PrinterSettingsPage() {
               </div>
               {config.logoUrl && (
                 <Button 
-                  variant="outline" 
+                  variant="outline-light" 
                   size="sm"
                   onClick={() => setConfig(prev => ({ ...prev, logoUrl: "" }))}
                 >
@@ -268,9 +268,9 @@ export default function PrinterSettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <Save className="w-5 h-5" />
                 {t("storeInfo")}
               </h2>
@@ -305,7 +305,7 @@ export default function PrinterSettingsPage() {
                 <select 
                   value={config.paperWidth}
                   onChange={(e) => setConfig(prev => ({ ...prev, paperWidth: Number(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg"
+                  className="w-full px-3 py-2 border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night-elevated text-ink dark:text-on-dark rounded-xl"
                 >
                   <option value={58}>58mm</option>
                   <option value={80}>80mm</option>
@@ -320,16 +320,16 @@ export default function PrinterSettingsPage() {
         </div>
 
         <div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <PrinterIcon className="w-5 h-5" />
                 {t("receiptPreview")}
               </h2>
             </div>
             <div className="p-5">
               <div 
-                className="bg-white border-2 border-slate-800 rounded-sm p-4 mx-auto"
+                className="bg-canvas-light dark:bg-canvas-night-elevated border-2 border-hairline-light dark:border-hairline-dark rounded-sm p-4 mx-auto"
                 style={{ 
                   width: config.paperWidth === 58 ? "280px" : "380px",
                   fontFamily: "'Courier New', monospace",
@@ -337,7 +337,7 @@ export default function PrinterSettingsPage() {
                   color: "#000"
                 }}
               >
-                <div className="text-center border-b border-dashed border-slate-400 pb-2 mb-2">
+                <div className="text-center border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
                   {config.logoUrl && (
                     <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto mb-2 object-contain" />
                   )}
@@ -350,7 +350,7 @@ export default function PrinterSettingsPage() {
                   4 Apr 2026 22:13 | Kasir: Admin
                 </div>
                 
-                <div className="border-b border-dashed border-slate-400 pb-2 mb-2">
+                <div className="border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
                   {previewItems.map((item, index) => (
                     <div key={index} className="flex justify-between text-xs">
                       <span>{item.name} x{item.quantity}</span>
@@ -372,7 +372,7 @@ export default function PrinterSettingsPage() {
                   <span>{formatIDR(previewChange)}</span>
                 </div>
                 
-                <div className="text-center border-t border-dashed border-slate-400 pt-2 mt-2">
+                <div className="text-center border-t border-dashed border-hairline-light dark:border-hairline-dark pt-2 mt-2">
                   <div className="text-xs">Terima kasih atas kunjungan</div>
                   <div className="text-xs">Anda</div>
                 </div>
