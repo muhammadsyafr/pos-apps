@@ -1,0 +1,73 @@
+import { cn } from "@/lib/utils"
+
+export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "animate-pulse rounded-md bg-slate-200 dark:bg-slate-700",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export function SkeletonCard({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm space-y-3",
+        className
+      )}
+      {...props}
+    >
+      <Skeleton className="h-3 w-24" />
+      <Skeleton className="h-7 w-32" />
+      <Skeleton className="h-3 w-20" />
+    </div>
+  )
+}
+
+export function SkeletonTable({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+      <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+        <Skeleton className="h-5 w-32" />
+      </div>
+      <div className="divide-y divide-slate-100 dark:divide-slate-700">
+        {Array.from({ length: rows }).map((_, i) => (
+          <div key={i} className="px-5 py-4 flex items-center gap-4">
+            {Array.from({ length: cols }).map((_, j) => (
+              <Skeleton
+                key={j}
+                className="h-4"
+                style={{ width: `${Math.max(60, 100 / cols + Math.random() * 40)}px` }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function SkeletonGrid({ items = 8, cols = 4 }: { items?: number; cols?: number }) {
+  return (
+    <div
+      className="grid gap-4"
+      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+    >
+      {Array.from({ length: items }).map((_, i) => (
+        <div
+          key={i}
+          className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 space-y-3"
+        >
+          <Skeleton className="h-32 w-full rounded-lg" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-3 w-1/2" />
+          <Skeleton className="h-6 w-20" />
+        </div>
+      ))}
+    </div>
+  )
+}

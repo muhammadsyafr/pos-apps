@@ -1,6 +1,9 @@
 {
   "common": {
     "loading": "Memuat...",
+    "notFound": "Halaman tidak ditemukan",
+    "notFoundDescription": "Halaman yang Anda cari tidak ada atau telah dipindahkan.",
+    "backHome": "Kembali ke Beranda",
     "save": "Simpan",
     "cancel": "Batal",
     "delete": "Hapus",

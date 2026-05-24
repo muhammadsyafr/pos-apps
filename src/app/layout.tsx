@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getLocale } from "next-intl/server"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ThemeScript } from "@/lib/theme-script"
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -35,6 +36,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${manrope.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="min-h-full flex flex-col antialiased">
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>

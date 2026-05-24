@@ -1,6 +1,9 @@
 {
   "common": {
     "loading": "Loading...",
+    "notFound": "Page not found",
+    "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+    "backHome": "Back to Home",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
