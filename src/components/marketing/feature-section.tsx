@@ -23,48 +23,39 @@ const icons = [
 
 const featureKeys = ["fast", "analytics", "secure", "inventory", "offline", "multiStore"] as const
 
-const iconColors = [
-  "text-primary bg-primary/10 dark:bg-primary/20",
-  "text-secondary bg-secondary/10 dark:bg-secondary/20",
-  "text-tertiary bg-tertiary/10 dark:bg-tertiary/20",
-  "text-[#8b5cf6] bg-[#8b5cf6]/10 dark:bg-[#8b5cf6]/20",
-  "text-[#10b981] bg-[#10b981]/10 dark:bg-[#10b981]/20",
-  "text-[#f59e0b] bg-[#f59e0b]/10 dark:bg-[#f59e0b]/20",
-]
-
 export function FeatureSection() {
   const t = useTranslations("marketing")
 
   return (
-    <section id="features" className="relative py-32 bg-surface-container-low dark:bg-surface-container-low overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_80%,rgba(0,61,155,0.04),transparent)] dark:bg-[radial-gradient(ellipse_60%_40%_at_50%_80%,rgba(96,165,250,0.03),transparent)]" />
+    <section id="features" className="relative py-32 bg-canvas-night text-on-dark overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_80%,rgba(255,255,255,0.02),transparent)]" />
 
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative mx-auto max-w-[1440px] px-6">
         <div className="text-center mb-20 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-semibold tracking-widest uppercase text-primary mb-4">
+          <div className="pill-tag-mint inline-flex mx-auto">
             Features
           </div>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tight text-on-surface">
+          <h2 className="font-display font-[330] text-[48px] sm:text-[55px] lg:text-[70px] leading-[1.0]">
             {t("features.title")}
           </h2>
-          <p className="text-lg text-on-surface-variant/60 max-w-xl mx-auto">
+          <p className="font-[420] text-[16px] leading-[1.5] text-shade-40 max-w-xl mx-auto">
             {t("features.subtitle")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featureKeys.map((key, i) => (
+          {featureKeys.map((key) => (
             <div
               key={key}
-              className="group relative bg-surface-container-lowest dark:bg-surface-container-lowest rounded-3xl p-8 hover:-translate-y-1 transition-all duration-500"
+              className="group relative bg-canvas-night-elevated rounded-xl p-8 hover:-translate-y-1 transition-all duration-500 elevation-1"
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 ${iconColors[i]}`}>
-                {icons[i]}
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 bg-white/5 text-on-dark">
+                {icons[featureKeys.indexOf(key)]}
               </div>
-              <h3 className="text-xl font-bold font-headline text-on-surface mb-3">
+              <h3 className="font-display font-[500] text-[20px] leading-[1.4] tracking-[0.3px] mb-3">
                 {t(`features.${key}.title` as any)}
               </h3>
-              <p className="text-on-surface-variant/60 leading-relaxed">
+              <p className="font-[420] text-[16px] leading-[1.5] text-shade-40">
                 {t(`features.${key}.description` as any)}
               </p>
             </div>

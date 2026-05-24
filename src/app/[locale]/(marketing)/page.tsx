@@ -30,7 +30,7 @@ export default async function MarketingPage({ params }: Props) {
   const { locale } = await params
 
   return (
-    <div className="min-h-screen bg-surface dark:bg-surface">
+    <div className="min-h-screen bg-canvas-night text-on-dark">
       <MarketingNav />
       <HeroSection />
       <FeatureSection />

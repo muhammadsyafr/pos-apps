@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Manrope, Inter } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 import { NextIntlClientProvider } from "next-intl"
@@ -8,21 +8,16 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeScript } from "@/lib/theme-script"
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-})
-
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 })
 
 export const metadata: Metadata = {
-  title: "CloudPOS - Enterprise Suite",
-  description: "Point of Sale & Inventory Management",
+  title: "CloudPOS — Point of Sale & Inventory",
+  description: "Enterprise-grade point of sale and inventory management",
   icons: { icon: "/favicon.svg" },
 }
 
@@ -35,7 +30,7 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${manrope.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={inter.variable} suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>

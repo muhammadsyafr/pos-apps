@@ -302,25 +302,25 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <h1 className="text-2xl font-black text-ink dark:text-on-dark flex items-center gap-2">
             <SettingsIcon className="w-7 h-7" />
             {t("title")}
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+          <p className="text-shade-50 dark:text-shade-40">{t("description")}</p>
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-slate-500 dark:text-slate-400">{tCommon("loading")}</div>
+          <div className="text-shade-50 dark:text-shade-40">{tCommon("loading")}</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">
           {/* Language Settings */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <Globe className="w-5 h-5" />
                 {t("language")}
               </h2>
@@ -330,18 +330,18 @@ export default function SettingsPage() {
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-all ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
                     locale === lang.code
-                      ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30'
-                      : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+                      ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-white/10'
+                      : 'border-hairline-light dark:border-hairline-dark hover:bg-shade-30 dark:hover:bg-white/5'
                   }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>
-                  <span className={`font-medium ${locale === lang.code ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                  <span className={`font-medium ${locale === lang.code ? 'text-ink dark:text-on-dark' : 'text-ink dark:text-shade-40'}`}>
                     {lang.label}
                   </span>
                   {locale === lang.code && (
-                    <span className="ml-auto text-blue-600 dark:text-blue-400 text-sm font-bold">✓</span>
+                    <span className="ml-auto text-ink dark:text-on-dark text-sm font-bold">✓</span>
                   )}
                 </button>
               ))}
@@ -350,16 +350,16 @@ export default function SettingsPage() {
 
           {/* Bluetooth Printer - Hidden for Cashier */}
           {!isCashier && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+              <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+                <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                   <Bluetooth className="w-5 h-5" />
                   {tPrinter("bluetoothPrinter")}
                 </h2>
               </div>
               <div className="p-5 space-y-4">
                 {!isBluetoothSupported ? (
-                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-yellow-800 dark:text-yellow-400 text-sm">
+                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl text-yellow-800 dark:text-yellow-400 text-sm">
                     {tPrinter("bluetoothNotSupported")}
                   </div>
                 ) : (
@@ -386,15 +386,15 @@ export default function SettingsPage() {
                                 printerAddress: device.id
                               }))
                             }}
-                            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                            className={`p-3 border rounded-xl cursor-pointer transition-colors ${
                               selectedDevice?.id === device.id 
-                                ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/30" 
-                                : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+                                ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-white/10" 
+                                : "border-hairline-light dark:border-hairline-dark hover:bg-shade-30 dark:hover:bg-white/5"
                             }`}
                           >
                             <div className="flex items-center gap-2">
                               <Printer className="w-4 h-4" />
-                              <span className="font-medium text-slate-900 dark:text-slate-50">{device.name || "Unknown Device"}</span>
+                              <span className="font-medium text-ink dark:text-on-dark">{device.name || "Unknown Device"}</span>
                             </div>
                           </div>
                         ))}
@@ -402,7 +402,7 @@ export default function SettingsPage() {
                     )}
                     
                     {config.printerName && (
-                      <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                      <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
                         <p className="text-sm text-green-800 dark:text-green-400">
                           <strong>{tPrinter("connectedTo")}:</strong> {config.printerName}
                         </p>
@@ -416,20 +416,20 @@ export default function SettingsPage() {
 
           {/* Receipt Logo - Hidden for Cashier */}
           {!isCashier && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+              <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+                <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                   <Upload className="w-5 h-5" />
                   {tPrinter("receiptLogo")}
                 </h2>
               </div>
               <div className="p-5 space-y-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-700">
+                  <div className="w-20 h-20 border-2 border-dashed border-hairline-light dark:border-hairline-dark dark:border-hairline-dark rounded-xl flex items-center justify-center overflow-hidden bg-canvas-cream dark:bg-canvas-night">
                     {config.logoUrl ? (
                       <img src={config.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                     ) : (
-                      <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                      <Upload className="w-8 h-8 text-shade-50 dark:text-shade-40" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -444,7 +444,7 @@ export default function SettingsPage() {
                 </div>
                 {config.logoUrl && (
                   <Button 
-                    variant="outline" 
+                    variant="outline-light" 
                     size="sm"
                     onClick={() => setConfig(prev => ({ ...prev, logoUrl: "" }))}
                   >
@@ -457,9 +457,9 @@ export default function SettingsPage() {
 
           {/* Store Info - Hidden for Cashier */}
           {!isCashier && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+              <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+                <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                   <Save className="w-5 h-5" />
                   {tPrinter("storeInfo")}
                 </h2>
@@ -494,7 +494,7 @@ export default function SettingsPage() {
                   <select 
                     value={config.paperWidth}
                     onChange={(e) => setConfig(prev => ({ ...prev, paperWidth: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg"
+                    className="w-full px-3 py-2 border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night-elevated text-ink dark:text-on-dark rounded-xl"
                   >
                     <option value={58}>58mm</option>
                     <option value={80}>80mm</option>
@@ -510,9 +510,9 @@ export default function SettingsPage() {
 
           {/* User Management - Admin Only */}
           {!isCashier && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+              <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark flex items-center justify-between">
+                <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   User Management
                 </h2>
@@ -524,17 +524,17 @@ export default function SettingsPage() {
               <div className="p-5">
                 {usersLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                    <Loader2 className="w-6 h-6 animate-spin text-ink" />
                   </div>
                 ) : users.length === 0 ? (
-                  <p className="text-center text-slate-500 dark:text-slate-400 py-4">No users found</p>
+                  <p className="text-center text-shade-50 dark:text-shade-40 py-4">No users found</p>
                 ) : (
                   <div className="space-y-3">
                     {users.map((user) => (
-                      <div key={user.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                      <div key={user.id} className="flex items-center justify-between p-3 bg-canvas-cream dark:bg-canvas-night/50 rounded-xl">
                         <div>
-                          <p className="font-medium text-slate-900 dark:text-slate-50">{user.name}</p>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
+                          <p className="font-medium text-ink dark:text-on-dark">{user.name}</p>
+                          <p className="text-sm text-shade-50 dark:text-shade-40">{user.email}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
@@ -558,16 +558,16 @@ export default function SettingsPage() {
 
         {/* Receipt Preview - Always visible */}
         <div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm sticky top-6">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-              <h2 className="font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 sticky top-6">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+              <h2 className="font-bold text-ink dark:text-on-dark flex items-center gap-2">
                 <PrinterIcon className="w-5 h-5" />
                 {tPrinter("receiptPreview")}
               </h2>
             </div>
             <div className="p-5">
               <div 
-                className="bg-white border-2 border-slate-800 rounded-sm p-4 mx-auto"
+                className="bg-canvas-light dark:bg-canvas-night-elevated border-2 border-hairline-light dark:border-hairline-dark rounded-sm p-4 mx-auto"
                 style={{ 
                   width: config.paperWidth === 58 ? "280px" : "380px",
                   fontFamily: "'Courier New', monospace",
@@ -575,7 +575,7 @@ export default function SettingsPage() {
                   color: "#000"
                 }}
               >
-                <div className="text-center border-b border-dashed border-slate-400 pb-2 mb-2">
+                <div className="text-center border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
                   {config.logoUrl && (
                     <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto mb-2 object-contain" />
                   )}
@@ -588,7 +588,7 @@ export default function SettingsPage() {
                   20 May 2026 22:13 | Kasir: Admin
                 </div>
                 
-                <div className="border-b border-dashed border-slate-400 pb-2 mb-2">
+                <div className="border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
                   {previewItems.map((item, index) => (
                     <div key={index} className="flex justify-between text-xs">
                       <span>{item.name} x{item.quantity}</span>
@@ -610,7 +610,7 @@ export default function SettingsPage() {
                   <span>{formatIDR(previewChange)}</span>
                 </div>
                 
-                <div className="text-center border-t border-dashed border-slate-400 pt-2 mt-2">
+                <div className="text-center border-t border-dashed border-hairline-light dark:border-hairline-dark pt-2 mt-2">
                   <div className="text-xs">Terima kasih atas kunjungan</div>
                   <div className="text-xs">Anda</div>
                 </div>
@@ -629,15 +629,16 @@ export default function SettingsPage() {
               {editingUser ? "Update the user's information below." : "Enter the new user's details below."}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="px-8 py-6 space-y-4">
             {userError && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm rounded-lg">
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm rounded-xl">
                 {userError}
               </div>
             )}
             <div>
               <Label>Name</Label>
               <Input
+                className="rounded-full"
                 value={userForm.name}
                 onChange={(e) => setUserForm(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="John Doe"
@@ -646,6 +647,7 @@ export default function SettingsPage() {
             <div>
               <Label>Email</Label>
               <Input
+                className="rounded-full"
                 type="email"
                 value={userForm.email}
                 onChange={(e) => setUserForm(prev => ({ ...prev, email: e.target.value }))}
@@ -655,6 +657,7 @@ export default function SettingsPage() {
             <div>
               <Label>Password {editingUser && "(leave blank to keep current)"}</Label>
               <Input
+                className="rounded-full"
                 type="password"
                 value={userForm.password}
                 onChange={(e) => setUserForm(prev => ({ ...prev, password: e.target.value }))}
@@ -664,7 +667,7 @@ export default function SettingsPage() {
             <div>
               <Label>Role</Label>
               <Select value={userForm.role} onValueChange={(v) => setUserForm(prev => ({ ...prev, role: v }))}>
-                <SelectTrigger>
+                <SelectTrigger className="rounded-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -675,7 +678,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={closeUserDialog}>Cancel</Button>
+            <Button variant="outline-light" onClick={closeUserDialog}>Cancel</Button>
             <Button onClick={handleSaveUser} disabled={userSaving}>
               {userSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
             </Button>

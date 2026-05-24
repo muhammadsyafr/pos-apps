@@ -53,15 +53,15 @@ export function StatsSection() {
   const t = useTranslations("marketing")
 
   return (
-    <section className="relative py-24 bg-surface dark:bg-surface overflow-hidden">
+    <section className="relative py-24 bg-canvas-night text-on-dark overflow-hidden">
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl font-bold font-headline text-on-surface/60">
+          <h2 className="font-[500] text-[18px] leading-[1.25] tracking-[0.72px] text-shade-40">
             {t("stats.title")}
           </h2>
         </div>
@@ -69,10 +69,10 @@ export function StatsSection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat) => (
             <div key={stat.key} className="text-center">
-              <div className="text-4xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tight text-primary">
+              <div className="font-display font-[330] text-[48px] sm:text-[55px] lg:text-[70px] leading-[1.0] text-on-dark">
                 <AnimatedCounter target={stat.value} decimals={stat.decimals} suffix={stat.suffix} />
               </div>
-              <div className="mt-2 text-sm font-semibold tracking-wider uppercase text-on-surface-variant/50">
+              <div className="mt-2 font-[400] text-[12px] leading-[1.2] tracking-[0.72px] uppercase text-shade-50">
                 {t(`stats.${stat.key}` as any)}
               </div>
             </div>

@@ -18,11 +18,11 @@ export default function DashboardLoading() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-          <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+        <div className="lg:col-span-2 bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+          <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
             <Skeleton className="h-5 w-32" />
           </div>
-          <div className="divide-y divide-slate-100 dark:divide-slate-700">
+          <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="px-5 py-4 flex justify-between items-center">
                 <div className="space-y-1">
@@ -36,8 +36,8 @@ export default function DashboardLoading() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
               <Skeleton className="h-5 w-36" />
             </div>
             <div className="p-5 space-y-3">
@@ -50,8 +50,8 @@ export default function DashboardLoading() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+            <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
               <Skeleton className="h-5 w-28" />
             </div>
             <div className="p-5 space-y-4">

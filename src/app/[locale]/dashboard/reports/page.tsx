@@ -220,15 +220,15 @@ export default function ReportsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading reports...</div>
+    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">Loading reports...</div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+          <h1 className="text-2xl font-black text-ink dark:text-on-dark">{t("title")}</h1>
+          <p className="text-shade-50 dark:text-shade-40">{t("description")}</p>
         </div>
         {!isCashier && (
           <Button onClick={exportToXLSX}>
@@ -239,27 +239,27 @@ export default function ReportsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
-          <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(totalRevenue)}</p>
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+          <p className="text-xs font-bold text-shade-50 dark:text-shade-40 uppercase tracking-wide">{t("totalRevenue")}</p>
+          <p className="text-2xl font-black text-ink dark:text-on-dark mt-1">{formatIDR(totalRevenue)}</p>
         </div>
         {!isCashier && (
-          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+            <p className="text-xs font-bold text-shade-50 dark:text-shade-40 uppercase tracking-wide">{t("totalProfit")}</p>
             <p className="text-2xl font-black text-green-700 dark:text-green-400 mt-1">{formatIDR(totalProfit)}</p>
           </div>
         )}
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{totalItems}</p>
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+          <p className="text-xs font-bold text-shade-50 dark:text-shade-40 uppercase tracking-wide">{t("totalTransactions")}</p>
+          <p className="text-2xl font-black text-ink dark:text-on-dark mt-1">{totalItems}</p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+      <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+        <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
           <div className="flex flex-col gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40" />
               <Input
                 placeholder="Search by ID or cashier..."
                 value={search}
@@ -269,44 +269,44 @@ export default function ReportsPage() {
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">
+                <label className="text-xs font-semibold text-shade-50 dark:text-shade-40 uppercase tracking-wide mb-1.5 block">
                   From Date
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-blue-400 pointer-events-none z-10" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-on-dark pointer-events-none z-10" />
                   <Input
                     type="date"
                     value={dateFrom}
                     onChange={(e) => handleDateFromChange(e.target.value)}
-                    className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
+                    className="pl-10 h-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark] text-sm font-medium"
                   />
                 </div>
               </div>
               
               <div className="flex items-center justify-center sm:mt-7">
-                <svg className="w-4 h-4 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-shade-50 dark:text-shade-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </div>
               
               <div className="flex-1">
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 block">
+                <label className="text-xs font-semibold text-shade-50 dark:text-shade-40 uppercase tracking-wide mb-1.5 block">
                   To Date
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-blue-400 pointer-events-none z-10" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-on-dark pointer-events-none z-10" />
                   <Input
                     type="date"
                     value={dateTo}
                     onChange={(e) => handleDateToChange(e.target.value)}
-                    className="pl-10 h-10 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 dark:[color-scheme:dark] text-sm font-medium"
+                    className="pl-10 h-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark] text-sm font-medium"
                   />
                 </div>
               </div>
               
               {(dateFrom || dateTo) && (
                 <Button
-                  variant="outline"
+                  variant="outline-light"
                   size="sm"
                   onClick={() => {
                     setDateFrom("")
@@ -340,19 +340,19 @@ export default function ReportsPage() {
             <TableBody>
               {sales.map((sale) => (
                 <React.Fragment key={sale.id}>
-                  <TableRow className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50" onClick={() => setExpandedSale(expandedSale === sale.id ? null : sale.id)}>
+                  <TableRow className="cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5" onClick={() => setExpandedSale(expandedSale === sale.id ? null : sale.id)}>
                     <TableCell>
                       {expandedSale === sale.id ? (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                        <ChevronDown className="w-4 h-4 text-shade-50 dark:text-shade-40" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                        <ChevronRight className="w-4 h-4 text-shade-50 dark:text-shade-40" />
                       )}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap text-slate-900 dark:text-slate-50">
+                    <TableCell className="whitespace-nowrap text-ink dark:text-on-dark">
                       {new Date(sale.createdAt).toLocaleString()}
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-slate-600 dark:text-slate-400">{sale.id.slice(0, 8)}</TableCell>
-                    <TableCell className="text-slate-900 dark:text-slate-50">{sale.user.name}</TableCell>
+                    <TableCell className="font-mono text-xs text-shade-50 dark:text-shade-40">{sale.id.slice(0, 8)}</TableCell>
+                    <TableCell className="text-ink dark:text-on-dark">{sale.user.name}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {sale.items.slice(0, 2).map((item, i) => (
@@ -365,7 +365,7 @@ export default function ReportsPage() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="font-bold text-slate-900 dark:text-slate-50">{formatIDR(sale.totalAmount)}</TableCell>
+                    <TableCell className="font-bold text-ink dark:text-on-dark">{formatIDR(sale.totalAmount)}</TableCell>
                     <TableCell>
                       <Badge variant={sale.paymentMethod === "CASH" ? "default" : "secondary"}>
                         {sale.paymentMethod}
@@ -374,23 +374,23 @@ export default function ReportsPage() {
                   </TableRow>
                   {expandedSale === sale.id && (
                     <TableRow>
-                      <TableCell colSpan={7} className="bg-slate-50 dark:bg-slate-900/50 p-0">
+                      <TableCell colSpan={7} className="bg-canvas-cream dark:bg-canvas-night/50 p-0">
                         <div className="p-4 space-y-3">
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Transaction ID</p>
-                              <p className="font-mono text-xs text-slate-900 dark:text-slate-50 truncate">{sale.id}</p>
+                            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-3 border border-hairline-light dark:border-hairline-dark">
+                              <p className="text-xs font-semibold text-shade-50 dark:text-shade-40 mb-1">Transaction ID</p>
+                              <p className="font-mono text-xs text-ink dark:text-on-dark truncate">{sale.id}</p>
                             </div>
-                            <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Date & Time</p>
-                              <p className="text-xs text-slate-900 dark:text-slate-50">{new Date(sale.createdAt).toLocaleString()}</p>
+                            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-3 border border-hairline-light dark:border-hairline-dark">
+                              <p className="text-xs font-semibold text-shade-50 dark:text-shade-40 mb-1">Date & Time</p>
+                              <p className="text-xs text-ink dark:text-on-dark">{new Date(sale.createdAt).toLocaleString()}</p>
                             </div>
-                            <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Cashier</p>
-                              <p className="text-xs text-slate-900 dark:text-slate-50">{sale.user.name}</p>
+                            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-3 border border-hairline-light dark:border-hairline-dark">
+                              <p className="text-xs font-semibold text-shade-50 dark:text-shade-40 mb-1">Cashier</p>
+                              <p className="text-xs text-ink dark:text-on-dark">{sale.user.name}</p>
                             </div>
-                            <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Payment</div>
+                            <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-3 border border-hairline-light dark:border-hairline-dark">
+                              <div className="text-xs font-semibold text-shade-50 dark:text-shade-40 mb-1">Payment</div>
                               <Badge variant={sale.paymentMethod === "CASH" ? "default" : "secondary"} className="text-xs">
                                 {sale.paymentMethod}
                               </Badge>
@@ -404,57 +404,57 @@ export default function ReportsPage() {
                             </Button>
                           </div>
 
-                          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                            <div className="px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
-                              <h4 className="text-xs font-bold text-slate-900 dark:text-slate-50">Items Purchased</h4>
+                          <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl border border-hairline-light dark:border-hairline-dark overflow-hidden">
+                            <div className="px-3 py-2 bg-canvas-cream dark:bg-canvas-night/50 border-b border-hairline-light dark:border-hairline-dark">
+                              <h4 className="text-xs font-bold text-ink dark:text-on-dark">Items Purchased</h4>
                             </div>
-                            <div className="divide-y divide-slate-100 dark:divide-slate-700">
+                            <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
                               {sale.items.map((item, i) => {
                                 const itemProfit = (item.price - (item.costPrice || 0)) * item.quantity
                                 return (
                                 <div key={`${sale.id}-item-${i}`} className="px-3 py-2 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50">
                                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                                    <div className="w-6 h-6 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{item.quantity}</span>
+                                    <div className="w-6 h-6 rounded bg-aloe-10 dark:bg-white/10 flex items-center justify-center flex-shrink-0">
+                                      <span className="text-xs font-bold text-ink dark:text-on-dark">{item.quantity}</span>
                                     </div>
-                                    <span className="text-sm text-slate-900 dark:text-slate-50 truncate">{item.product.name}</span>
+                                    <span className="text-sm text-ink dark:text-on-dark truncate">{item.product.name}</span>
                                   </div>
                                   <div className="flex items-center gap-3 flex-shrink-0">
-                                    <span className="text-xs text-slate-500 dark:text-slate-400">{formatIDR(item.price)}</span>
+                                    <span className="text-xs text-shade-50 dark:text-shade-40">{formatIDR(item.price)}</span>
                                     {!isCashier && (
                                       <span className="text-xs text-green-600 dark:text-green-400 min-w-[60px] text-right">+{formatIDR(itemProfit)}</span>
                                     )}
-                                    <span className="text-sm font-semibold text-slate-900 dark:text-slate-50 min-w-[80px] text-right">{formatIDR(item.price * item.quantity)}</span>
+                                    <span className="text-sm font-semibold text-ink dark:text-on-dark min-w-[80px] text-right">{formatIDR(item.price * item.quantity)}</span>
                                   </div>
                                 </div>
                                 )
                               })}
                             </div>
-                            <div className="px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700">
+                            <div className="px-3 py-2 bg-canvas-cream dark:bg-canvas-night/50 border-t border-hairline-light dark:border-hairline-dark">
                               <div className="space-y-1.5">
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
-                                  <span className="font-semibold text-slate-900 dark:text-slate-50">{formatIDR(sale.totalAmount)}</span>
+                                  <span className="text-shade-50 dark:text-shade-40">Subtotal</span>
+                                  <span className="font-semibold text-ink dark:text-on-dark">{formatIDR(sale.totalAmount)}</span>
                                 </div>
                                 {sale.paymentMethod === "CASH" && (
                                   <>
                                     <div className="flex justify-between text-xs">
-                                      <span className="text-slate-500 dark:text-slate-400">Cash Paid</span>
-                                      <span className="text-slate-700 dark:text-slate-300">{formatIDR(sale.cashPaid)}</span>
+                                      <span className="text-shade-50 dark:text-shade-40">Cash Paid</span>
+                                      <span className="text-ink dark:text-shade-40">{formatIDR(sale.cashPaid)}</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
-                                      <span className="text-slate-500 dark:text-slate-400">Change</span>
-                                      <span className="text-slate-700 dark:text-slate-300">{formatIDR(sale.changeGiven)}</span>
+                                      <span className="text-shade-50 dark:text-shade-40">Change</span>
+                                      <span className="text-ink dark:text-shade-40">{formatIDR(sale.changeGiven)}</span>
                                     </div>
                                   </>
                                 )}
-                                <div className="flex justify-between pt-1.5 border-t border-slate-200 dark:border-slate-700">
-                                  <span className="font-bold text-slate-900 dark:text-slate-50">Total</span>
-                                  <span className="font-bold text-lg text-blue-600 dark:text-blue-400">{formatIDR(sale.totalAmount)}</span>
+                                <div className="flex justify-between pt-1.5 border-t border-hairline-light dark:border-hairline-dark">
+                                  <span className="font-bold text-ink dark:text-on-dark">Total</span>
+                                  <span className="font-bold text-lg text-ink dark:text-on-dark">{formatIDR(sale.totalAmount)}</span>
                                 </div>
                                 {!isCashier && (
                                   <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500 dark:text-slate-400">Profit</span>
+                                    <span className="text-shade-50 dark:text-shade-40">Profit</span>
                                     <span className="font-semibold text-green-600 dark:text-green-400">{formatIDR(sale.items.reduce((sum, item) => sum + (item.price - (item.costPrice || 0)) * item.quantity, 0))}</span>
                                   </div>
                                 )}
@@ -470,7 +470,7 @@ export default function ReportsPage() {
             </TableBody>
           </Table>
           {sales.length === 0 && !loading && (
-            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+            <div className="text-center py-8 text-shade-50 dark:text-shade-40">
               <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p>No sales found</p>
             </div>

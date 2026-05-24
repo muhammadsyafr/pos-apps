@@ -136,7 +136,7 @@ export default function CategoriesPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">{tCommon("loading")}</div>
+    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">{tCommon("loading")}</div>
   }
 
   const filteredCategories = categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
@@ -146,8 +146,8 @@ export default function CategoriesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+          <h1 className="text-2xl font-black text-ink dark:text-on-dark">{t("title")}</h1>
+          <p className="text-shade-50 dark:text-shade-40">{t("description")}</p>
         </div>
         <Button onClick={openAddDialog}>
           <Plus className="w-4 h-4 mr-2" />
@@ -155,49 +155,47 @@ export default function CategoriesPage() {
         </Button>
       </div>
 
-      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
+      <div className="flex gap-2 border-b border-hairline-light dark:border-hairline-dark">
         <button
           onClick={() => setActiveTab("categories")}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === "categories"
-              ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
-              : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
-          }`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "categories"
+              ? "border-ink text-ink dark:border-on-dark dark:text-on-dark"
+              : "border-transparent text-shade-50 dark:text-shade-40 hover:text-ink dark:hover:text-shade-40"
+            }`}
         >
           <Folder className="w-4 h-4 inline mr-2" />
           Categories ({categories.length})
         </button>
         <button
           onClick={() => setActiveTab("tags")}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === "tags"
-              ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
-              : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
-          }`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "tags"
+              ? "border-ink text-ink dark:border-on-dark dark:text-on-dark"
+              : "border-transparent text-shade-50 dark:text-shade-40 hover:text-ink dark:hover:text-shade-40"
+            }`}
         >
           <Tag className="w-4 h-4 inline mr-2" />
           Tags ({tags.length})
         </button>
       </div>
 
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+      <div className="relative w-56">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40" />
         <Input
           placeholder={`Search ${activeTab}...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-10"
+          className="pl-10 rounded-full"
         />
       </div>
 
       {activeTab === "categories" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredCategories.map((cat) => (
-            <div key={cat.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5">
+            <div key={cat.id} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 hover:shadow-lg transition-shadow p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                  <span className="text-base font-semibold text-slate-900 dark:text-slate-50">{cat.name}</span>
+                  <span className="text-base font-semibold text-ink dark:text-on-dark">{cat.name}</span>
                 </div>
                 <div className="flex gap-1">
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(cat)}>
@@ -208,7 +206,7 @@ export default function CategoriesPage() {
                   </Button>
                 </div>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{cat.tags.length} tags</p>
+              <p className="text-sm text-shade-50 dark:text-shade-40">{cat.tags.length} tags</p>
               <div className="flex flex-wrap gap-1 mt-2">
                 {cat.tags.slice(0, 3).map((tag) => (
                   <Badge key={tag.id} variant="secondary" className="text-xs">{tag.name}</Badge>
@@ -220,7 +218,7 @@ export default function CategoriesPage() {
             </div>
           ))}
           {filteredCategories.length === 0 && (
-            <p className="col-span-full text-center py-8 text-slate-500 dark:text-slate-400">No categories found</p>
+            <p className="col-span-full text-center py-8 text-shade-50 dark:text-shade-40">No categories found</p>
           )}
         </div>
       ) : (
@@ -228,11 +226,11 @@ export default function CategoriesPage() {
           {filteredTags.map((tag) => {
             const category = categories.find(c => c.id === tag.categoryId)
             return (
-              <div key={tag.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5">
+              <div key={tag.id} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 hover:shadow-lg transition-shadow p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">{tag.name}</span>
+                    <Tag className="w-4 h-4 text-shade-50 dark:text-shade-40" />
+                    <span className="font-semibold text-ink dark:text-on-dark">{tag.name}</span>
                   </div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(tag)}>
@@ -254,36 +252,37 @@ export default function CategoriesPage() {
             )
           })}
           {filteredTags.length === 0 && (
-            <p className="col-span-full text-center py-8 text-slate-500 dark:text-slate-400">No tags found</p>
+            <p className="col-span-full text-center py-8 text-shade-50 dark:text-shade-40">No tags found</p>
           )}
         </div>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-slate-900 dark:text-slate-50">{isEditMode ? "Edit" : "Add"} {activeTab === "categories" ? "Category" : "Tag"}</DialogTitle>
+            <DialogTitle>{isEditMode ? "Edit" : "Add"} {activeTab === "categories" ? "Category" : "Tag"}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+          <div className="px-8 py-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">Name</label>
               <Input
+                className="rounded-full"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Enter name"
               />
             </div>
             {activeTab === "categories" && (
-              <div className="grid gap-2">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Color</label>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">Color</label>
                 <div className="flex gap-2 flex-wrap">
                   {colorOptions.map((c) => (
                     <button
                       key={c.value}
                       type="button"
                       onClick={() => setFormData({ ...formData, color: c.value })}
-                      className={`w-8 h-8 rounded-lg transition-transform ${
-                        formData.color === c.value ? "scale-110 ring-2 ring-offset-2 dark:ring-offset-slate-800 ring-slate-400" : ""
+                      className={`w-8 h-8 rounded-full transition-transform ${
+                        formData.color === c.value ? "scale-110 ring-2 ring-offset-2 dark:ring-offset-canvas-night ring-shade-50" : ""
                       }`}
                       style={{ backgroundColor: c.value }}
                       title={c.label}
@@ -293,13 +292,13 @@ export default function CategoriesPage() {
               </div>
             )}
             {activeTab === "tags" && (
-              <div className="grid gap-2">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">Category</label>
                 <Select
                   value={formData.categoryId || "none"}
                   onValueChange={(value) => setFormData({ ...formData, categoryId: value === "none" ? "" : value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="rounded-full">
                     <SelectValue placeholder="Select category (optional)" />
                   </SelectTrigger>
                   <SelectContent>
@@ -313,8 +312,8 @@ export default function CategoriesPage() {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setIsDialogOpen(false); resetForm(); }}>
-              Cancel
+            <Button variant="outline-light" onClick={() => { setIsDialogOpen(false); resetForm(); }}>
+              {tCommon("cancel")}
             </Button>
             <Button onClick={handleSubmit} disabled={!formData.name}>
               {isEditMode ? "Save Changes" : "Add"}

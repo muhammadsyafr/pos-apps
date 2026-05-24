@@ -55,7 +55,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
         />
         <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 w-full">
           <Button
-            variant="outline"
+            variant="outline-light"
             size="sm"
             onClick={() => {
               onSelect?.(undefined)
@@ -90,7 +90,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", label 
       )}
       <Button
         ref={buttonRef}
-        variant="outline"
+        variant="outline-light"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "w-full justify-start text-left font-normal bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800",

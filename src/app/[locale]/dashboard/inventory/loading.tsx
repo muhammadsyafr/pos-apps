@@ -21,8 +21,8 @@ export default function InventoryLoading() {
         <Skeleton className="h-10 w-full sm:w-40 rounded-full" />
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="divide-y divide-slate-100 dark:divide-slate-700">
+      <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+        <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
           <div className="px-5 py-3 grid grid-cols-5 gap-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <Skeleton key={i} className="h-3 w-20" />
@@ -30,7 +30,7 @@ export default function InventoryLoading() {
           </div>
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="px-5 py-4 flex items-center gap-4">
-              <Skeleton className="h-8 w-8 rounded-lg" />
+              <Skeleton className="h-8 w-8 rounded-xl" />
               <div className="flex-1 grid grid-cols-4 gap-4">
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-4 w-20" />

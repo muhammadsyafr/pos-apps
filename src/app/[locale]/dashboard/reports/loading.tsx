@@ -19,8 +19,8 @@ export default function ReportsLoading() {
         <Skeleton className="h-10 w-full sm:w-40 rounded-full" />
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="divide-y divide-slate-100 dark:divide-slate-700">
+      <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+        <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
           <div className="px-5 py-3 grid grid-cols-5 gap-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <Skeleton key={i} className="h-3 w-20" />
@@ -38,7 +38,7 @@ export default function ReportsLoading() {
             </div>
           ))}
         </div>
-        <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-700 flex justify-center gap-2">
+        <div className="px-5 py-3 border-t border-hairline-light dark:border-hairline-dark flex justify-center gap-2">
           <Skeleton className="h-8 w-8 rounded" />
           <Skeleton className="h-8 w-8 rounded" />
           <Skeleton className="h-8 w-8 rounded" />

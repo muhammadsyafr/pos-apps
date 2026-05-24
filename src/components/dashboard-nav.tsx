@@ -9,9 +9,9 @@ export function DashboardNav() {
   const segments = pathname.split("/")
   const locale = segments[1] || "en"
   const { data: session } = useSession()
-  
+
   const isCashier = session?.user?.role === "CASHIER"
-  
+
   const isActive = (href: string) => {
     const fullHref = `/${locale}${href}`
     if (href === "/dashboard") return pathname === fullHref
@@ -26,7 +26,7 @@ export function DashboardNav() {
     { href: "/dashboard/reports", label: "Reports", roles: ["ADMIN", "CASHIER"] },
   ]
 
-  const navItems = allNavItems.filter(item => 
+  const navItems = allNavItems.filter(item =>
     item.roles.includes(session?.user?.role || "CASHIER")
   )
 
@@ -36,10 +36,10 @@ export function DashboardNav() {
         <Link
           key={item.href}
           href={`/${locale}${item.href}`}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+          className={`px-4 py-2 text-sm font-[420] rounded-full transition-colors ${
             isActive(item.href)
-              ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
-              : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              ? "text-ink dark:text-on-dark bg-shade-30 dark:bg-white/10"
+              : "text-shade-50 dark:text-shade-40 hover:text-ink dark:hover:text-on-dark hover:bg-shade-30/50 dark:hover:bg-white/5"
           }`}
         >
           {item.label}

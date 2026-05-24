@@ -94,11 +94,11 @@ export function NotificationBell() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
+        className="relative p-2 text-shade-50 dark:text-shade-40 hover:bg-shade-30/50 dark:hover:bg-white/5 rounded-full"
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
-          <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+          <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-[550] rounded-full flex items-center justify-center">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -107,14 +107,14 @@ export function NotificationBell() {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 max-h-96 overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700">
-              <h3 className="font-bold text-slate-900 dark:text-slate-50">Notifications</h3>
+          <div className="absolute right-0 top-full mt-2 w-80 bg-canvas-light dark:bg-canvas-night-elevated rounded-xl shadow-xl border border-hairline-light dark:border-hairline-dark z-50 max-h-96 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-hairline-light dark:border-hairline-dark">
+              <h3 className="font-[550] text-ink dark:text-on-dark">Notifications</h3>
               <div className="flex items-center gap-1">
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+                    className="p-1.5 text-shade-50 hover:text-ink hover:bg-shade-30 dark:hover:bg-white/10 rounded-full"
                     title="Mark all as read"
                   >
                     <Check className="w-4 h-4" />
@@ -122,7 +122,7 @@ export function NotificationBell() {
                 )}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
+                  className="p-1.5 text-shade-50 hover:text-ink hover:bg-shade-30 dark:hover:bg-white/10 rounded-full"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -131,31 +131,31 @@ export function NotificationBell() {
 
             <div className="flex-1 overflow-y-auto">
               {loading ? (
-                <div className="p-4 text-center text-slate-500 dark:text-slate-400">
+                <div className="p-4 text-center text-shade-50 dark:text-shade-40">
                   Loading...
                 </div>
               ) : notifications.length === 0 ? (
-                <div className="p-4 text-center text-slate-500 dark:text-slate-400">
+                <div className="p-4 text-center text-shade-50 dark:text-shade-40">
                   No notifications
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100 dark:divide-slate-700">
+                <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
                   {notifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 ${
-                        !notification.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
+                      className={`px-4 py-3 hover:bg-shade-30/30 dark:hover:bg-white/5 ${
+                        !notification.isRead ? "bg-shade-30/20 dark:bg-white/5" : ""
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
+                          <p className="text-sm font-[550] text-ink dark:text-on-dark">
                             {notification.title}
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          <p className="text-xs text-shade-50 dark:text-shade-40 mt-0.5">
                             {notification.message}
                           </p>
-                          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                          <p className="text-[10px] text-shade-40 dark:text-shade-50 mt-1">
                             {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                           </p>
                         </div>
@@ -163,7 +163,7 @@ export function NotificationBell() {
                           {!notification.isRead && (
                             <button
                               onClick={() => markAsRead(notification.id)}
-                              className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded"
+                              className="p-1 text-shade-40 hover:text-ink hover:bg-shade-30 dark:hover:bg-white/10 rounded-full"
                               title="Mark as read"
                             >
                               <Check className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export function NotificationBell() {
                           )}
                           <button
                             onClick={() => deleteNotification(notification.id)}
-                            className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded"
+                            className="p-1 text-shade-40 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full"
                             title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

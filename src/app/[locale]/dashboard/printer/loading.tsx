@@ -8,7 +8,7 @@ export default function PrinterLoading() {
         <Skeleton className="h-4 w-64 mt-1" />
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 space-y-6">
+      <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 p-6 space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="space-y-2">

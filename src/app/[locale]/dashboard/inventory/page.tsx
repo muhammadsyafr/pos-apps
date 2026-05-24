@@ -222,7 +222,7 @@ export default function InventoryPage() {
   }
 
   if (loading || categoriesLoading) {
-    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">{tCommon("loading")}</div>
+    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">{tCommon("loading")}</div>
   }
 
   const lowStockCount = products.filter((p) => p.stock <= p.minStock).length
@@ -231,8 +231,8 @@ export default function InventoryPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("description")}</p>
+          <h1 className="text-2xl font-black text-ink dark:text-on-dark">{t("title")}</h1>
+          <p className="text-shade-50 dark:text-shade-40">{t("description")}</p>
         </div>
         <Button onClick={openAddDialog}>
           <Plus className="w-4 h-4 mr-2" />
@@ -249,20 +249,20 @@ export default function InventoryPage() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+      <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+        <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
           <div className="flex items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+            <div className="relative w-56">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40" />
               <Input
                 placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
+                className="pl-10 rounded-full"
               />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 rounded-full">
                 <SelectValue placeholder={t("allCategories")} />
               </SelectTrigger>
               <SelectContent>
@@ -293,7 +293,7 @@ export default function InventoryPage() {
             <TableBody>
               {filteredProducts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-slate-500 dark:text-slate-400">
+                  <TableCell colSpan={8} className="text-center py-8 text-shade-50 dark:text-shade-40">
                     {t("noProducts")}
                   </TableCell>
                 </TableRow>
@@ -301,21 +301,21 @@ export default function InventoryPage() {
                 filteredProducts.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 overflow-hidden flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-shade-30 dark:bg-white/5 overflow-hidden flex items-center justify-center">
                         {product.imageUrl ? (
                           <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                         ) : (
-                          <Package className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+                          <Package className="w-5 h-5 text-shade-50 dark:text-shade-40" />
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium text-slate-900 dark:text-slate-50">{product.name}</TableCell>
-                    <TableCell className="text-slate-500 dark:text-slate-400">{product.sku}</TableCell>
+                    <TableCell className="font-medium text-ink dark:text-on-dark">{product.name}</TableCell>
+                    <TableCell className="text-shade-50 dark:text-shade-40">{product.sku}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{product.category}</Badge>
                     </TableCell>
-                    <TableCell className="text-right text-slate-900 dark:text-slate-50">{formatIDR(product.costPrice)}</TableCell>
-                    <TableCell className="text-right text-slate-900 dark:text-slate-50">{formatIDR(product.sellPrice)}</TableCell>
+                    <TableCell className="text-right text-ink dark:text-on-dark">{formatIDR(product.costPrice)}</TableCell>
+                    <TableCell className="text-right text-ink dark:text-on-dark">{formatIDR(product.sellPrice)}</TableCell>
                     <TableCell className="text-right">
                       <Badge
                         variant={product.stock === 0 ? "destructive" : product.stock <= product.minStock ? "warning" : "default"}
@@ -343,21 +343,23 @@ export default function InventoryPage() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-slate-900 dark:text-slate-50">{isEditMode ? t("editProduct") : t("addProduct")}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
+            <DialogHeader>
+              <DialogTitle>{isEditMode ? t("editProduct") : t("addProduct")}</DialogTitle>
+            </DialogHeader>
+          <div className="px-8 py-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("productName")}</label>
+              <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("productName")}</label>
               <Input
+                className="rounded-full"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder={t("productName")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("sku")}</label>
+              <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("sku")}</label>
               <Input
+                className="rounded-full"
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                 placeholder={t("sku")}
@@ -365,8 +367,9 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("costPrice")}</label>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("costPrice")}</label>
                 <Input
+                  className="rounded-full"
                   type="text"
                   value={formData.costPrice ? formatNumberIDR(Number(formData.costPrice)) : ""}
                   onChange={(e) => {
@@ -377,8 +380,9 @@ export default function InventoryPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("sellPrice")}</label>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("sellPrice")}</label>
                 <Input
+                  className="rounded-full"
                   type="text"
                   value={formData.sellPrice ? formatNumberIDR(Number(formData.sellPrice)) : ""}
                   onChange={(e) => {
@@ -391,8 +395,9 @@ export default function InventoryPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("stock")}</label>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("stock")}</label>
                 <Input
+                  className="rounded-full"
                   type="number"
                   value={formData.stock}
                   onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
@@ -400,8 +405,9 @@ export default function InventoryPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("minStock")}</label>
+                <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("minStock")}</label>
                 <Input
+                  className="rounded-full"
                   type="number"
                   value={formData.minStock}
                   onChange={(e) => setFormData({ ...formData, minStock: e.target.value })}
@@ -410,9 +416,9 @@ export default function InventoryPage() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">{t("category")}</label>
+              <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">{t("category")}</label>
               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="rounded-full">
                   <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -425,11 +431,11 @@ export default function InventoryPage() {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">Product Image</label>
-              <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <label className="block text-sm font-medium mb-1 text-ink dark:text-on-dark">Product Image</label>
+              <div className="border-2 border-dashed border-hairline-light dark:border-hairline-dark rounded-xl p-4">
                 {formData.imageUrl ? (
                   <div className="relative">
-                    <img src={formData.imageUrl} alt="Preview" className="w-full h-40 object-contain rounded-lg" />
+                    <img src={formData.imageUrl} alt="Preview" className="w-full h-40 object-contain rounded-xl" />
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, imageUrl: "" })}
@@ -440,8 +446,8 @@ export default function InventoryPage() {
                   </div>
                 ) : (
                   <label className="flex flex-col items-center justify-center cursor-pointer py-4">
-                    <ImagePlus className="w-8 h-8 text-slate-400 mb-2" />
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Click to upload (max 500KB)</span>
+                    <ImagePlus className="w-8 h-8 text-shade-50 dark:text-shade-40 mb-2" />
+                    <span className="text-sm text-shade-50 dark:text-shade-40">Click to upload (max 500KB)</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/gif,image/webp"
@@ -454,7 +460,7 @@ export default function InventoryPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button variant="outline-light" onClick={() => setIsDialogOpen(false)}>
               {tCommon("cancel")}
             </Button>
             <Button onClick={handleSubmit}>

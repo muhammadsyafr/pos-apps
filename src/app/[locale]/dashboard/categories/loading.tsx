@@ -16,9 +16,9 @@ export default function CategoriesLoading() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 space-y-3">
+          <div key={i} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 p-5 space-y-3">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-8 w-8 rounded-lg" />
+              <Skeleton className="h-8 w-8 rounded-xl" />
               <Skeleton className="h-5 w-28" />
             </div>
             <Skeleton className="h-3 w-20" />

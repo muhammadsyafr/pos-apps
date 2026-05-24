@@ -19,9 +19,9 @@ export default function POSLoading() {
           {Array.from({ length: 15 }).map((_, i) => (
             <div
               key={i}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-3 lg:p-4 space-y-2"
+              className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 p-3 lg:p-4 space-y-2"
             >
-              <Skeleton className="h-20 lg:h-24 w-full rounded-lg" />
+              <Skeleton className="h-20 lg:h-24 w-full rounded-xl" />
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-1/2" />
               <Skeleton className="h-5 w-16 rounded-md" />
@@ -31,7 +31,7 @@ export default function POSLoading() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 lg:top-16 lg:right-0 w-full lg:w-96 h-auto lg:h-[calc(100vh-4rem)] bg-white dark:bg-slate-800 border-t lg:border-l lg:border-t-0 border-slate-200 dark:border-slate-700 z-30 p-4">
+      <div className="fixed bottom-0 lg:top-16 lg:right-0 w-full lg:w-96 h-auto lg:h-[calc(100vh-4rem)] bg-canvas-light dark:bg-canvas-night-elevated border-t lg:border-l lg:border-t-0 border-hairline-light dark:border-hairline-dark z-30 p-4">
         <div className="flex items-center gap-2 mb-4">
           <Skeleton className="h-5 w-5 rounded" />
           <Skeleton className="h-5 w-16" />
@@ -39,7 +39,7 @@ export default function POSLoading() {
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3">
-              <Skeleton className="h-10 w-16 rounded-lg" />
+              <Skeleton className="h-10 w-16 rounded-xl" />
               <div className="flex-1 space-y-1.5">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-3 w-16" />

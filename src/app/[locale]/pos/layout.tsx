@@ -20,19 +20,21 @@ export default async function POSLayout({
   const userRole = isAdmin ? "Store Manager" : "Cashier"
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700">
+    <div className="min-h-screen bg-canvas-cream dark:bg-canvas-night text-ink dark:text-on-dark">
+      <header className="sticky top-0 z-40 bg-canvas-light dark:bg-canvas-night border-b border-hairline-light dark:border-hairline-dark">
         <div className="flex items-center justify-between px-4 lg:px-8 h-16">
           <div className="flex items-center gap-3">
             <Link href={`/${locale}/pos`} className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white signature-gradient">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-ink dark:bg-on-dark">
+                <svg className="w-5 h-5 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="text-xl font-black tracking-tight font-headline text-blue-800 dark:text-blue-400 hidden sm:block">CloudPOS</span>
+              <span className="font-display font-[500] text-[18px] tracking-[0.72px] text-ink dark:text-on-dark hidden sm:block">
+                CloudPOS
+              </span>
             </Link>
-            <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-xl font-medium text-sm transition-all">
+            <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center px-4 py-2 text-shade-50 dark:text-shade-40 hover:bg-shade-30 dark:hover:bg-white/5 rounded-full font-[420] text-sm transition-all">
               Overview
             </Link>
           </div>

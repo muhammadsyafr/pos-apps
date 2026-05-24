@@ -50,7 +50,7 @@ export default function DashboardPage() {
   const [filterLoading, setFilterLoading] = useState(false)
   const pathname = usePathname()
   const locale = pathname.split("/")[1] || "en"
-  
+
   const isCashier = session?.user?.role === "CASHIER"
 
   useEffect(() => {
@@ -91,13 +91,13 @@ export default function DashboardPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-4 border-ink border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
   if (filterLoading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-4 border-ink border-t-transparent rounded-full animate-spin"></div>
     </div>
   )
 
@@ -105,12 +105,16 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50">{t("title")}</h1>
-          <p className="text-slate-500 dark:text-slate-400">{t("welcome")}</p>
+          <h1 className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark">
+            {t("title")}
+          </h1>
+          <p className="font-[500] text-[14px] leading-[1.49] tracking-[0.28px] text-shade-50 dark:text-shade-40">
+            {t("welcome")}
+          </p>
         </div>
         <Select value={period} onValueChange={(v) => { setFilterLoading(true); setPeriod(v) }}>
           <SelectTrigger className="w-40 justify-start gap-2">
-            <Calendar className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
+            <Calendar className="w-4 h-4 text-shade-50 dark:text-shade-40 flex-shrink-0" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -123,45 +127,65 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {!isCashier && (
-          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalRevenue")}</p>
-            <p className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">{formatIDR(stats.totalRevenue)}</p>
-            <p className="text-xs text-green-600 dark:text-green-400 font-bold mt-2">+14.2% {t("vsYesterday")}</p>
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+            <p className="font-[400] text-[12px] leading-[1.2] tracking-[0.72px] uppercase text-shade-50 dark:text-shade-40">
+              {t("totalRevenue")}
+            </p>
+            <p className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark mt-1">
+              {formatIDR(stats.totalRevenue)}
+            </p>
+            <p className="font-[550] text-sm text-aloe-10 dark:text-aloe-10 mt-2">
+              +14.2% {t("vsYesterday")}
+            </p>
           </div>
         )}
-        <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalTransactions")}</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{stats.totalSales}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{stats.totalSales > 0 ? `Avg: ${formatIDR(stats.totalRevenue / stats.totalSales)}` : t('noTransactions')}</p>
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+          <p className="font-[400] text-[12px] leading-[1.2] tracking-[0.72px] uppercase text-shade-50 dark:text-shade-40">
+            {t("totalTransactions")}
+          </p>
+          <p className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark mt-1">
+            {stats.totalSales}
+          </p>
+          <p className="font-[500] text-[14px] text-shade-50 dark:text-shade-40 mt-2">
+            {stats.totalSales > 0 ? `Avg: ${formatIDR(stats.totalRevenue / stats.totalSales)}` : t('noTransactions')}
+          </p>
         </div>
         {!isCashier && (
-          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm sm:col-span-2 lg:col-span-1">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">{t("totalProfit")}</p>
-            <p className="text-2xl font-black text-slate-900 dark:text-slate-50 mt-1">{formatIDR(stats.totalProfit)}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{stats.totalProducts} {t("productsInCatalog")}</p>
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1 sm:col-span-2 lg:col-span-1">
+            <p className="font-[400] text-[12px] leading-[1.2] tracking-[0.72px] uppercase text-shade-50 dark:text-shade-40">
+              {t("totalProfit")}
+            </p>
+            <p className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark mt-1">
+              {formatIDR(stats.totalProfit)}
+            </p>
+            <p className="font-[500] text-[14px] text-shade-50 dark:text-shade-40 mt-2">
+              {stats.totalProducts} {t("productsInCatalog")}
+            </p>
           </div>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-          <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-            <h2 className="font-bold text-slate-900 dark:text-slate-50">{t("recentSales")}</h2>
+        <div className="lg:col-span-2 bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+          <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark flex justify-between items-center">
+            <h2 className="font-[550] text-ink dark:text-on-dark">{t("recentSales")}</h2>
             {!isCashier && (
-              <a href={`/${locale}/dashboard/reports`} className="text-xs font-bold text-blue-600 dark:text-blue-400">{t("viewAll")}</a>
+              <a href={`/${locale}/dashboard/reports`} className="font-[400] text-[12px] leading-[1.2] tracking-[0.72px] uppercase text-ink dark:text-on-dark hover:opacity-70">
+                {t("viewAll")}
+              </a>
             )}
           </div>
-          <div className="divide-y divide-slate-50 dark:divide-slate-700">
+          <div className="divide-y divide-hairline-light dark:divide-hairline-dark">
             {recentSales.length === 0 ? (
-              <p className="px-5 py-8 text-center text-slate-500 dark:text-slate-400 text-sm">{t("noTransactions")}</p>
+              <p className="px-5 py-8 text-center text-shade-50 dark:text-shade-40 font-[420] text-sm">{t("noTransactions")}</p>
             ) : (
               recentSales.map((sale) => (
-                <div key={sale.id} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                <div key={sale.id} className="px-5 py-3 flex items-center justify-between hover:bg-shade-30/20 dark:hover:bg-white/5">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{sale.user.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(sale.createdAt).toLocaleString()}</p>
+                    <p className="font-[550] text-[16px] text-ink dark:text-on-dark">{sale.user.name}</p>
+                    <p className="font-[500] text-[13px] text-shade-50 dark:text-shade-40">{new Date(sale.createdAt).toLocaleString()}</p>
                   </div>
-                  <p className="font-bold text-slate-900 dark:text-slate-50">{formatIDR(sale.totalAmount)}</p>
+                  <p className="font-[550] text-ink dark:text-on-dark">{formatIDR(sale.totalAmount)}</p>
                 </div>
               ))
             )}
@@ -171,34 +195,36 @@ export default function DashboardPage() {
         <div className="space-y-4">
           {!isCashier && lowStockProducts.length > 0 && (
             <div className="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-xl border-l-4 border-orange-500">
-              <h3 className="font-bold text-orange-900 dark:text-orange-400 mb-3">{t("lowStockAlert")}</h3>
+              <h3 className="font-[550] text-orange-900 dark:text-orange-400 mb-3">{t("lowStockAlert")}</h3>
               <div className="space-y-2">
                 {lowStockProducts.map((p) => (
                   <div key={p.id} className="flex justify-between text-sm">
                     <span className="text-orange-900 dark:text-orange-400">{p.name}</span>
-                    <span className="font-bold text-orange-700 dark:text-orange-400">{p.stock} left</span>
+                    <span className="font-[550] text-orange-700 dark:text-orange-400">{p.stock} left</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm">
-            <h3 className="font-bold text-slate-900 dark:text-slate-50 mb-4">{t("topSellers")}</h3>
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+            <h3 className="font-[550] text-ink dark:text-on-dark mb-4">{t("topSellers")}</h3>
             <div className="space-y-3">
               {topSellers.length === 0 ? (
-                <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">{t("noData")}</p>
+                <p className="font-[420] text-sm text-shade-50 dark:text-shade-40 text-center py-4">{t("noData")}</p>
               ) : (
                 topSellers.map((item, i) => (
                   <div key={item.productId} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400">{i + 1}</div>
+                    <div className="w-8 h-8 bg-shade-30 dark:bg-white/10 rounded-lg flex items-center justify-center font-[400] text-[12px] font-[500] text-shade-50 dark:text-shade-40">
+                      {i + 1}
+                    </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{item.name}</p>
-                      <div className="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-1">
-                        <div className="bg-blue-600 dark:bg-blue-400 h-full rounded-full" style={{ width: `${item.percentage}%` }}></div>
+                      <p className="font-[550] text-[16px] text-ink dark:text-on-dark">{item.name}</p>
+                      <div className="w-full bg-shade-30 dark:bg-white/10 h-1.5 rounded-full mt-1">
+                        <div className="bg-ink dark:bg-on-dark h-full rounded-full" style={{ width: `${item.percentage}%` }}></div>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{item.totalSold}</span>
+                    <span className="font-[400] text-[12px] font-[500] text-shade-50 dark:text-shade-40">{item.totalSold}</span>
                   </div>
                 ))
               )}
@@ -208,12 +234,14 @@ export default function DashboardPage() {
       </div>
 
       {!isCashier && (
-        <div className="bg-slate-900 dark:bg-slate-700 rounded-xl overflow-hidden">
+        <div className="bg-canvas-night text-on-dark rounded-xl overflow-hidden">
           <div className="flex flex-col lg:flex-row">
             <div className="p-6 lg:p-8 flex-1 flex flex-col justify-center">
-              <h3 className="text-xl font-black text-white">{t("ctaTitle")}</h3>
-              <p className="text-slate-400 dark:text-slate-300 mt-2 text-sm">{t("ctaDescription")}</p>
-              <a href={`/${locale}`} className="mt-4 px-6 py-2 bg-white dark:bg-slate-50 text-slate-900 dark:text-slate-900 rounded-lg font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-200 self-start inline-block">{t("exploreFeatures")}</a>
+              <h3 className="font-display font-[500] text-[24px] leading-[1.14] tracking-[0.36px]">{t("ctaTitle")}</h3>
+              <p className="text-shade-40 mt-2 font-[420] text-sm">{t("ctaDescription")}</p>
+              <a href={`/${locale}`} className="mt-4 btn-outline-dark self-start inline-flex">
+                {t("exploreFeatures")}
+              </a>
             </div>
             <div className="relative w-full lg:w-48 h-40 lg:h-auto flex-shrink-0">
               <Image
