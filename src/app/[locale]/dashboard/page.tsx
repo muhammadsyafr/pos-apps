@@ -8,6 +8,7 @@ import { formatIDR } from "@/lib/currency"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "lucide-react"
 import Image from "next/image"
+import DashboardLoading from "./loading"
 
 interface Stats {
   totalRevenue: number
@@ -89,17 +90,7 @@ export default function DashboardPage() {
     fetchData()
   }, [period])
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-ink border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  )
-
-  if (filterLoading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-4 border-ink border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  )
+  if (loading || filterLoading) return <DashboardLoading />
 
   return (
     <div className="space-y-6">
