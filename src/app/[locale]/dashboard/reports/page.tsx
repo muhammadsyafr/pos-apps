@@ -11,6 +11,7 @@ import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight, Printe
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
+import { bluetoothPrinter } from "@/lib/bluetooth-printer"
 import { useSession } from "next-auth/react"
 
 interface Sale {
@@ -150,11 +151,66 @@ export default function ReportsPage() {
     XLSX.writeFile(wb, fileName)
   }
 
-  const handlePrintReceipt = (sale: Sale) => {
+  const handlePrintReceipt = async (sale: Sale) => {
     const now = new Date(sale.createdAt)
     const dateStr = now.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
     const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
 
+    // ── Bluetooth direct print ────────────────────────────────────────────────
+    if (bluetoothPrinter.isConnected) {
+      try {
+        const data = bluetoothPrinter.buildReceipt({
+          storeName: printerConfig.storeName,
+          storeAddress: printerConfig.storeAddress,
+          storePhone: printerConfig.storePhone,
+          dateStr,
+          timeStr,
+          cashierName: sale.user.name,
+          saleId: sale.id,
+          items: sale.items.map(item => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          total: sale.totalAmount,
+          paymentMethod: sale.paymentMethod,
+          cashPaid: sale.cashPaid ?? undefined,
+          change: sale.changeGiven ?? undefined,
+          paperWidth: printerConfig.paperWidth,
+        })
+        await bluetoothPrinter.print(data)
+        return
+      } catch (err) {
+        console.error("Bluetooth print failed, falling back:", err)
+      }
+    }
+
+    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
+    if (bluetoothPrinter.isAndroid()) {
+      const text = bluetoothPrinter.buildReceipt({
+        storeName: printerConfig.storeName,
+        storeAddress: printerConfig.storeAddress,
+        storePhone: printerConfig.storePhone,
+        dateStr,
+        timeStr,
+        cashierName: sale.user.name,
+        saleId: sale.id,
+        items: sale.items.map(item => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total: sale.totalAmount,
+        paymentMethod: sale.paymentMethod,
+        cashPaid: sale.cashPaid ?? undefined,
+        change: sale.changeGiven ?? undefined,
+        paperWidth: printerConfig.paperWidth,
+      })
+      bluetoothPrinter.printViaRawBT(text)
+      return
+    }
+
+    // ── Browser print fallback ────────────────────────────────────────────────
     const printWindow = window.open("", "_blank")
     if (!printWindow) return
 

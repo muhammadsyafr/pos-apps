@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
 import { fetchProductsWithCache, fetchCategoriesWithCache, processSaleOffline, getPendingSales } from "@/hooks/useOffline"
 import { useOffline } from "@/hooks/useOffline"
+import { bluetoothPrinter } from "@/lib/bluetooth-printer"
 import { WifiOff, Database } from "lucide-react"
 import POSLoading from "./loading"
 
@@ -202,13 +203,66 @@ export default function POSPage() {
     }
   }
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!lastTransaction) return
     
     const now = new Date()
     const dateStr = now.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
     const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
-    
+
+    // ── Bluetooth direct print ────────────────────────────────────────────────
+    if (bluetoothPrinter.isConnected) {
+      try {
+        const data = bluetoothPrinter.buildReceipt({
+          storeName: printerConfig.storeName,
+          storeAddress: printerConfig.storeAddress,
+          storePhone: printerConfig.storePhone,
+          dateStr,
+          timeStr,
+          cashierName: session?.user?.name || "Admin",
+          items: lastTransaction.cart.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.sellPrice,
+          })),
+          total: lastTransaction.subtotal,
+          paymentMethod: "CASH",
+          cashPaid: lastTransaction.cashPaid,
+          change: lastTransaction.change,
+          paperWidth: printerConfig.paperWidth,
+        })
+        await bluetoothPrinter.print(data)
+        return
+      } catch (err) {
+        console.error("Bluetooth print failed, falling back:", err)
+      }
+    }
+
+    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
+    if (bluetoothPrinter.isAndroid()) {
+      const text = bluetoothPrinter.buildReceipt({
+        storeName: printerConfig.storeName,
+        storeAddress: printerConfig.storeAddress,
+        storePhone: printerConfig.storePhone,
+        dateStr,
+        timeStr,
+        cashierName: session?.user?.name || "Admin",
+        items: lastTransaction.cart.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.sellPrice,
+        })),
+        total: lastTransaction.subtotal,
+        paymentMethod: "CASH",
+        cashPaid: lastTransaction.cashPaid,
+        change: lastTransaction.change,
+        paperWidth: printerConfig.paperWidth,
+      })
+      bluetoothPrinter.printViaRawBT(text)
+      return
+    }
+
+    // ── Browser print fallback ────────────────────────────────────────────────
     const printWindow = window.open("", "_blank")
     if (!printWindow) return
     

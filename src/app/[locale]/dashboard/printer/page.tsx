@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { formatIDR } from "@/lib/currency"
-import { Printer, Bluetooth, Upload, Save, PrinterIcon } from "lucide-react"
+import { bluetoothPrinter, ALL_OPTIONAL_SERVICES } from "@/lib/bluetooth-printer"
+import { Printer, Bluetooth, Upload, Save, PrinterIcon, Loader2, CheckCircle2, XCircle, Smartphone, ExternalLink } from "lucide-react"
 
 interface PrinterSettings {
   id: string
@@ -42,9 +43,14 @@ export default function PrinterSettingsPage() {
   
   const [isBluetoothSupported, setIsBluetoothSupported] = useState(true)
   const [scanning, setScanning] = useState(false)
+  const [scanMode, setScanMode] = useState<"filtered" | "all">("filtered")
   const [scannedDevices, setScannedDevices] = useState<BluetoothDevice[]>([])
   const [selectedDevice, setSelectedDevice] = useState<BluetoothDevice | null>(null)
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle")
+  const [connectionStatus, setConnectionStatus] = useState<"idle" | "connecting" | "connected" | "error">("idle")
+  const [connectionError, setConnectionError] = useState<string | null>(null)
+  const [testPrinting, setTestPrinting] = useState(false)
+  const [printerTab, setPrinterTab] = useState<"rawbt" | "ble">("rawbt")
   
   const [previewItems] = useState<ReceiptItem[]>([
     { name: "Coffee Latte", quantity: 2, price: 25000 },
@@ -71,26 +77,32 @@ export default function PrinterSettingsPage() {
     if (typeof window !== "undefined" && !navigator.bluetooth) {
       setIsBluetoothSupported(false)
     }
+    // Reflect singleton connection state on mount
+    if (bluetoothPrinter.isConnected) {
+      setConnectionStatus("connected")
+    }
   }, [])
 
-  const handleScanBluetooth = async () => {
+  const handleScanBluetooth = async (mode: "filtered" | "all" = "all") => {
     setScanning(true)
+    setScanMode(mode)
     setScannedDevices([])
+    setConnectionStatus("idle")
+    setConnectionError(null)
     
     try {
       if (!navigator.bluetooth) {
         throw new Error("Web Bluetooth is not available. Please enable it in chrome://flags or use a supported browser.")
       }
       
-      const device = await navigator.bluetooth.requestDevice({
-        optionalServices: ["00001800-0000-1000-8000-00805f9b34fb"],
-        filters: [
-          { namePrefix: " printer" },
-          { namePrefix: "thermal" },
-          { namePrefix: "POS" },
-          { namePrefix: "XP" },
-        ]
-      })
+      // Always use acceptAllDevices so any printer shows up regardless of its
+      // advertised name. The user picks their device from the browser dialog.
+      const requestOptions: BluetoothRequestDeviceOptions = {
+        acceptAllDevices: true,
+        optionalServices: ALL_OPTIONAL_SERVICES,
+      }
+
+      const device = await navigator.bluetooth.requestDevice(requestOptions)
       
       setScannedDevices([device])
       setSelectedDevice(device)
@@ -103,17 +115,49 @@ export default function PrinterSettingsPage() {
       let errorMessage = error.message || "Failed to scan for printers"
       
       if (error.name === "NotFoundError") {
-        errorMessage = "No printer found. Make sure your printer is turned on and in pairing mode."
+        // User cancelled the picker — not a real error, just return silently
+        return
       } else if (error.name === "SecurityError") {
         errorMessage = "Bluetooth permission denied. Please allow Bluetooth access when prompted."
       } else if (errorMessage.includes("Web Bluetooth")) {
         errorMessage = "Web Bluetooth API is disabled. Please enable it in chrome://flags '#enable-experimental-web-platform-features' or use Chrome/Edge browser."
+        setIsBluetoothSupported(false)
       }
       
       alert(errorMessage)
-      setIsBluetoothSupported(false)
     } finally {
       setScanning(false)
+    }
+  }
+
+  const handleConnect = async () => {
+    if (!selectedDevice) return
+    setConnectionStatus("connecting")
+    setConnectionError(null)
+    try {
+      await bluetoothPrinter.connect(selectedDevice)
+      setConnectionStatus("connected")
+    } catch (err: any) {
+      setConnectionStatus("error")
+      setConnectionError(err.message || "Connection failed")
+    }
+  }
+
+  const handleDisconnect = async () => {
+    await bluetoothPrinter.disconnect()
+    setConnectionStatus("idle")
+    setConnectionError(null)
+  }
+
+  const handleTestPrint = async () => {
+    setTestPrinting(true)
+    try {
+      const data = bluetoothPrinter.buildTestReceipt(config.paperWidth)
+      await bluetoothPrinter.print(data)
+    } catch (err: any) {
+      alert("Test print failed: " + (err.message || "Unknown error"))
+    } finally {
+      setTestPrinting(false)
     }
   }
 
@@ -175,55 +219,180 @@ export default function PrinterSettingsPage() {
               </h2>
             </div>
             <div className="p-5 space-y-4">
-              {!isBluetoothSupported ? (
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl text-yellow-800 dark:text-yellow-400 text-sm">
-                  {t("bluetoothNotSupported")}
-                </div>
-              ) : (
-                <>
-                  <Button 
-                    onClick={handleScanBluetooth} 
-                    disabled={scanning}
+              {/* Tab switcher */}
+              <div className="flex rounded-lg border border-hairline-light dark:border-hairline-dark overflow-hidden text-sm font-medium">
+                <button
+                  onClick={() => setPrinterTab("rawbt")}
+                  className={`flex-1 px-3 py-2 flex items-center justify-center gap-2 transition-colors ${
+                    printerTab === "rawbt"
+                      ? "bg-ink text-white dark:bg-white dark:text-ink"
+                      : "hover:bg-shade-30 dark:hover:bg-white/5 text-shade-70 dark:text-shade-40"
+                  }`}
+                >
+                  <Smartphone className="w-4 h-4" />
+                  {t("androidRawBT")}
+                </button>
+                <button
+                  onClick={() => setPrinterTab("ble")}
+                  className={`flex-1 px-3 py-2 flex items-center justify-center gap-2 transition-colors border-l border-hairline-light dark:border-hairline-dark ${
+                    printerTab === "ble"
+                      ? "bg-ink text-white dark:bg-white dark:text-ink"
+                      : "hover:bg-shade-30 dark:hover:bg-white/5 text-shade-70 dark:text-shade-40"
+                  }`}
+                >
+                  <Bluetooth className="w-4 h-4" />
+                  {t("bleAdvanced")}
+                </button>
+              </div>
+
+              {/* ── Android / RawBT tab ── */}
+              {printerTab === "rawbt" && (
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl space-y-3 text-sm text-blue-900 dark:text-blue-200">
+                    <p className="font-semibold">{t("rawbtSetupTitle")}</p>
+                    <ol className="list-decimal list-inside space-y-2">
+                      <li>{t("rawbtStep1")}</li>
+                      <li>{t("rawbtStep2")}</li>
+                      <li>{t("rawbtStep3")}</li>
+                    </ol>
+                  </div>
+
+                  <a
+                    href="https://play.google.com/store/apps/details?id=ru.a402d.rawbtprinter"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-hairline-light dark:border-hairline-dark text-sm font-medium hover:bg-shade-30 dark:hover:bg-white/5 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    {t("installRawBT")}
+                  </a>
+
+                  <Button
+                    onClick={async () => {
+                      setTestPrinting(true)
+                      try {
+                        const text = bluetoothPrinter.buildTestReceipt(config.paperWidth)
+                        bluetoothPrinter.printViaRawBT(text)
+                      } finally {
+                        setTestPrinting(false)
+                      }
+                    }}
+                    disabled={testPrinting}
                     className="w-full"
                   >
-                    {scanning ? t("scanning") : t("scanPrinter")}
+                    {testPrinting ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("printing")}</>
+                    ) : (
+                      <><Printer className="w-4 h-4 mr-2" />{t("testPrintRawBT")}</>
+                    )}
                   </Button>
-                  
-                  {scannedDevices.length > 0 && (
-                    <div className="space-y-2">
-                      <Label>{t("availablePrinters")}</Label>
-                      {scannedDevices.map((device, index) => (
-                        <div 
-                          key={index}
-                          onClick={() => {
-                            setSelectedDevice(device)
-                            setConfig(prev => ({
-                              ...prev,
-                              printerName: device.name || "Unknown",
-                              printerAddress: device.id
-                            }))
-                          }}
-                          className={`p-3 border rounded-xl cursor-pointer transition-colors ${
-                            selectedDevice?.id === device.id 
-                              ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-white/10" 
-                              : "border-hairline-light dark:border-hairline-dark hover:bg-shade-30 dark:hover:bg-white/5"
-                          }`}
+                </div>
+              )}
+
+              {/* ── BLE (advanced) tab ── */}
+              {printerTab === "ble" && (
+                <>
+                  {!isBluetoothSupported ? (
+                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl text-yellow-800 dark:text-yellow-400 text-sm">
+                      {t("bluetoothNotSupported")}
+                    </div>
+                  ) : (
+                    <>
+                      <Button 
+                        onClick={() => handleScanBluetooth()}
+                        disabled={scanning || connectionStatus === "connecting"}
+                        className="w-full"
+                      >
+                        {scanning ? t("scanning") : t("scanPrinter")}
+                      </Button>
+
+                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl text-xs text-blue-800 dark:text-blue-300">
+                        {t("rpp02nHint")}
+                      </div>
+                      
+                      {scannedDevices.length > 0 && (
+                        <div className="space-y-2">
+                          <Label>{t("availablePrinters")}</Label>
+                          {scannedDevices.map((device, index) => (
+                            <div 
+                              key={index}
+                              onClick={() => {
+                                setSelectedDevice(device)
+                                setConfig(prev => ({
+                                  ...prev,
+                                  printerName: device.name || "Unknown",
+                                  printerAddress: device.id
+                                }))
+                              }}
+                              className={`p-3 border rounded-xl cursor-pointer transition-colors ${
+                                selectedDevice?.id === device.id 
+                                  ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-white/10" 
+                                  : "border-hairline-light dark:border-hairline-dark hover:bg-shade-30 dark:hover:bg-white/5"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Printer className="w-4 h-4" />
+                                <span className="font-medium text-ink dark:text-on-dark">{device.name || "Unknown Device"}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {selectedDevice && connectionStatus !== "connected" && (
+                        <Button
+                          onClick={handleConnect}
+                          disabled={connectionStatus === "connecting"}
+                          className="w-full"
+                          variant="outline-light"
                         >
-                          <div className="flex items-center gap-2">
-                            <Printer className="w-4 h-4" />
-                            <span className="font-medium text-ink dark:text-on-dark">{device.name || "Unknown Device"}</span>
+                          {connectionStatus === "connecting" ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("connecting")}</>
+                          ) : (
+                            <><Bluetooth className="w-4 h-4 mr-2" />{t("connect")}</>
+                          )}
+                        </Button>
+                      )}
+
+                      {connectionError && (
+                        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-2">
+                          <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
+                          <p className="text-sm text-red-800 dark:text-red-400">{connectionError}</p>
+                        </div>
+                      )}
+
+                      {connectionStatus === "connected" && (
+                        <div className="space-y-2">
+                          <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
+                            <p className="text-sm text-green-800 dark:text-green-400">
+                              <strong>{t("connectedTo")}:</strong> {bluetoothPrinter.deviceName ?? config.printerName}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={handleTestPrint}
+                              disabled={testPrinting}
+                              variant="outline-light"
+                              className="flex-1"
+                            >
+                              {testPrinting ? (
+                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("printing")}</>
+                              ) : (
+                                <><Printer className="w-4 h-4 mr-2" />{t("testPrint")}</>
+                              )}
+                            </Button>
+                            <Button
+                              onClick={handleDisconnect}
+                              variant="outline-light"
+                              className="flex-1"
+                            >
+                              {t("disconnect")}
+                            </Button>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {config.printerName && (
-                    <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-                      <p className="text-sm text-green-800 dark:text-green-400">
-                        <strong>{t("connectedTo")}:</strong> {config.printerName}
-                      </p>
-                    </div>
+                      )}
+                    </>
                   )}
                 </>
               )}

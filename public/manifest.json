@@ -1,0 +1,43 @@
+{
+  "name": "CloudPOS",
+  "short_name": "CloudPOS",
+  "description": "Point of Sale & Inventory Management for Indonesian businesses",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fafaf8",
+  "theme_color": "#1a1a18",
+  "orientation": "any",
+  "lang": "id",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Point of Sale",
+      "short_name": "POS",
+      "url": "/pos",
+      "description": "Open the POS cashier screen"
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard",
+      "description": "Open the management dashboard"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

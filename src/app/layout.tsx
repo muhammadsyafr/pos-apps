@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "@/components/providers"
@@ -7,6 +7,7 @@ import { getMessages, getLocale } from "next-intl/server"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeScript } from "@/lib/theme-script"
+import { PWARegister } from "@/components/pwa-register"
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,7 +19,21 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "CloudPOS — Point of Sale & Inventory",
   description: "Enterprise-grade point of sale and inventory management",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/favicon.svg", apple: "/assets/logo.svg" },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CloudPOS",
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#1a1a18",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default async function RootLayout({
@@ -34,10 +49,11 @@ export default async function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className="min-h-full flex flex-col antialiased">
+      <body className="min-h-full flex flex-col antialiased" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
+        <PWARegister />
         <Analytics />
         <SpeedInsights />
       </body>
