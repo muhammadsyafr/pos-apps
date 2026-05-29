@@ -301,8 +301,7 @@ class BluetoothPrinterService {
     }
 
     // Feed + partial cut
-    p.feedAndCut(4)
-
+    p.feedAndCut(1)
     return p.bytes()
   }
 
