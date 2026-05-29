@@ -22,6 +22,7 @@ interface PrinterSettings {
   paperWidth: number
   printerName: string | null
   printerAddress: string | null
+  footerText: string
 }
 
 interface ReceiptItem {
@@ -63,7 +64,8 @@ export default function SettingsPage() {
     logoUrl: null,
     paperWidth: 58,
     printerName: null,
-    printerAddress: null
+    printerAddress: null,
+    footerText: "Terima kasih atas\nkunjungan Anda"
   })
   
   const [isBluetoothSupported, setIsBluetoothSupported] = useState(true)
@@ -100,7 +102,10 @@ export default function SettingsPage() {
       try {
         const res = await fetch("/api/printers")
         const data = await res.json()
-        setConfig(data)
+        setConfig({
+          ...data,
+          footerText: data.footerText ?? "Terima kasih atas\nkunjungan Anda"
+        })
       } catch (error) {
         console.error("Failed to fetch printer settings:", error)
       }
@@ -208,7 +213,8 @@ export default function SettingsPage() {
           logoUrl: config.logoUrl,
           paperWidth: config.paperWidth,
           printerName: config.printerName,
-          printerAddress: config.printerAddress
+          printerAddress: config.printerAddress,
+          footerText: config.footerText
         })
       })
       if (res.ok) {
@@ -500,6 +506,18 @@ export default function SettingsPage() {
                   </select>
                 </div>
                 
+                <div>
+                  <Label>{tPrinter("footerText")}</Label>
+                  <textarea
+                    value={config.footerText}
+                    onChange={(e) => setConfig(prev => ({ ...prev, footerText: e.target.value }))}
+                    placeholder="Terima kasih atas&#10;kunjungan Anda"
+                    rows={3}
+                    className="w-full px-3 py-2.5 border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night shadow-sm text-ink dark:text-on-dark placeholder:text-shade-50 rounded-lg text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 focus-visible:border-ink"
+                  />
+                  <p className="text-xs text-shade-50 dark:text-shade-40 mt-1">Each line will be centered on the receipt.</p>
+                </div>
+
                 <Button onClick={handleSave} className="w-full" disabled={saveStatus === "saving"}>
                   {saveStatus === "saving" ? tCommon("loading") : saveStatus === "saved" ? tPrinter("saved") : tPrinter("saveConfig")}
                 </Button>
@@ -614,8 +632,9 @@ export default function SettingsPage() {
                 </div>
                 
                 <div className="text-center border-t border-dashed border-neutral-300 pt-2 mt-2">
-                  <div className="text-xs">Terima kasih atas kunjungan</div>
-                  <div className="text-xs">Anda</div>
+                  {(config.footerText || "Terima kasih atas\nkunjungan Anda").split("\n").map((line, i) => (
+                    <div key={i} className="text-xs">{line}</div>
+                  ))}
                 </div>
               </div>
             </div>

@@ -61,6 +61,7 @@ export interface ReceiptData {
   storeName: string
   storeAddress: string
   storePhone: string
+  logoUrl?: string | null
   dateStr: string
   timeStr: string
   cashierName: string
@@ -71,6 +72,71 @@ export interface ReceiptData {
   cashPaid?: number
   change?: number
   paperWidth: number
+  footerText?: string
+}
+
+/**
+ * Convert a logo image (data URL or URL) into ESC/POS GS-v-0 raster bytes.
+ * The logo is scaled to fit within `maxLogoDots` px, then centered on a canvas
+ * that spans the full `printerDotWidth` so the bytesPerLine sent to the printer
+ * always matches its native paper width (avoids garbled/broken output on printers
+ * that expect a fixed line width regardless of image size).
+ */
+async function logoToEscPosBytes(
+  url: string,
+  maxLogoDots: number,
+  printerDotWidth: number
+): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      // Scale logo to fit within maxLogoDots in both dimensions
+      const scale = Math.min(1, maxLogoDots / img.width, maxLogoDots / img.height)
+      const logoW = Math.floor(img.width * scale)
+      const logoH = Math.floor(img.height * scale)
+      if (logoW === 0 || logoH === 0) { reject(new Error("Logo scaled to zero")); return }
+
+      // Canvas width = full printer dot width, aligned to 8 bits
+      const bytesPerLine = Math.ceil(printerDotWidth / 8)
+      const canvasW = bytesPerLine * 8
+
+      // Center the logo horizontally within the full canvas
+      const xOffset = Math.max(0, Math.floor((canvasW - logoW) / 2))
+
+      const canvas = document.createElement("canvas")
+      canvas.width = canvasW
+      canvas.height = logoH
+      const ctx = canvas.getContext("2d")!
+      ctx.fillStyle = "white"
+      ctx.fillRect(0, 0, canvasW, logoH)
+      ctx.drawImage(img, xOffset, 0, logoW, logoH)
+
+      const pixels = ctx.getImageData(0, 0, canvasW, logoH).data
+      const rasterLen = bytesPerLine * logoH
+      const result = new Uint8Array(8 + rasterLen)
+      // GS v 0 header
+      result[0] = 0x1d; result[1] = 0x76; result[2] = 0x30; result[3] = 0x00
+      result[4] = bytesPerLine & 0xff; result[5] = (bytesPerLine >> 8) & 0xff
+      result[6] = logoH & 0xff;        result[7] = (logoH >> 8) & 0xff
+      // Raster data
+      let pos = 8
+      for (let y = 0; y < logoH; y++) {
+        for (let bx = 0; bx < bytesPerLine; bx++) {
+          let byte = 0
+          for (let bit = 0; bit < 8; bit++) {
+            const x = bx * 8 + bit
+            const idx = (y * canvasW + x) * 4
+            const lum = 0.299 * pixels[idx] + 0.587 * pixels[idx + 1] + 0.114 * pixels[idx + 2]
+            if (lum < 128) byte |= 0x80 >> bit
+          }
+          result[pos++] = byte
+        }
+      }
+      resolve(result)
+    }
+    img.onerror = reject
+    img.src = url
+  })
 }
 
 // ── Service class ─────────────────────────────────────────────────────────────
@@ -167,12 +233,26 @@ class BluetoothPrinterService {
    * Convert structured receipt data into an ESC/POS byte buffer
    * ready to be sent to the printer.
    */
-  buildReceipt(r: ReceiptData): Uint8Array {
+  async buildReceipt(r: ReceiptData): Promise<Uint8Array> {
     const cols = r.paperWidth === 80 ? COLS_80MM : COLS_58MM
+    const maxLogoDots = r.paperWidth === 80 ? 160 : 120
+    // Full printable dot width per paper size (203 dpi, standard thermal printer)
+    const printerDotWidth = r.paperWidth === 80 ? 576 : 384
     const p = new EscPos()
 
     // Initialise
     p.init()
+
+    // ── Logo ──────────────────────────────────────────────────────────────────
+    if (r.logoUrl) {
+      try {
+        const logoBytes = await logoToEscPosBytes(r.logoUrl, maxLogoDots, printerDotWidth)
+        p.rawBytes(logoBytes)
+        p.line("")
+      } catch {
+        // Logo conversion failed – skip silently
+      }
+    }
 
     // ── Header ────────────────────────────────────────────────────────────────
     p.align(1)
@@ -192,8 +272,10 @@ class BluetoothPrinterService {
 
     // ── Line items ────────────────────────────────────────────────────────────
     for (const item of r.items) {
-      const label = `${item.name} x${item.quantity}`
       const amount = fmtIDR(item.price * item.quantity)
+      const maxLabel = cols - amount.length - 1
+      let label = `${item.name} x${item.quantity}`
+      if (label.length > maxLabel) label = label.slice(0, maxLabel - 3) + "..."
       p.rowPair(label, amount, cols)
     }
     p.divider(cols)
@@ -213,8 +295,10 @@ class BluetoothPrinterService {
 
     // ── Footer ────────────────────────────────────────────────────────────────
     p.align(1)
-    p.line("Terima kasih atas")
-    p.line("kunjungan Anda")
+    const footer = r.footerText ?? "Terima kasih atas\nkunjungan Anda"
+    for (const line of footer.split("\n")) {
+      if (line.trim()) p.line(line.trim())
+    }
 
     // Feed + partial cut
     p.feedAndCut(4)

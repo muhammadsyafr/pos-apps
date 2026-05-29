@@ -9,7 +9,7 @@ import { formatIDR } from "@/lib/currency"
 import { fetchProductsWithCache, fetchCategoriesWithCache, processSaleOffline, getPendingSales } from "@/hooks/useOffline"
 import { useOffline } from "@/hooks/useOffline"
 import { bluetoothPrinter } from "@/lib/bluetooth-printer"
-import { WifiOff, Database } from "lucide-react"
+import { WifiOff, Database, ChevronUp, ShoppingCart } from "lucide-react"
 import POSLoading from "./loading"
 
 interface Product {
@@ -53,9 +53,11 @@ export default function POSPage() {
     storeAddress: "Jl. Toko No. 123",
     storePhone: "081234567890",
     logoUrl: "",
-    paperWidth: 58
+    paperWidth: 58,
+    footerText: "Terima kasih atas\nkunjungan Anda"
   })
   const [dataFromCache, setDataFromCache] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -77,7 +79,8 @@ export default function POSPage() {
               storeAddress: printerData.storeAddress,
               storePhone: printerData.storePhone,
               logoUrl: printerData.logoUrl || "",
-              paperWidth: printerData.paperWidth
+              paperWidth: printerData.paperWidth,
+              footerText: printerData.footerText || "Terima kasih atas\nkunjungan Anda"
             })
           }
         } catch (e) {
@@ -213,10 +216,11 @@ export default function POSPage() {
     // ── Bluetooth direct print ────────────────────────────────────────────────
     if (bluetoothPrinter.isConnected) {
       try {
-        const data = bluetoothPrinter.buildReceipt({
+        const data = await bluetoothPrinter.buildReceipt({
           storeName: printerConfig.storeName,
           storeAddress: printerConfig.storeAddress,
           storePhone: printerConfig.storePhone,
+          logoUrl: printerConfig.logoUrl,
           dateStr,
           timeStr,
           cashierName: session?.user?.name || "Admin",
@@ -230,6 +234,7 @@ export default function POSPage() {
           cashPaid: lastTransaction.cashPaid,
           change: lastTransaction.change,
           paperWidth: printerConfig.paperWidth,
+          footerText: printerConfig.footerText,
         })
         await bluetoothPrinter.print(data)
         return
@@ -240,10 +245,11 @@ export default function POSPage() {
 
     // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
     if (bluetoothPrinter.isAndroid()) {
-      const text = bluetoothPrinter.buildReceipt({
+      const text = await bluetoothPrinter.buildReceipt({
         storeName: printerConfig.storeName,
         storeAddress: printerConfig.storeAddress,
         storePhone: printerConfig.storePhone,
+        logoUrl: printerConfig.logoUrl,
         dateStr,
         timeStr,
         cashierName: session?.user?.name || "Admin",
@@ -257,6 +263,7 @@ export default function POSPage() {
         cashPaid: lastTransaction.cashPaid,
         change: lastTransaction.change,
         paperWidth: printerConfig.paperWidth,
+        footerText: printerConfig.footerText,
       })
       bluetoothPrinter.printViaRawBT(text)
       return
@@ -368,9 +375,11 @@ export default function POSPage() {
     )
   }
 
+  const cartItemCount = cart.reduce((sum, i) => sum + i.quantity, 0)
+
   return (
-    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)] lg:min-h-screen">
-      <div className="flex-1 flex flex-col p-4 lg:pr-96 lg:p-6 pb-40 lg:pb-6 overflow-hidden">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-4rem)] md:min-h-screen">
+      <div className="flex-1 flex flex-col p-4 md:p-4 lg:p-6 pb-20 md:pb-4 overflow-hidden min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 lg:mb-6">
           <div>
             <h2 className="text-xl lg:text-2xl font-black font-display text-ink dark:text-on-dark">{t("title")}</h2>
@@ -418,11 +427,11 @@ export default function POSPage() {
         </div>
 
         <div className="pos-products-scroll flex-1 overflow-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 lg:g-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 lg:gap-3">
             {filteredProducts.map(product => (
-              <button key={product.id} onClick={() => addToCart(product)} disabled={product.stock === 0} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl lg:rounded-xl p-3 lg:p-4 text-left hover:shadow-lg transition-all disabled:opacity-50 group">
-                <div className="aspect-square bg-shade-30 dark:bg-white/5 rounded-xl lg:rounded-xl mb-2 lg:mb-3 flex items-center justify-center overflow-hidden">
-                  {product.imageUrl ? <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" /> : <svg className="w-8 lg:w-12 h-8 lg:h-12 text-shade-50 dark:text-shade-40" fill="currentColor" viewBox="0 0 24 24"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3z" /></svg>}
+              <button key={product.id} onClick={() => addToCart(product)} disabled={product.stock === 0} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl p-2 lg:p-3 text-left hover:shadow-lg transition-all disabled:opacity-50 group">
+                <div className="aspect-square bg-shade-30 dark:bg-white/5 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+                  {product.imageUrl ? <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" /> : <svg className="w-7 lg:w-9 h-7 lg:h-9 text-shade-50 dark:text-shade-40" fill="currentColor" viewBox="0 0 24 24"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3z" /></svg>}
                 </div>
                 <h3 className="font-display font-semibold text-sm text-ink dark:text-on-dark truncate">{product.name}</h3>
                 <p className="text-xs text-shade-50 dark:text-shade-40 mb-1 lg:mb-2">{product.sku}</p>
@@ -436,15 +445,75 @@ export default function POSPage() {
         </div>
       </div>
 
-      <div id="cart-order" className="fixed bottom-16 left-0 right-0 h-auto max-h-[450px] lg:max-h-full lg:bottom-auto lg:top-16 lg:left-auto lg:right-0 lg:w-96 lg:min-w-96 lg:h-[calc(100vh-4rem)] bg-canvas-light dark:bg-canvas-night-elevated flex flex-col border-t lg:border-t-0 lg:border-l border-hairline-light dark:border-hairline-dark shadow-xl lg:shadow-none z-20">
-        <div className="flex-shrink-0 p-3 lg:p-6 border-b border-hairline-light dark:border-hairline-dark">
-          <div className="flex items-center justify-between">
+      {/* Mobile cart toggle bar — only visible on < md */}
+      <div className="md:hidden fixed bottom-16 left-0 right-0 z-30 px-3 pb-3">
+        <button
+          onClick={() => setCartOpen(o => !o)}
+          className="w-full flex items-center gap-3 px-4 py-3 bg-ink dark:bg-canvas-night-elevated rounded-2xl shadow-2xl border border-white/10 active:scale-[0.98] transition-transform"
+        >
+          {/* Cart icon + badge */}
+          <div className="relative flex-shrink-0">
+            <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center">
+              <ShoppingCart className="w-4 h-4 text-white dark:text-on-dark" />
+            </div>
+            {cartItemCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-aloe-10 text-ink text-[9px] font-black rounded-full flex items-center justify-center leading-none">
+                {cartItemCount > 9 ? "9+" : cartItemCount}
+              </span>
+            )}
+          </div>
+
+          {/* Label + last item preview */}
+          <div className="flex-1 text-left min-w-0">
+            <p className="text-[11px] text-white/50 dark:text-on-dark/50 font-medium leading-none mb-0.5">{t("currentOrder")}</p>
+            <p className="text-sm font-display font-bold text-white dark:text-on-dark truncate leading-none">
+              {cart.length === 0
+                ? t("noItemsInCart")
+                : cart.length === 1
+                  ? cart[0].name
+                  : `${cart[cart.length - 1].name} +${cart.length - 1}`}
+            </p>
+          </div>
+
+          {/* Total + chevron */}
+          <div className="flex-shrink-0 flex flex-col items-end gap-1">
+            <span className="font-display font-black text-white dark:text-on-dark text-base leading-none">{formatIDR(subtotal)}</span>
+            <span className={`transition-transform duration-300 ${cartOpen ? "rotate-180" : "rotate-0"}`}>
+              <ChevronUp className="w-3.5 h-3.5 text-white/60 dark:text-on-dark/60" />
+            </span>
+          </div>
+        </button>
+      </div>
+
+      {/* Backdrop — closes cart when tapping outside, mobile only */}
+      {cartOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-20 bg-black/40"
+          onClick={() => setCartOpen(false)}
+        />
+      )}
+
+      {/* Cart panel */}
+      <div
+        id="cart-order"
+        className={`
+          fixed left-0 right-0 bottom-[8rem] top-16 z-20
+          md:sticky md:top-16 md:self-start
+          md:w-80 md:min-w-80 lg:w-96 lg:min-w-96
+          md:h-[calc(100vh-9rem)] lg:h-[calc(100vh-4rem)]
+          bg-canvas-light dark:bg-canvas-night-elevated flex flex-col
+          border-t md:border-t-0 md:border-l border-hairline-light dark:border-hairline-dark
+          shadow-2xl md:shadow-none
+          transition-transform duration-300 ease-in-out
+          ${cartOpen ? 'translate-y-0' : 'translate-y-full md:translate-y-0'}
+        `}
+      >
+        <div className="hidden md:flex flex-shrink-0 items-center justify-between p-3 md:p-4 lg:p-6 border-b border-hairline-light dark:border-hairline-dark">
             <h3 className="font-display font-bold text-base lg:text-lg text-ink dark:text-on-dark">{t("currentOrder")}</h3>
             {cart.length > 0 && <button onClick={() => setCart([])} className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline">{t("clearAll")}</button>}
-          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 lg:p-6 space-y-2 min-h-0 max-h-[200px] lg:max-h-full">
+        <div className="flex-1 overflow-y-auto p-3 md:p-4 lg:p-6 space-y-2 min-h-0">
           {cart.length === 0 ? (
             <div className="text-center py-6 lg:py-12">
               <svg className="w-10 lg:w-16 h-10 lg:h-16 mx-auto text-shade-50 dark:text-shade-40 mb-2 lg:mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" /></svg>
@@ -470,7 +539,7 @@ export default function POSPage() {
           )}
         </div>
 
-        <div id="total" className="flex-shrink-0 p-3 lg:p-6 bg-canvas-light dark:bg-canvas-night-elevated border-t border-hairline-light dark:border-hairline-dark">
+        <div id="total" className="flex-shrink-0 p-3 md:p-4 lg:p-6 bg-canvas-light dark:bg-canvas-night-elevated border-t border-hairline-light dark:border-hairline-dark">
           <div className="flex justify-between text-xs lg:text-sm mb-2">
             <span className="text-shade-50 dark:text-shade-40">{t("total")}</span>
             <span className="font-display font-black text-ink dark:text-on-dark text-base lg:text-xl">{formatIDR(subtotal)}</span>

@@ -52,7 +52,8 @@ export default function ReportsPage() {
     storeAddress: "Jl. Toko No. 123",
     storePhone: "081234567890",
     logoUrl: "",
-    paperWidth: 58
+    paperWidth: 58,
+    footerText: "Terima kasih atas\nkunjungan Anda"
   })
 
   const pageSize = PAGE_SIZE
@@ -93,7 +94,8 @@ export default function ReportsPage() {
           storeAddress: data.storeAddress || "Jl. Toko No. 123",
           storePhone: data.storePhone || "081234567890",
           logoUrl: data.logoUrl || "",
-          paperWidth: data.paperWidth || 58
+          paperWidth: data.paperWidth || 58,
+          footerText: data.footerText || "Terima kasih atas\nkunjungan Anda"
         })
       } catch (error) {
         console.error("Failed to fetch printer config:", error)
@@ -159,10 +161,11 @@ export default function ReportsPage() {
     // ── Bluetooth direct print ────────────────────────────────────────────────
     if (bluetoothPrinter.isConnected) {
       try {
-        const data = bluetoothPrinter.buildReceipt({
+        const data = await bluetoothPrinter.buildReceipt({
           storeName: printerConfig.storeName,
           storeAddress: printerConfig.storeAddress,
           storePhone: printerConfig.storePhone,
+          logoUrl: printerConfig.logoUrl,
           dateStr,
           timeStr,
           cashierName: sale.user.name,
@@ -177,6 +180,7 @@ export default function ReportsPage() {
           cashPaid: sale.cashPaid ?? undefined,
           change: sale.changeGiven ?? undefined,
           paperWidth: printerConfig.paperWidth,
+          footerText: printerConfig.footerText,
         })
         await bluetoothPrinter.print(data)
         return
@@ -187,10 +191,11 @@ export default function ReportsPage() {
 
     // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
     if (bluetoothPrinter.isAndroid()) {
-      const text = bluetoothPrinter.buildReceipt({
+      const text = await bluetoothPrinter.buildReceipt({
         storeName: printerConfig.storeName,
         storeAddress: printerConfig.storeAddress,
         storePhone: printerConfig.storePhone,
+        logoUrl: printerConfig.logoUrl,
         dateStr,
         timeStr,
         cashierName: sale.user.name,
@@ -205,6 +210,7 @@ export default function ReportsPage() {
         cashPaid: sale.cashPaid ?? undefined,
         change: sale.changeGiven ?? undefined,
         paperWidth: printerConfig.paperWidth,
+        footerText: printerConfig.footerText,
       })
       bluetoothPrinter.printViaRawBT(text)
       return
@@ -412,8 +418,8 @@ export default function ReportsPage() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {sale.items.slice(0, 2).map((item, i) => (
-                          <Badge key={i} variant="secondary">
-                            {item.product.name} x{item.quantity}
+                          <Badge key={i} variant="secondary" className="max-w-[120px] overflow-hidden">
+                            <span className="truncate">{item.product.name} x{item.quantity}</span>
                           </Badge>
                         ))}
                         {sale.items.length > 2 && (

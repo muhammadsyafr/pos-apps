@@ -186,6 +186,7 @@
     "storeAddress": "Alamat",
     "storePhone": "Nomor Telepon",
     "paperWidth": "Lebar Kertas",
+    "footerText": "Teks Footer Struk",
     "saveConfig": "Simpan Konfigurasi",
     "saved": "Tersimpan!",
     "receiptPreview": "Pratinjau Struk"

@@ -85,6 +85,12 @@ export class EscPos {
     return this
   }
 
+  /** Append a raw Uint8Array (e.g. pre-built raster image bytes) */
+  rawBytes(bytes: Uint8Array): this {
+    for (let i = 0; i < bytes.length; i++) this.data.push(bytes[i])
+    return this
+  }
+
   /** Return the complete command buffer as a Uint8Array */
   bytes(): Uint8Array {
     return new Uint8Array(this.data)

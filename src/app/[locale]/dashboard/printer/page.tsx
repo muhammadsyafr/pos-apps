@@ -18,6 +18,7 @@ interface PrinterSettings {
   paperWidth: number
   printerName: string | null
   printerAddress: string | null
+  footerText: string
 }
 
 interface ReceiptItem {
@@ -38,7 +39,8 @@ export default function PrinterSettingsPage() {
     logoUrl: null,
     paperWidth: 58,
     printerName: null,
-    printerAddress: null
+    printerAddress: null,
+    footerText: "Terima kasih atas\nkunjungan Anda"
   })
   
   const [isBluetoothSupported, setIsBluetoothSupported] = useState(true)
@@ -67,7 +69,10 @@ export default function PrinterSettingsPage() {
       try {
         const res = await fetch("/api/printers")
         const data = await res.json()
-        setConfig(data)
+        setConfig({
+          ...data,
+          footerText: data.footerText ?? "Terima kasih atas\nkunjungan Anda"
+        })
       } catch (error) {
         console.error("Failed to fetch printer settings:", error)
       }
@@ -174,7 +179,8 @@ export default function PrinterSettingsPage() {
           logoUrl: config.logoUrl,
           paperWidth: config.paperWidth,
           printerName: config.printerName,
-          printerAddress: config.printerAddress
+          printerAddress: config.printerAddress,
+          footerText: config.footerText
         })
       })
       if (res.ok) {
@@ -480,6 +486,18 @@ export default function PrinterSettingsPage() {
                   <option value={80}>80mm</option>
                 </select>
               </div>
+              <div>
+                wkowkowko
+                <Label>{t("footerText")}</Label>
+                <textarea
+                  value={config.footerText}
+                  onChange={(e) => setConfig(prev => ({ ...prev, footerText: e.target.value }))}
+                  placeholder="Terima kasih atas&#10;kunjungan Anda"
+                  rows={3}
+                  className="w-full px-3 py-2.5 border border-hairline-light dark:border-hairline-dark bg-canvas-light dark:bg-canvas-night shadow-sm text-ink dark:text-on-dark placeholder:text-shade-50 rounded-lg text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/20 focus-visible:border-ink"
+                />
+                <p className="text-xs text-shade-50 dark:text-shade-40 mt-1">Each line will be centered on the receipt.</p>
+              </div>
               
               <Button onClick={handleSave} className="w-full" disabled={saveStatus === "saving"}>
                 {saveStatus === "saving" ? tCommon("loading") : saveStatus === "saved" ? t("saved") : t("saveConfig")}
@@ -497,55 +515,77 @@ export default function PrinterSettingsPage() {
               </h2>
             </div>
             <div className="p-5">
-              <div 
-                className="bg-canvas-light dark:bg-canvas-night-elevated border-2 border-hairline-light dark:border-hairline-dark rounded-sm p-4 mx-auto"
-                style={{ 
-                  width: config.paperWidth === 58 ? "280px" : "380px",
-                  fontFamily: "'Courier New', monospace",
-                  fontSize: "11px",
-                  color: "#000"
-                }}
-              >
-                <div className="text-center border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
-                  {config.logoUrl && (
-                    <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto mb-2 object-contain" />
-                  )}
-                  <div className="font-bold">{config.storeName || "CloudPOS"}</div>
-                  <div className="text-xs">{config.storeAddress || "Jl. Toko No. 123"}</div>
-                  <div className="text-xs">Telp: {config.storePhone || "081234567890"}</div>
-                </div>
-                
-                <div className="text-xs mb-2">
-                  4 Apr 2026 22:13 | Kasir: Admin
-                </div>
-                
-                <div className="border-b border-dashed border-hairline-light dark:border-hairline-dark pb-2 mb-2">
-                  {previewItems.map((item, index) => (
-                    <div key={index} className="flex justify-between text-xs">
-                      <span>{item.name} x{item.quantity}</span>
-                      <span>{formatIDR(item.price * item.quantity)}</span>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="flex justify-between font-bold text-xs">
-                  <span>TOTAL</span>
-                  <span>{formatIDR(previewSubtotal)}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Tunai</span>
-                  <span>{formatIDR(previewCash)}</span>
-                </div>
-                <div className="flex justify-between text-xs mb-2">
-                  <span>Kembalian</span>
-                  <span>{formatIDR(previewChange)}</span>
-                </div>
-                
-                <div className="text-center border-t border-dashed border-hairline-light dark:border-hairline-dark pt-2 mt-2">
-                  <div className="text-xs">Terima kasih atas kunjungan</div>
-                  <div className="text-xs">Anda</div>
-                </div>
-              </div>
+              {(() => {
+                const cols = config.paperWidth === 80 ? 42 : 32
+                const divider = "-".repeat(cols)
+                const fmtIDR = (n: number) => formatIDR(n).replace(/\u00a0/g, "")
+                const rowPair = (left: string, right: string) => {
+                  const gap = cols - left.length - right.length
+                  if (gap <= 0) return left.slice(0, cols - right.length - 1) + " " + right
+                  return left + " ".repeat(gap) + right
+                }
+                const centerStr = (s: string) => {
+                  const pad = Math.max(0, Math.floor((cols - s.length) / 2))
+                  return " ".repeat(pad) + s
+                }
+
+                const textLines: string[] = []
+                // Header
+                textLines.push(centerStr(config.storeName || "CloudPOS"))
+                if (config.storeAddress) textLines.push(centerStr(config.storeAddress))
+                if (config.storePhone) textLines.push(centerStr("Telp: " + config.storePhone))
+                textLines.push(divider)
+                // Meta
+                textLines.push(rowPair("29 May 2026", "22:13"))
+                textLines.push("Kasir: Admin")
+                textLines.push(divider)
+                // Items
+                for (const item of previewItems) {
+                  const amount = fmtIDR(item.price * item.quantity)
+                  const maxLabel = cols - amount.length - 1
+                  let label = `${item.name} x${item.quantity}`
+                  if (label.length > maxLabel) label = label.slice(0, maxLabel - 3) + "..."
+                  textLines.push(rowPair(label, amount))
+                }
+                textLines.push(divider)
+                // Totals
+                textLines.push(rowPair("TOTAL", fmtIDR(previewSubtotal)))
+                textLines.push(rowPair("Tunai", fmtIDR(previewCash)))
+                textLines.push(rowPair("Kembalian", fmtIDR(previewChange)))
+                textLines.push(divider)
+                // Footer
+                const footerLines = (config.footerText || "Terima kasih atas\nkunjungan Anda").split("\n")
+                for (const fl of footerLines) {
+                  if (fl.trim()) textLines.push(centerStr(fl.trim()))
+                }
+
+                return (
+                  <div
+                    className="bg-white rounded-sm mx-auto overflow-x-auto"
+                    style={{ width: config.paperWidth === 58 ? "280px" : "380px" }}
+                  >
+                    {config.logoUrl && (
+                      <div className="text-center pt-3">
+                        <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto object-contain" />
+                      </div>
+                    )}
+                    <pre
+                      style={{
+                        fontFamily: "'Courier New', Courier, monospace",
+                        fontSize: "11px",
+                        color: "#111",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        padding: "12px",
+                        whiteSpace: "pre",
+                        overflowX: "auto",
+                      }}
+                    >
+                      {textLines.join("\n")}
+                    </pre>
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </div>
