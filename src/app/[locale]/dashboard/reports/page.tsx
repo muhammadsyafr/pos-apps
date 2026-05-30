@@ -189,9 +189,9 @@ export default function ReportsPage() {
       }
     }
 
-    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
+    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────
     if (bluetoothPrinter.isAndroid()) {
-      const text = await bluetoothPrinter.buildReceipt({
+      const data = await bluetoothPrinter.buildReceipt({
         storeName: printerConfig.storeName,
         storeAddress: printerConfig.storeAddress,
         storePhone: printerConfig.storePhone,
@@ -212,14 +212,37 @@ export default function ReportsPage() {
         paperWidth: printerConfig.paperWidth,
         footerText: printerConfig.footerText,
       })
-      bluetoothPrinter.printViaRawBT(text)
+      bluetoothPrinter.printViaRawBT(data)
+      return
+    }
+
+    // ── iOS Share Sheet (plain-text receipt .txt) ─────────────────────────
+    if (bluetoothPrinter.isIOS()) {
+      const receiptText = bluetoothPrinter.buildPlainTextReceipt({
+        storeName: printerConfig.storeName,
+        storeAddress: printerConfig.storeAddress,
+        storePhone: printerConfig.storePhone,
+        dateStr,
+        timeStr,
+        cashierName: sale.user.name,
+        saleId: sale.id,
+        items: sale.items.map(item => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total: sale.totalAmount,
+        paymentMethod: sale.paymentMethod,
+        cashPaid: sale.cashPaid ?? undefined,
+        change: sale.changeGiven ?? undefined,
+        paperWidth: printerConfig.paperWidth,
+        footerText: printerConfig.footerText,
+      })
+      bluetoothPrinter.printViaIOSShareSheet(receiptText)
       return
     }
 
     // ── Browser print fallback ────────────────────────────────────────────────
-    const printWindow = window.open("", "_blank")
-    if (!printWindow) return
-
     const itemsHtml = sale.items.map(item => `
       <div style="display:flex;justify-content:space-between;margin:4px 0">
         <div>${item.product.name} x${item.quantity}</div>
@@ -228,17 +251,20 @@ export default function ReportsPage() {
     `).join("")
 
     const paperWidth = printerConfig.paperWidth === 58 ? "58mm" : "80mm"
+    const footerLines = (printerConfig.footerText || "Terima kasih atas\nkunjungan Anda")
+      .split("\n").map((l: string) => l.trim()).filter(Boolean).join("<br/>")
 
-    printWindow.document.write(`
+    const receiptHtml = `
       <html>
         <head>
           <title>Receipt - ${sale.id}</title>
           <style>
+            @page { size: ${paperWidth} auto; margin: 0; }
             body {
               font-family: 'Courier New', monospace;
               font-size: 11px;
               width: ${paperWidth};
-              margin: 0 auto;
+              margin: 0;
               padding: 5px;
             }
             .h { text-align: center; }
@@ -271,12 +297,14 @@ export default function ReportsPage() {
           <div class="f"><span>Metode</span><span>${sale.paymentMethod}</span></div>
           `}
           <div class="d"></div>
-          <div class="h" style="font-size:10px">
-            Terima kasih atas kunjungan<br/>Anda
-          </div>
+          <div class="h" style="font-size:10px">${footerLines}</div>
         </body>
       </html>
-    `)
+    `
+
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) return
+    printWindow.document.write(receiptHtml)
     printWindow.document.close()
     printWindow.print()
   }

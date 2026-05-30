@@ -306,6 +306,59 @@ class BluetoothPrinterService {
   }
 
   /**
+   * Build a plain-text receipt string (no ESC/POS binary codes).
+   * Used for the iOS Share Sheet path where the binary is unreadable.
+   */
+  buildPlainTextReceipt(r: ReceiptData): string {
+    const cols = r.paperWidth === 80 ? COLS_80MM : COLS_58MM
+    const div = "-".repeat(cols)
+
+    const center = (s: string) => {
+      const pad = Math.max(0, Math.floor((cols - s.length) / 2))
+      return " ".repeat(pad) + s
+    }
+    const row = (left: string, right: string) => {
+      const gap = cols - left.length - right.length
+      return left + " ".repeat(Math.max(1, gap)) + right
+    }
+
+    const lines: string[] = []
+
+    lines.push(center(r.storeName || "CloudPOS"))
+    if (r.storeAddress) lines.push(center(r.storeAddress))
+    if (r.storePhone) lines.push(center("Telp: " + r.storePhone))
+    lines.push(div)
+    lines.push(row(r.dateStr, r.timeStr))
+    lines.push("Kasir: " + r.cashierName)
+    if (r.saleId) lines.push("ID: " + r.saleId.slice(0, 8))
+    lines.push(div)
+
+    for (const item of r.items) {
+      const amount = fmtIDR(item.price * item.quantity)
+      const maxLabel = cols - amount.length - 1
+      let label = `${item.name} x${item.quantity}`
+      if (label.length > maxLabel) label = label.slice(0, maxLabel - 3) + "..."
+      lines.push(row(label, amount))
+    }
+    lines.push(div)
+    lines.push(row("TOTAL", fmtIDR(r.total)))
+    if (r.paymentMethod === "CASH") {
+      lines.push(row("Tunai", fmtIDR(r.cashPaid ?? 0)))
+      lines.push(row("Kembalian", fmtIDR(r.change ?? 0)))
+    } else {
+      lines.push(row("Metode", r.paymentMethod))
+    }
+    lines.push(div)
+
+    const footer = r.footerText ?? "Terima kasih atas\nkunjungan Anda"
+    for (const line of footer.split("\n")) {
+      if (line.trim()) lines.push(center(line.trim()))
+    }
+
+    return lines.join("\n") + "\n"
+  }
+
+  /**
    * Print a short test pattern to verify the connection works.
    */
   buildTestReceipt(paperWidth: number): Uint8Array {
@@ -330,6 +383,18 @@ class BluetoothPrinterService {
   isAndroid(): boolean {
     if (typeof navigator === "undefined") return false
     return /Android/i.test(navigator.userAgent)
+  }
+
+  /**
+   * Returns true when running on an iOS device (iPhone, iPad, iPod).
+   * Also detects iPadOS 13+ which reports as MacIntel with touch support.
+   */
+  isIOS(): boolean {
+    if (typeof navigator === "undefined") return false
+    return (
+      /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    )
   }
 
   /**
@@ -359,6 +424,30 @@ class BluetoothPrinterService {
 
     // Desktop fallback: open blob URL in new tab so the browser handles it
     // (no file saved to disk — the blob lives only in memory).
+    const url = URL.createObjectURL(blob)
+    window.open(url, "_blank")
+    setTimeout(() => URL.revokeObjectURL(url), 5000)
+  }
+
+  /**
+   * Share a plain-text receipt as a .txt file via the iOS Share Sheet.
+   * text/plain files can be opened by Files, Notes, Printer Pro, etc.
+   * Falls back to opening the file in a new tab (downloads it).
+   */
+  async printViaIOSShareSheet(text: string): Promise<void> {
+    const blob = new Blob([text], { type: "text/plain" })
+    const file = new File([blob], "receipt.txt", { type: "text/plain" })
+
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ files: [file] })
+        return
+      } catch (err) {
+        if ((err as Error).name === "AbortError") return // user dismissed
+      }
+    }
+
+    // Fallback: open the text in a new tab
     const url = URL.createObjectURL(blob)
     window.open(url, "_blank")
     setTimeout(() => URL.revokeObjectURL(url), 5000)

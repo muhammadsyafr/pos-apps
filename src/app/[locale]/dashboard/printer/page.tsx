@@ -52,7 +52,7 @@ export default function PrinterSettingsPage() {
   const [connectionStatus, setConnectionStatus] = useState<"idle" | "connecting" | "connected" | "error">("idle")
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [testPrinting, setTestPrinting] = useState(false)
-  const [printerTab, setPrinterTab] = useState<"rawbt" | "ble">("rawbt")
+  const [printerTab, setPrinterTab] = useState<"rawbt" | "ios" | "ble">("rawbt")
   
   const [previewItems] = useState<ReceiptItem[]>([
     { name: "Coffee Latte", quantity: 2, price: 25000 },
@@ -239,6 +239,17 @@ export default function PrinterSettingsPage() {
                   {t("androidRawBT")}
                 </button>
                 <button
+                  onClick={() => setPrinterTab("ios")}
+                  className={`flex-1 px-3 py-2 flex items-center justify-center gap-2 transition-colors border-l border-hairline-light dark:border-hairline-dark ${
+                    printerTab === "ios"
+                      ? "bg-ink text-white dark:bg-white dark:text-ink"
+                      : "hover:bg-shade-30 dark:hover:bg-white/5 text-shade-70 dark:text-shade-40"
+                  }`}
+                >
+                  <Smartphone className="w-4 h-4" />
+                  {t("iosAirPrint")}
+                </button>
+                <button
                   onClick={() => setPrinterTab("ble")}
                   className={`flex-1 px-3 py-2 flex items-center justify-center gap-2 transition-colors border-l border-hairline-light dark:border-hairline-dark ${
                     printerTab === "ble"
@@ -250,6 +261,26 @@ export default function PrinterSettingsPage() {
                   {t("bleAdvanced")}
                 </button>
               </div>
+
+              {/* ── iOS / AirPrint tab ── */}
+              {printerTab === "ios" && (
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl space-y-3 text-sm text-blue-900 dark:text-blue-200">
+                    <p className="font-semibold">{t("iosSetupTitle")}</p>
+                    <ol className="list-decimal list-inside space-y-2">
+                      <li>{t("iosStep1")}</li>
+                      <li>{t("iosStep2")}</li>
+                      <li>{t("iosStep3")}</li>
+                    </ol>
+                  </div>
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-xs text-amber-800 dark:text-amber-300">
+                    {t("iosNoBluetooth")}
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-xs text-green-800 dark:text-green-300">
+                    {t("iosAirPrintHint")}
+                  </div>
+                </div>
+              )}
 
               {/* ── Android / RawBT tab ── */}
               {printerTab === "rawbt" && (

@@ -243,9 +243,9 @@ export default function POSPage() {
       }
     }
 
-    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────────
+    // ── RawBT (Android Classic Bluetooth) ─────────────────────────────────
     if (bluetoothPrinter.isAndroid()) {
-      const text = await bluetoothPrinter.buildReceipt({
+      const data = await bluetoothPrinter.buildReceipt({
         storeName: printerConfig.storeName,
         storeAddress: printerConfig.storeAddress,
         storePhone: printerConfig.storePhone,
@@ -265,34 +265,58 @@ export default function POSPage() {
         paperWidth: printerConfig.paperWidth,
         footerText: printerConfig.footerText,
       })
-      bluetoothPrinter.printViaRawBT(text)
+      bluetoothPrinter.printViaRawBT(data)
+      return
+    }
+
+    // ── iOS Share Sheet (plain-text receipt .txt) ─────────────────────────
+    if (bluetoothPrinter.isIOS()) {
+      const receiptText = bluetoothPrinter.buildPlainTextReceipt({
+        storeName: printerConfig.storeName,
+        storeAddress: printerConfig.storeAddress,
+        storePhone: printerConfig.storePhone,
+        dateStr,
+        timeStr,
+        cashierName: session?.user?.name || "Admin",
+        items: lastTransaction.cart.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.sellPrice,
+        })),
+        total: lastTransaction.subtotal,
+        paymentMethod: "CASH",
+        cashPaid: lastTransaction.cashPaid,
+        change: lastTransaction.change,
+        paperWidth: printerConfig.paperWidth,
+        footerText: printerConfig.footerText,
+      })
+      bluetoothPrinter.printViaIOSShareSheet(receiptText)
       return
     }
 
     // ── Browser print fallback ────────────────────────────────────────────────
-    const printWindow = window.open("", "_blank")
-    if (!printWindow) return
-    
     const itemsHtml = lastTransaction.cart.map(item => `
       <div style="display:flex;justify-content:space-between;margin:4px 0">
         <div>${item.name} x${item.quantity}</div>
         <div>${formatIDR(item.sellPrice * item.quantity)}</div>
       </div>
     `).join("")
-    
+
     const paperWidth = printerConfig.paperWidth === 58 ? "58mm" : "80mm"
-    const bodyWidth = printerConfig.paperWidth === 58 ? "180px" : "260px"
-    
-    printWindow.document.write(`
+    const footerLines = (printerConfig.footerText || "Terima kasih atas\nkunjungan Anda")
+      .split("\n").map(l => l.trim()).filter(Boolean).join("<br/>")
+
+    const receiptHtml = `
       <html>
         <head>
           <title>Receipt</title>
           <style>
-            body { 
-              font-family: 'Courier New', monospace; 
-              font-size: 11px; 
-              width: ${paperWidth}; 
-              margin: 0 auto;
+            @page { size: ${paperWidth} auto; margin: 0; }
+            body {
+              font-family: 'Courier New', monospace;
+              font-size: 11px;
+              width: ${paperWidth};
+              margin: 0;
               padding: 5px;
             }
             .h { text-align: center; }
@@ -312,7 +336,7 @@ export default function POSPage() {
           </div>
           <div class="d"></div>
           <div class="f"><span>${dateStr}</span><span>${timeStr}</span></div>
-          <div class="f"><span>Kasir:</span><span>Admin</span></div>
+          <div class="f"><span>Kasir:</span><span>${session?.user?.name || "Admin"}</span></div>
           <div class="d"></div>
           ${itemsHtml}
           <div class="d"></div>
@@ -320,12 +344,14 @@ export default function POSPage() {
           <div class="f"><span>Tunai</span><span>${formatIDR(lastTransaction.cashPaid)}</span></div>
           <div class="f"><span>Kembalian</span><span>${formatIDR(lastTransaction.change)}</span></div>
           <div class="d"></div>
-          <div class="h" style="font-size:10px">
-            Terima kasih atas kunjungan<br/>Anda
-          </div>
+          <div class="h" style="font-size:10px">${footerLines}</div>
         </body>
       </html>
-    `)
+    `
+
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) return
+    printWindow.document.write(receiptHtml)
     printWindow.document.close()
     printWindow.print()
     printWindow.close()
