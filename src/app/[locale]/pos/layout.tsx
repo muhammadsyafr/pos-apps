@@ -35,7 +35,7 @@ export default async function POSLayout({
               </span>
             </Link>
             <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center px-4 py-2 text-shade-50 dark:text-shade-40 hover:bg-shade-30 dark:hover:bg-white/5 rounded-full font-[420] text-sm transition-all">
-              Overview
+              Dashboard
             </Link>
           </div>
 

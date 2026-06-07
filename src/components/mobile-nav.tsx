@@ -28,7 +28,7 @@ export function MobileNav() {
             }`}
           >
             <Home className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Home</span>
+            <span className="text-[10px] font-medium">Dashboard</span>
           </a>
 
           {!isCashier && (

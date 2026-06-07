@@ -487,7 +487,6 @@ export default function PrinterSettingsPage() {
                 </select>
               </div>
               <div>
-                wkowkowko
                 <Label>{t("footerText")}</Label>
                 <textarea
                   value={config.footerText}
@@ -514,7 +513,7 @@ export default function PrinterSettingsPage() {
                 {t("receiptPreview")}
               </h2>
             </div>
-            <div className="p-5">
+            <div className="p-3 sm:p-5">
               {(() => {
                 const cols = config.paperWidth === 80 ? 42 : 32
                 const divider = "-".repeat(cols)
@@ -560,29 +559,31 @@ export default function PrinterSettingsPage() {
                 }
 
                 return (
-                  <div
-                    className="bg-white rounded-sm mx-auto overflow-x-auto"
-                    style={{ width: config.paperWidth === 58 ? "280px" : "380px" }}
-                  >
-                    {config.logoUrl && (
-                      <div className="text-center pt-3">
-                        <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto object-contain" />
-                      </div>
-                    )}
-                    <pre
-                      style={{
-                        fontFamily: "'Courier New', Courier, monospace",
-                        fontSize: "11px",
-                        color: "#111",
-                        lineHeight: "1.6",
-                        margin: 0,
-                        padding: "12px",
-                        whiteSpace: "pre",
-                        overflowX: "auto",
-                      }}
+                  <div className="overflow-x-auto -mx-3 sm:mx-0">
+                    <div
+                      className="bg-white rounded-sm mx-auto"
+                      style={{ width: config.paperWidth === 58 ? "280px" : "380px", minWidth: "280px" }}
                     >
-                      {textLines.join("\n")}
-                    </pre>
+                      {config.logoUrl && (
+                        <div className="text-center pt-3">
+                          <img src={config.logoUrl} alt="Logo" className="w-12 h-12 mx-auto object-contain" />
+                        </div>
+                      )}
+                      <pre
+                        style={{
+                          fontFamily: "'Courier New', Courier, monospace",
+                          fontSize: "11px",
+                          color: "#111",
+                          lineHeight: "1.6",
+                          margin: 0,
+                          padding: "12px",
+                          whiteSpace: "pre",
+                          overflowX: "visible",
+                        }}
+                      >
+                        {textLines.join("\n")}
+                      </pre>
+                    </div>
                   </div>
                 )
               })()}

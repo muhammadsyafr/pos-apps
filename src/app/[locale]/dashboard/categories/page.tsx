@@ -1,11 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Plus, Search, Edit2, Trash2, Tag, Folder } from "lucide-react"
 import { useTranslations } from "next-intl"
 
@@ -36,6 +39,11 @@ const colorOptions = [
 export default function CategoriesPage() {
   const t = useTranslations("categories")
   const tCommon = useTranslations("common")
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname.split("/")[1] || "en"
+  
   const [categories, setCategories] = useState<Category[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [search, setSearch] = useState("")
@@ -59,6 +67,13 @@ export default function CategoriesPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // Check if user is CASHIER and redirect to dashboard
+    if (status === "authenticated" && session?.user?.role === "CASHIER") {
+      router.push(`/${locale}/dashboard`)
+    }
+  }, [status, session, router, locale])
 
   useEffect(() => {
     fetchData()
@@ -136,7 +151,47 @@ export default function CategoriesPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">{tCommon("loading")}</div>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <div className="flex gap-2 border-b border-hairline-light dark:border-hairline-dark">
+          <Skeleton className="h-10 w-40" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <Skeleton className="h-10 w-56 rounded-full" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-3 w-3 rounded-full" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <div className="flex gap-1">
+                  <Skeleton className="h-8 w-8" />
+                  <Skeleton className="h-8 w-8" />
+                </div>
+              </div>
+              <Skeleton className="h-3 w-16 mb-2" />
+              <div className="flex flex-wrap gap-1">
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-20 rounded-full" />
+                <Skeleton className="h-5 w-14 rounded-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   const filteredCategories = categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))

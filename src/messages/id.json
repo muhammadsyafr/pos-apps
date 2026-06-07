@@ -33,7 +33,7 @@
     "invalidCredentials": "Email atau kata sandi tidak valid"
   },
   "nav": {
-    "overview": "Ringkasan",
+    "overview": "Dasbor",
     "sales": "Penjualan",
     "inventory": "Inventori",
     "categories": "Kategori",
@@ -288,7 +288,7 @@
       "product": "Produk",
       "company": "Perusahaan",
       "legal": "Hukum",
-      "overview": "Ringkasan",
+      "overview": "Dasbor",
       "pos": "Point of Sale",
       "inventory": "Inventaris",
       "analytics": "Analitik",

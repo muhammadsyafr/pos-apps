@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { formatIDR } from "@/lib/currency"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Calendar } from "lucide-react"
 import Image from "next/image"
 import DashboardLoading from "./loading"
@@ -47,6 +49,8 @@ export default function DashboardPage() {
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([])
   const [topSellers, setTopSellers] = useState<TopSeller[]>([])
   const [period, setPeriod] = useState("today")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
   const [loading, setLoading] = useState(true)
   const [filterLoading, setFilterLoading] = useState(false)
   const pathname = usePathname()
@@ -71,9 +75,21 @@ export default function DashboardPage() {
 
         const now = new Date()
         let filteredSales = sales
-        if (period === "today") filteredSales = sales.filter(s => new Date(s.createdAt).toDateString() === now.toDateString())
-        else if (period === "week") filteredSales = sales.filter(s => new Date(s.createdAt) >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000))
-        else if (period === "month") filteredSales = sales.filter(s => new Date(s.createdAt) >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000))
+        
+        // Custom date range filter
+        if (period === "custom" && (dateFrom || dateTo)) {
+          filteredSales = sales.filter(s => {
+            const saleDate = new Date(s.createdAt)
+            const matchFrom = !dateFrom || saleDate >= new Date(dateFrom)
+            const matchTo = !dateTo || saleDate <= new Date(new Date(dateTo).setHours(23, 59, 59, 999))
+            return matchFrom && matchTo
+          })
+        } else {
+          // Predefined period filters
+          if (period === "today") filteredSales = sales.filter(s => new Date(s.createdAt).toDateString() === now.toDateString())
+          else if (period === "week") filteredSales = sales.filter(s => new Date(s.createdAt) >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000))
+          else if (period === "month") filteredSales = sales.filter(s => new Date(s.createdAt) >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000))
+        }
 
         const totalRevenue = filteredSales.reduce((sum, s) => sum + s.totalAmount, 0)
         setStats({ totalRevenue, totalSales: filteredSales.length, totalProfit: totalRevenue * 0.4, totalProducts: products.length })
@@ -88,32 +104,81 @@ export default function DashboardPage() {
       }
     }
     fetchData()
-  }, [period])
+  }, [period, dateFrom, dateTo])
 
   if (loading || filterLoading) return <DashboardLoading />
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark">
-            {t("title")}
-          </h1>
-          <p className="font-[500] text-[14px] leading-[1.49] tracking-[0.28px] text-shade-50 dark:text-shade-40">
-            {t("welcome")}
-          </p>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="font-display font-[500] text-[28px] leading-[1.28] tracking-[0.42px] text-ink dark:text-on-dark">
+              {t("title")}
+            </h1>
+            <p className="font-[500] text-[14px] leading-[1.49] tracking-[0.28px] text-shade-50 dark:text-shade-40">
+              {t("welcome")}
+            </p>
+          </div>
+          <Select value={period} onValueChange={(v) => { 
+            setFilterLoading(true); 
+            setPeriod(v);
+            if (v !== "custom") {
+              setDateFrom("");
+              setDateTo("");
+            }
+          }}>
+            <SelectTrigger className="w-full sm:w-40 justify-start gap-2">
+              <Calendar className="w-4 h-4 text-shade-50 dark:text-shade-40 flex-shrink-0" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">{t("today")}</SelectItem>
+              <SelectItem value="week">{t("thisWeek")}</SelectItem>
+              <SelectItem value="month">{t("thisMonth")}</SelectItem>
+              <SelectItem value="custom">Custom Range</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={period} onValueChange={(v) => { setFilterLoading(true); setPeriod(v) }}>
-          <SelectTrigger className="w-40 justify-start gap-2">
-            <Calendar className="w-4 h-4 text-shade-50 dark:text-shade-40 flex-shrink-0" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">{t("today")}</SelectItem>
-            <SelectItem value="week">{t("thisWeek")}</SelectItem>
-            <SelectItem value="month">{t("thisMonth")}</SelectItem>
-          </SelectContent>
-        </Select>
+        
+        {period === "custom" && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-end">
+            <div className="relative w-full sm:w-52">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40 pointer-events-none z-10" />
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full h-10 pl-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark]"
+                placeholder="From"
+              />
+            </div>
+            <span className="hidden sm:block text-shade-50 dark:text-shade-40">to</span>
+            <div className="relative w-full sm:w-52">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40 pointer-events-none z-10" />
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full h-10 pl-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark]"
+                placeholder="To"
+              />
+            </div>
+            {(dateFrom || dateTo) && (
+              <Button
+                variant="outline-light"
+                size="sm"
+                onClick={() => {
+                  setDateFrom("");
+                  setDateTo("");
+                }}
+                className="h-10 w-full sm:w-auto"
+              >
+                Clear
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

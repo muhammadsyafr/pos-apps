@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import React from "react"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pagination } from "@/components/ui/pagination"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight, Printer } from "lucide-react"
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
@@ -41,7 +42,9 @@ export default function ReportsPage() {
   const isCashier = session?.user?.role === "CASHIER"
   const [sales, setSales] = useState<Sale[]>([])
   const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [loading, setLoading] = useState(true)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
   const [expandedSale, setExpandedSale] = useState<string | null>(null)
@@ -65,7 +68,7 @@ export default function ReportsPage() {
       const params = new URLSearchParams({ page: String(pageNum), pageSize: String(pageSize) })
       if (dateFrom) params.set("dateFrom", dateFrom)
       if (dateTo) params.set("dateTo", dateTo)
-      if (search) params.set("search", search)
+      if (debouncedSearch) params.set("search", debouncedSearch)
 
       const res = await fetch(`/api/sales?${params}`)
       const data = await res.json()
@@ -81,7 +84,24 @@ export default function ReportsPage() {
     } finally {
       setLoading(false)
     }
-  }, [dateFrom, dateTo, search])
+  }, [dateFrom, dateTo, debouncedSearch])
+
+  // Debounce search input
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 500) // 500ms debounce delay
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [search])
 
   useEffect(() => {
     fetchSales(page)
@@ -282,7 +302,91 @@ export default function ReportsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">Loading reports...</div>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          {!isCashier && <Skeleton className="h-10 w-32" />}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+            <Skeleton className="h-3 w-24 mb-2" />
+            <Skeleton className="h-8 w-32" />
+          </div>
+          {!isCashier && (
+            <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+              <Skeleton className="h-3 w-24 mb-2" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+          )}
+          <div className="bg-canvas-light dark:bg-canvas-night-elevated p-5 rounded-xl elevation-3 dark:elevation-1">
+            <Skeleton className="h-3 w-24 mb-2" />
+            <Skeleton className="h-8 w-32" />
+          </div>
+        </div>
+
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+          <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-10 w-full" />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <Skeleton className="h-3 w-20 mb-2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+                <div className="flex items-center justify-center sm:mt-7">
+                  <Skeleton className="h-4 w-4" />
+                </div>
+                <div className="flex-1">
+                  <Skeleton className="h-3 w-20 mb-2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-5">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10"></TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Transaction ID</TableHead>
+                  <TableHead>Cashier</TableHead>
+                  <TableHead>Items</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Payment</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-4 w-4" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-6 w-20" />
+                      </div>
+                    </TableCell>
+                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className="mt-4">
+              <Skeleton className="h-10 w-full max-w-md mx-auto" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

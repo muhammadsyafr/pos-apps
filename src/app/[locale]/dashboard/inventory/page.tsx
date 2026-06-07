@@ -1,12 +1,15 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Package, Plus, Search, Edit2, Trash2, ImagePlus } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { formatIDR, formatNumberIDR, parseNumber } from "@/lib/currency"
@@ -32,6 +35,11 @@ interface Category {
 export default function InventoryPage() {
   const t = useTranslations("inventory")
   const tCommon = useTranslations("common")
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname.split("/")[1] || "en"
+  
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [search, setSearch] = useState("")
@@ -78,6 +86,13 @@ export default function InventoryPage() {
       setCategoriesLoading(false)
     }
   }
+
+  useEffect(() => {
+    // Check if user is CASHIER and redirect to dashboard
+    if (status === "authenticated" && session?.user?.role === "CASHIER") {
+      router.push(`/${locale}/dashboard`)
+    }
+  }, [status, session, router, locale])
 
   useEffect(() => {
     fetchProducts()
@@ -222,7 +237,61 @@ export default function InventoryPage() {
   }
 
   if (loading || categoriesLoading) {
-    return <div className="p-8 text-center text-shade-50 dark:text-shade-40">{tCommon("loading")}</div>
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <div className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1">
+          <div className="px-5 py-4 border-b border-hairline-light dark:border-hairline-dark">
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-10 w-56 rounded-full" />
+              <Skeleton className="h-10 w-40 rounded-full" />
+            </div>
+          </div>
+          <div className="p-5">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Image</TableHead>
+                  <TableHead>Product Name</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Cost Price</TableHead>
+                  <TableHead className="text-right">Sell Price</TableHead>
+                  <TableHead className="text-right">Stock</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-10 w-10 rounded-xl" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-6 w-12 ml-auto rounded-full" /></TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Skeleton className="h-8 w-8" />
+                        <Skeleton className="h-8 w-8" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const lowStockCount = products.filter((p) => p.stock <= p.minStock).length

@@ -33,7 +33,7 @@
     "invalidCredentials": "Invalid email or password"
   },
   "nav": {
-    "overview": "Overview",
+    "overview": "Dashboard",
     "sales": "Sales",
     "inventory": "Inventory",
     "categories": "Categories",
@@ -288,7 +288,7 @@
       "product": "Product",
       "company": "Company",
       "legal": "Legal",
-      "overview": "Overview",
+      "overview": "Dashboard",
       "pos": "Point of Sale",
       "inventory": "Inventory",
       "analytics": "Analytics",

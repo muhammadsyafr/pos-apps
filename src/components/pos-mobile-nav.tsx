@@ -3,7 +3,7 @@
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, ShoppingCart, LogOut } from "lucide-react"
+import { Home, ShoppingCart, LogOut } from "lucide-react"
 
 interface MobileNavProps {
   isAdmin: boolean
@@ -34,7 +34,7 @@ export function MobileNav({ isAdmin }: MobileNavProps) {
               : 'text-shade-50 dark:text-shade-40'
           }`}
         >
-          <LayoutDashboard className="w-5 h-5" />
+          <Home className="w-5 h-5" />
           <span className="text-[10px] font-medium">Dashboard</span>
         </Link>
         <button

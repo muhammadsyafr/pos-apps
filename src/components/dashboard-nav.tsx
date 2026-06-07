@@ -19,7 +19,7 @@ export function DashboardNav() {
   }
 
   const allNavItems = [
-    { href: "/dashboard", label: "Overview", roles: ["ADMIN", "CASHIER"] },
+    { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "CASHIER"] },
     { href: "/pos", label: "Sales", roles: ["ADMIN", "CASHIER"] },
     { href: "/dashboard/inventory", label: "Inventory", roles: ["ADMIN"] },
     { href: "/dashboard/categories", label: "Categories", roles: ["ADMIN"] },
