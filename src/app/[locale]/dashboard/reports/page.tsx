@@ -3,12 +3,13 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import React from "react"
 import { Input } from "@/components/ui/input"
+import { DateRangeInput } from "@/components/ui/date-input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pagination } from "@/components/ui/pagination"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Search, FileText, Download, Calendar, ChevronDown, ChevronRight, Printer } from "lucide-react"
+import { Search, FileText, Download, ChevronDown, ChevronRight, Printer } from "lucide-react"
 import * as XLSX from "xlsx"
 import { useTranslations } from "next-intl"
 import { formatIDR } from "@/lib/currency"
@@ -126,16 +127,6 @@ export default function ReportsPage() {
 
   const handleSearchChange = (value: string) => {
     setSearch(value)
-    setPage(1)
-  }
-
-  const handleDateFromChange = (value: string) => {
-    setDateFrom(value)
-    setPage(1)
-  }
-
-  const handleDateToChange = (value: string) => {
-    setDateTo(value)
     setPage(1)
   }
 
@@ -433,43 +424,21 @@ export default function ReportsPage() {
                 className="pl-10"
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1">
-                <label className="text-xs font-semibold text-shade-50 dark:text-shade-40 uppercase tracking-wide mb-1.5 block">
-                  From Date
-                </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-on-dark pointer-events-none z-10" />
-                  <Input
-                    type="date"
-                    value={dateFrom}
-                    onChange={(e) => handleDateFromChange(e.target.value)}
-                    className="pl-10 h-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark] text-sm font-medium"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-center sm:mt-7">
-                <svg className="w-4 h-4 text-shade-50 dark:text-shade-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </div>
-              
-              <div className="flex-1">
-                <label className="text-xs font-semibold text-shade-50 dark:text-shade-40 uppercase tracking-wide mb-1.5 block">
-                  To Date
-                </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500 dark:text-on-dark pointer-events-none z-10" />
-                  <Input
-                    type="date"
-                    value={dateTo}
-                    onChange={(e) => handleDateToChange(e.target.value)}
-                    className="pl-10 h-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark] text-sm font-medium"
-                  />
-                </div>
-              </div>
-              
+            <div className="flex flex-row gap-2 items-end flex-wrap">
+              <DateRangeInput
+                from={dateFrom}
+                to={dateTo}
+                onChange={(range) => {
+                  setDateFrom(range.from)
+                  setDateTo(range.to)
+                  setPage(1)
+                }}
+                placeholder="Date range"
+                label="Period"
+                inline
+                size="sm"
+              />
+
               {(dateFrom || dateTo) && (
                 <Button
                   variant="outline-light"
@@ -479,9 +448,9 @@ export default function ReportsPage() {
                     setDateTo("")
                     setPage(1)
                   }}
-                  className="self-start sm:self-end h-10"
+                  className="h-8 shrink-0"
                 >
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   Clear

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import "@daypicker/react/style.css"
 import "./globals.css"
 import { Providers } from "@/components/providers"
 import { NextIntlClientProvider } from "next-intl"

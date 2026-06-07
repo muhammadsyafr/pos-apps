@@ -518,198 +518,238 @@
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
 
-/* Date picker */
-.rdp-custom {
-  --rdp-cell-size: 36px;
-  --rdp-accent-color: #000000;
-  --rdp-background-color: #f5f5f5;
+/* Date picker — theme overrides via CSS variables */
+.rdp-root {
+  --rdp-day-width: 36px;
+  --rdp-day-height: 36px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-height: 36px;
+  --rdp-day_button-border-radius: 0.5rem;
+  --rdp-day_button-border: none;
+  --rdp-accent-color: var(--color-primary);
+  --rdp-accent-background-color: var(--color-aloe-10);
+  --rdp-today-color: var(--color-primary);
+  --rdp-selected-border: none;
+  --rdp-nav_button-height: 2.25rem;
+  --rdp-nav_button-width: 2.25rem;
+  --rdp-nav-height: auto;
+  --rdp-outside-opacity: 0;
+  --rdp-weekday-text-align: center;
   font-size: 0.875rem;
 }
 
-.dark .rdp-custom {
-  --rdp-accent-color: #c1fbd4;
-  --rdp-background-color: #1a1a1a;
+@media (max-width: 640px) {
+  .rdp-root {
+    --rdp-day-width: 32px;
+    --rdp-day-height: 32px;
+    --rdp-day_button-width: 32px;
+    --rdp-day_button-height: 32px;
+    font-size: 0.8125rem;
+  }
 }
 
-.rdp-custom .rdp-months {
-  display: flex;
-  flex-direction: column;
+.dark .rdp-root {
+  --rdp-accent-color: var(--color-aloe-10);
+  --rdp-accent-background-color: #262626;
+  --rdp-today-color: var(--color-aloe-10);
 }
 
-.rdp-custom .rdp-month {
-  margin: 0;
-  width: 280px;
+.rdp-root .rdp-chevron {
+  fill: var(--rdp-accent-color);
 }
 
-.rdp-custom .rdp-caption {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem 0;
-  position: relative;
-  margin-bottom: 0.5rem;
+/* ── Month caption ── */
+.rdp-month_caption {
+  padding: 0.25rem 0 0.5rem;
+  font-weight: 550;
+  font-size: inherit;
+  height: auto;
 }
 
-.rdp-custom .rdp-caption_label {
-  font-size: 0.875rem;
+.rdp-caption_label {
+  font-size: 0.8125rem;
   font-weight: 550;
   color: var(--color-ink);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.dark .rdp-custom .rdp-caption_label {
+.dark .rdp-caption_label {
   color: var(--color-on-dark);
 }
 
-.rdp-custom .rdp-nav {
-  display: flex;
-  gap: 0.25rem;
-  position: absolute;
-  right: 0;
-}
-
-.rdp-custom .rdp-nav_button {
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  border-radius: 0.375rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-  transition: all 0.2s;
+/* ── Nav buttons ── */
+.rdp-nav_button {
+  border-radius: 0.5rem;
+  opacity: 0.6;
+  transition: opacity 0.15s, background-color 0.15s;
   background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--color-shade-50);
+  border: none !important;
+  color: var(--color-ink);
 }
 
-.dark .rdp-custom .rdp-nav_button {
-  color: var(--color-shade-40);
+.dark .rdp-nav_button {
+  color: var(--color-on-dark);
 }
 
-.rdp-custom .rdp-nav_button:hover {
+.rdp-nav_button:hover {
   opacity: 1;
-  background-color: #f5f5f5;
+  background-color: #f6f6f6;
 }
 
-.dark .rdp-custom .rdp-nav_button:hover {
-  background-color: #1a1a1a;
+.dark .rdp-nav_button:hover {
+  background-color: #262626;
 }
 
-.rdp-custom .rdp-nav_button_previous {
-  position: static;
+.rdp-nav_button svg {
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
-.rdp-custom .rdp-nav_button_next {
-  position: static;
-}
-
-.rdp-custom .rdp-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.25rem;
-}
-
-.rdp-custom .rdp-head_row {
-  display: flex;
-  justify-content: space-around;
-}
-
-.rdp-custom .rdp-head_cell {
-  color: var(--color-shade-50);
-  font-weight: 550;
-  font-size: 0.7rem;
-  text-align: center;
-  padding: 0.5rem 0;
-  width: 2.25rem;
+/* ── Weekdays ── */
+.rdp-weekday {
+  color: #8a8a8a;
+  font-weight: 500;
+  font-size: 0.6875rem;
   text-transform: uppercase;
+  letter-spacing: 0.025em;
+  opacity: 1;
 }
 
-.dark .rdp-custom .rdp-head_cell {
-  color: var(--color-shade-40);
+.dark .rdp-weekday {
+  color: #707070;
 }
 
-.rdp-custom .rdp-tbody {
-  border: 0;
-}
-
-.rdp-custom .rdp-row {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 0.25rem;
-}
-
-.rdp-custom .rdp-cell {
-  text-align: center;
-  padding: 0;
-  width: 2.25rem;
-}
-
-.rdp-custom .rdp-day {
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0;
-  border-radius: 0.375rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  transition: background-color 0.2s;
+/* ── Day buttons ── */
+.rdp-day_button {
+  font-size: 0.8125rem;
+  font-weight: 400;
   border: none;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s, color 0.15s;
   background: transparent;
-  cursor: pointer;
   color: var(--color-ink);
 }
 
-.dark .rdp-custom .rdp-day {
+.dark .rdp-day_button {
   color: var(--color-on-dark);
 }
 
-.rdp-custom .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled) {
-  background-color: #f5f5f5;
+.rdp-day_button:hover:not(:disabled) {
+  background-color: #f6f6f6;
 }
 
-.dark .rdp-custom .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled) {
-  background-color: #1a1a1a;
+.dark .rdp-day_button:hover:not(:disabled) {
+  background-color: #262626;
 }
 
-.rdp-custom .rdp-day_selected {
-  background-color: #000000 !important;
+/* ── Selected ── */
+.rdp-selected .rdp-day_button {
+  background-color: var(--rdp-accent-color) !important;
   color: white !important;
+  font-weight: 500;
+}
+
+.dark .rdp-selected .rdp-day_button {
+  background-color: var(--rdp-accent-color) !important;
+  color: #141414 !important;
+}
+
+/* ── Today ── */
+.rdp-today:not(.rdp-outside) .rdp-day_button {
   font-weight: 550;
 }
 
-.dark .rdp-custom .rdp-day_selected {
-  background-color: #c1fbd4 !important;
-  color: #000000 !important;
+.rdp-today:not(.rdp-selected):not(.rdp-outside) .rdp-day_button {
+  background-color: #f0f0f0;
 }
 
-.rdp-custom .rdp-day_today:not(.rdp-day_selected) {
-  background-color: #f5f5f5;
-  font-weight: 550;
-  border: 1px solid var(--color-hairline-light);
+.dark .rdp-today:not(.rdp-selected):not(.rdp-outside) .rdp-day_button {
+  background-color: #303030;
 }
 
-.dark .rdp-custom .rdp-day_today:not(.rdp-day_selected) {
-  background-color: #1a1a1a;
-  border-color: #333;
+.rdp-today.rdp-selected .rdp-day_button {
+  color: white !important;
 }
 
-.rdp-custom .rdp-day_outside {
-  color: var(--color-shade-30);
-  opacity: 0.5;
+.dark .rdp-today.rdp-selected .rdp-day_button {
+  color: #141414 !important;
 }
 
-.dark .rdp-custom .rdp-day_outside {
-  color: #444;
+/* ── Outside ── */
+.rdp-outside {
+  opacity: 0;
 }
 
-.rdp-custom .rdp-day_disabled {
-  color: var(--color-shade-30);
-  opacity: 0.5;
-  cursor: not-allowed;
+/* ── Disabled ── */
+.rdp-disabled:not(.rdp-selected) {
+  opacity: 0.3;
 }
 
-.dark .rdp-custom .rdp-day_disabled {
-  color: #444;
+/* ── Focus ── */
+.rdp-focused .rdp-day_button {
+  outline: 2px solid var(--rdp-accent-color);
+  outline-offset: -2px;
 }
+
+/* ── Range ── */
+.rdp-range_middle .rdp-day_button {
+  background-color: var(--rdp-accent-background-color) !important;
+  border-radius: 0;
+  color: var(--color-ink) !important;
+}
+
+.dark .rdp-range_middle .rdp-day_button {
+  color: var(--color-on-dark) !important;
+}
+
+.rdp-range_start {
+  background: linear-gradient(90deg, transparent 50%, var(--rdp-accent-background-color) 50%);
+}
+
+.rdp-range_start .rdp-day_button {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}
+
+.dark .rdp-range_start .rdp-day_button {
+  color: #141414 !important;
+}
+
+.rdp-range_end {
+  background: linear-gradient(90deg, var(--rdp-accent-background-color) 50%, transparent 50%);
+}
+
+.rdp-range_end .rdp-day_button {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}
+
+.dark .rdp-range_end .rdp-day_button {
+  color: #141414 !important;
+}
+
+/* ── Footer ── */
+.rdp-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-hairline-light);
+  font-size: 0.75rem;
+  color: var(--color-shade-50);
+  text-align: center;
+}
+
+.dark .rdp-footer {
+  border-top-color: var(--color-hairline-dark);
+  color: var(--color-shade-40);
+}
+
+/* ── Months container ── */
+.rdp-months {
+  max-width: 100%;
+}
+
+.rdp-month {
+  min-width: 0;
+}
+
