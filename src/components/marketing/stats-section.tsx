@@ -59,7 +59,7 @@ export function StatsSection() {
   ]
 
   return (
-    <section className="py-24 bg-white">
+    <section id="about" className="py-24 bg-white">
       <div className="mx-auto max-w-7xl px-8 sm:px-12 lg:px-16">
         <div className="text-center mb-14">
           <h2 className="font-display font-[600] text-[28px] sm:text-[36px] lg:text-[44px] leading-[1.15] tracking-[-0.01em] text-ink mb-3">

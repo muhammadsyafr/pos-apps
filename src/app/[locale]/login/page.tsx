@@ -4,6 +4,8 @@ import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter, useParams } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { BrandLogo } from "@/components/brand-logo"
+import { BRAND_NAME } from "@/lib/brand"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -46,13 +48,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-canvas-cream dark:bg-canvas-night p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 bg-ink dark:bg-on-dark">
-            <svg className="w-8 h-8 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
+          <BrandLogo variant="app" size={64} className="mx-auto mb-4" />
           <h1 className="font-display font-[330] text-[55px] leading-[1.16] text-ink dark:text-on-dark">
-            CloudPOS
+            {BRAND_NAME}
           </h1>
           <p className="font-[420] text-[16px] leading-[1.5] text-shade-50 dark:text-shade-40 mt-1">
             Enterprise Suite

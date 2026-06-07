@@ -7,6 +7,8 @@ import { UserMenu } from "@/components/user-menu"
 import { MobileNav } from "@/components/mobile-nav"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { NotificationBell } from "@/components/notification-bell"
+import { BrandLogo } from "@/components/brand-logo"
+import { BRAND_NAME } from "@/lib/brand"
 
 export default async function DashboardLayout({
   children,
@@ -30,13 +32,9 @@ export default async function DashboardLayout({
         <div className="flex items-center justify-between px-4 lg:px-8 h-16">
           <div className="flex items-center gap-4 lg:gap-8">
             <Link href={`/${locale}/dashboard`} className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-ink dark:bg-on-dark">
-                <svg className="w-5 h-5 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-              </div>
+              <BrandLogo variant="app" size={36} />
               <span className="font-display font-[500] text-[18px] tracking-[0.72px] text-ink dark:text-on-dark hidden sm:block">
-                CloudPOS
+                {BRAND_NAME}
               </span>
             </Link>
 

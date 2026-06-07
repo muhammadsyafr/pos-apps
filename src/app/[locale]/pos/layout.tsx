@@ -5,6 +5,8 @@ import Link from "next/link"
 import { UserMenu } from "@/components/user-menu"
 import { MobileNav } from "@/components/pos-mobile-nav"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { BrandLogo } from "@/components/brand-logo"
+import { BRAND_NAME } from "@/lib/brand"
 
 export default async function POSLayout({
   children,
@@ -25,13 +27,9 @@ export default async function POSLayout({
         <div className="flex items-center justify-between px-4 lg:px-8 h-16">
           <div className="flex items-center gap-3">
             <Link href={`/${locale}/pos`} className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-ink dark:bg-on-dark">
-                <svg className="w-5 h-5 text-on-primary dark:text-canvas-night" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-              </div>
+              <BrandLogo variant="app" size={36} />
               <span className="font-display font-[500] text-[18px] tracking-[0.72px] text-ink dark:text-on-dark hidden sm:block">
-                CloudPOS
+                {BRAND_NAME}
               </span>
             </Link>
             <Link href={`/${locale}/dashboard`} className="hidden lg:flex items-center px-4 py-2 text-shade-50 dark:text-shade-40 hover:bg-shade-30 dark:hover:bg-white/5 rounded-full font-[420] text-sm transition-all">

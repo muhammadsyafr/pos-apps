@@ -36,7 +36,7 @@ export function UserMenu({ userName, userRole }: UserMenuProps) {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full right-0 mt-2 w-48 bg-canvas-light dark:bg-canvas-night-elevated rounded-xl shadow-xl border border-hairline-light dark:border-hairline-dark z-50">
+          <div className="absolute top-full right-0 mt-2 w-48 bg-canvas-light dark:bg-canvas-night-elevated rounded-xl border border-hairline-light dark:border-hairline-dark z-50">
             <div className="px-4 py-3 border-b border-hairline-light dark:border-hairline-dark">
               <p className="text-sm font-[550] text-ink dark:text-on-dark">{userName}</p>
               <p className="text-xs text-shade-50 dark:text-shade-40">{userRole}</p>

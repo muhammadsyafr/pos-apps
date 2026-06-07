@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { BRAND_NAME } from "@/lib/brand"
 import { MarketingNav } from "@/components/marketing/marketing-nav"
 import { HeroSection } from "@/components/marketing/hero-section"
 import { MerchantShowcase } from "@/components/marketing/merchant-showcase"
 import { FeatureSection } from "@/components/marketing/feature-section"
 import { StatsSection } from "@/components/marketing/stats-section"
 import { Testimonials } from "@/components/marketing/testimonials"
+import { PricingSection } from "@/components/marketing/pricing-section"
 import { CTASection } from "@/components/marketing/cta-section"
 import { Footer } from "@/components/marketing/footer"
 
@@ -18,10 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "marketing" })
 
   return {
-    title: `CloudPOS — ${t("heroTitle")}`,
+    title: `${BRAND_NAME} — ${t("heroTitle")}`,
     description: t("heroDescription"),
     openGraph: {
-      title: `CloudPOS — ${t("heroTitle")}`,
+      title: `${BRAND_NAME} — ${t("heroTitle")}`,
       description: t("heroDescription"),
       type: "website",
     },
@@ -39,6 +41,7 @@ export default async function MarketingPage({ params }: Props) {
       <FeatureSection />
       <StatsSection />
       <Testimonials />
+      <PricingSection locale={locale} />
       <CTASection locale={locale} />
       <Footer locale={locale} />
     </div>

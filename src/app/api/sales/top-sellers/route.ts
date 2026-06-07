@@ -25,6 +25,13 @@ export async function GET(request: Request) {
     } else if (period === "month") {
       const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
       dateFilter = { createdAt: { gte: monthAgo } }
+    } else if (period === "custom") {
+      const from = searchParams.get("from")
+      const to = searchParams.get("to")
+      const range: { gte?: Date; lte?: Date } = {}
+      if (from) range.gte = new Date(from)
+      if (to) range.lte = new Date(new Date(to).setHours(23, 59, 59, 999))
+      if (from || to) dateFilter = { createdAt: range }
     }
 
     const sales = await db.sale.findMany({

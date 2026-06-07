@@ -6,10 +6,8 @@ import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { formatIDR } from "@/lib/currency"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "lucide-react"
-import Image from "next/image"
+import { DateRangeInput } from "@/components/ui/date-input"
+import { Calendar, Zap } from "lucide-react"
 import DashboardLoading from "./loading"
 
 interface Stats {
@@ -61,10 +59,16 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchData() {
       try {
+        const topSellersUrl = new URL("/api/sales/top-sellers", window.location.origin)
+        topSellersUrl.searchParams.set("period", period)
+        if (period === "custom") {
+          if (dateFrom) topSellersUrl.searchParams.set("from", dateFrom)
+          if (dateTo) topSellersUrl.searchParams.set("to", dateTo)
+        }
         const [salesRes, productsRes, topSellersRes] = await Promise.all([
           fetch("/api/sales"),
           fetch("/api/products"),
-          fetch(`/api/sales/top-sellers?period=${period}`)
+          fetch(topSellersUrl.toString())
         ])
         const salesData = await salesRes.json()
         const sales: Sale[] = salesData.sales || []
@@ -142,41 +146,20 @@ export default function DashboardPage() {
         </div>
         
         {period === "custom" && (
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-end">
-            <div className="relative w-full sm:w-52">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40 pointer-events-none z-10" />
-              <Input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full h-10 pl-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark]"
-                placeholder="From"
-              />
-            </div>
-            <span className="hidden sm:block text-shade-50 dark:text-shade-40">to</span>
-            <div className="relative w-full sm:w-52">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-shade-50 dark:text-shade-40 pointer-events-none z-10" />
-              <Input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="w-full h-10 pl-10 bg-canvas-cream dark:bg-canvas-night/50 border-hairline-light dark:border-hairline-dark dark:[color-scheme:dark]"
-                placeholder="To"
-              />
-            </div>
-            {(dateFrom || dateTo) && (
-              <Button
-                variant="outline-light"
-                size="sm"
-                onClick={() => {
-                  setDateFrom("");
-                  setDateTo("");
-                }}
-                className="h-10 w-full sm:w-auto"
-              >
-                Clear
-              </Button>
-            )}
+          <div className="flex sm:justify-end">
+            <DateRangeInput
+              from={dateFrom}
+              to={dateTo}
+              onChange={(range) => {
+                setFilterLoading(true)
+                setDateFrom(range.from)
+                setDateTo(range.to)
+              }}
+              placeholder="Select date range"
+              label="Period"
+              inline
+              className="sm:w-72"
+            />
           </div>
         )}
       </div>
@@ -290,23 +273,21 @@ export default function DashboardPage() {
       </div>
 
       {!isCashier && (
-        <div className="bg-canvas-night text-on-dark rounded-xl overflow-hidden">
-          <div className="flex flex-col lg:flex-row">
-            <div className="p-6 lg:p-8 flex-1 flex flex-col justify-center">
-              <h3 className="font-display font-[500] text-[24px] leading-[1.14] tracking-[0.36px]">{t("ctaTitle")}</h3>
-              <p className="text-shade-40 mt-2 font-[420] text-sm">{t("ctaDescription")}</p>
-              <a href={`/${locale}`} className="mt-4 btn-outline-dark self-start inline-flex">
-                {t("exploreFeatures")}
-              </a>
+        <div className="relative bg-canvas-night text-on-dark rounded-2xl overflow-hidden min-h-24">
+          <div className="mk-dot-grid absolute inset-0 pointer-events-none" />
+          <div className="absolute -top-12 right-12 w-52 h-52 rounded-full bg-aloe-10/10 blur-3xl pointer-events-none" />
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 px-6 py-5">
+            <div className="flex w-10 h-10 rounded-xl items-center justify-center bg-aloe-10/10 border border-aloe-10/20 text-aloe-10 flex-shrink-0">
+              <Zap className="w-5 h-5" />
             </div>
-            <div className="relative w-full lg:w-48 h-40 lg:h-auto flex-shrink-0">
-              <Image
-                src="/assets/cashier2.jpg"
-                alt="CloudPOS Cashier"
-                fill
-                className="object-cover"
-              />
+            <div className="flex-1 min-w-0">
+              <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-aloe-10/80 mb-0.5">CloudPOS Pro</p>
+              <h3 className="font-display font-[500] text-[18px] leading-[1.3] tracking-[0.27px]">{t("ctaTitle")}</h3>
+              <p className="text-white/50 font-[420] text-sm mt-0.5">{t("ctaDescription")}</p>
             </div>
+            <a href={`/${locale}`} className="btn-aloe-pill flex-shrink-0 text-sm">
+              {t("exploreFeatures")}
+            </a>
           </div>
         </div>
       )}

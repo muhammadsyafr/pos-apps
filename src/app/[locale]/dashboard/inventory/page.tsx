@@ -75,9 +75,10 @@ export default function InventoryPage() {
   const fetchCategories = async () => {
     try {
       const res = await fetch("/api/categories")
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-      setCategories(data)
-      if (data.length > 0 && !formData.category) {
+      setCategories(Array.isArray(data) ? data : [])
+      if (Array.isArray(data) && data.length > 0 && !formData.category) {
         setFormData(prev => ({ ...prev, category: data[0].name }))
       }
     } catch (error) {

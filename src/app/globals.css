@@ -495,6 +495,16 @@
   66% { transform: translateY(6px) rotate(-1deg); }
 }
 
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 128, 96, 0.4); }
+  50% { opacity: 0.85; box-shadow: 0 0 0 5px rgba(0, 128, 96, 0); }
+}
+
 @keyframes reveal-up {
   from {
     opacity: 0;
@@ -506,9 +516,39 @@
   }
 }
 
+@keyframes slide-in-row {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .reveal-up {
   animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-fill-mode: both;
+}
+
+.animate-float-badge {
+  animation: float-badge 4s ease-in-out infinite;
+}
+
+.animate-float-badge-delayed {
+  animation: float-badge 4s ease-in-out infinite;
+  animation-delay: -1.5s;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.slide-in-row {
+  animation: slide-in-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-fill-mode: both;
+  opacity: 0;
 }
 
 .stagger-1 { animation-delay: 0.1s; }
@@ -517,6 +557,9 @@
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
+.stagger-7 { animation-delay: 0.7s; }
+.stagger-8 { animation-delay: 0.8s; }
+.stagger-9 { animation-delay: 0.9s; }
 
 /* Date picker — theme overrides via CSS variables */
 .rdp-root {

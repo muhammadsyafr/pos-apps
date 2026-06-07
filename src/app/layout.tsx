@@ -17,15 +17,17 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 })
 
+import { BRAND_NAME } from "@/lib/brand"
+
 export const metadata: Metadata = {
-  title: "CloudPOS — Point of Sale & Inventory",
+  title: `${BRAND_NAME} — Point of Sale & Inventory`,
   description: "Enterprise-grade point of sale and inventory management",
   icons: { icon: "/favicon.svg", apple: "/assets/logo.svg" },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "CloudPOS",
+    title: BRAND_NAME,
   },
 }
 

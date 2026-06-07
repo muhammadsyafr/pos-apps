@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import LanguageSwitcher from "@/components/language-switcher"
+import { BrandLogo } from "@/components/brand-logo"
+import { BRAND_NAME } from "@/lib/brand"
 
 export function Footer({ locale }: { locale: string }) {
   const t = useTranslations("marketing")
@@ -26,18 +28,14 @@ export function Footer({ locale }: { locale: string }) {
   }
 
   return (
-    <footer id="about" className="bg-[#f5f6f5] border-t border-[#dfe5e1] dark:bg-[#0d1011] dark:border-white/14">
+    <footer className="bg-[#f5f6f5] border-t border-[#dfe5e1] dark:bg-[#0d1011] dark:border-white/14">
       <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-14 sm:py-16">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
           {/* Brand column */}
           <div className="lg:col-span-4 lg:pr-8 min-w-0">
             <Link href={`/${locale}`} className="inline-flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-md bg-[#008060] flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-              </div>
-              <span className="font-display font-[600] text-[20px] text-[#1a1a1a] dark:text-white tracking-[-0.01em]">CloudPOS</span>
+              <BrandLogo variant="marketing" size={32} />
+              <span className="font-display font-[600] text-[20px] text-[#1a1a1a] dark:text-white tracking-[-0.01em]">{BRAND_NAME}</span>
             </Link>
             <p className="text-[14px] text-[#5f6a65] dark:text-[#9ca8a2] leading-[1.7] mb-6">
               {t("footer.brandDescription")}

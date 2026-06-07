@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Plus, Search, Edit2, Trash2, Tag, Folder } from "lucide-react"
+import { Plus, Search, Edit2, Trash2, Tag } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 interface Category {
@@ -218,7 +218,6 @@ export default function CategoriesPage() {
               : "border-transparent text-shade-50 dark:text-shade-40 hover:text-ink dark:hover:text-shade-40"
             }`}
         >
-          <Folder className="w-4 h-4 inline mr-2" />
           Categories ({categories.length})
         </button>
         <button
@@ -228,7 +227,6 @@ export default function CategoriesPage() {
               : "border-transparent text-shade-50 dark:text-shade-40 hover:text-ink dark:hover:text-shade-40"
             }`}
         >
-          <Tag className="w-4 h-4 inline mr-2" />
           Tags ({tags.length})
         </button>
       </div>
@@ -246,7 +244,9 @@ export default function CategoriesPage() {
       {activeTab === "categories" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredCategories.map((cat) => (
-            <div key={cat.id} className="bg-canvas-light dark:bg-canvas-night-elevated rounded-xl elevation-3 dark:elevation-1 hover:shadow-lg transition-shadow p-5">
+            <div key={cat.id} className="relative rounded-xl elevation-3 dark:elevation-1 hover:shadow-lg transition-shadow p-5 overflow-hidden" style={{ backgroundColor: cat.color + "0D" }}>
+              <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{ backgroundImage: `repeating-linear-gradient(45deg, ${cat.color} 0, ${cat.color} 1px, transparent 1px, transparent 12px)` }} />
+              <div className="relative">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
@@ -270,6 +270,7 @@ export default function CategoriesPage() {
                   <Badge variant="outline" className="text-xs">+{cat.tags.length - 3}</Badge>
                 )}
               </div>
+            </div>
             </div>
           ))}
           {filteredCategories.length === 0 && (

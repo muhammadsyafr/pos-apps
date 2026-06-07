@@ -5,6 +5,8 @@ import { useParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { BrandLogo } from "@/components/brand-logo"
+import { BRAND_NAME } from "@/lib/brand"
 
 export function MarketingNav() {
   const params = useParams()
@@ -31,12 +33,8 @@ export function MarketingNav() {
       <div className="mx-auto max-w-7xl px-8 sm:px-12 lg:px-16 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-md bg-[#008060] flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <span className="font-display font-[600] text-[16px] text-ink">CloudPOS</span>
+          <BrandLogo variant="marketing" size={32} />
+          <span className="font-display font-[600] text-[16px] text-ink">{BRAND_NAME}</span>
         </Link>
 
         {/* Center nav links */}

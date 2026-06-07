@@ -278,6 +278,60 @@
         }
       }
     },
+    "pricing": {
+      "eyebrow": "Harga sederhana, transparan",
+      "title": "Paket yang tumbuh bersama bisnis Anda",
+      "subtitle": "Mulai gratis, upgrade kapan pun Anda siap. Tanpa biaya tersembunyi.",
+      "monthly": "/ bulan",
+      "mostPopular": "Paling Populer",
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "price": "Gratis",
+          "priceNote": "Gratis selamanya",
+          "description": "Cocok untuk pedagang solo dan toko kecil yang baru mulai.",
+          "cta": "Mulai Gratis",
+          "features": [
+            "1 terminal kasir",
+            "Hingga 100 produk",
+            "Laporan penjualan dasar",
+            "Pembayaran QRIS & tunai",
+            "Dukungan email"
+          ]
+        },
+        "pro": {
+          "name": "Pro",
+          "price": "Rp 299.000",
+          "priceNote": "per toko / bulan",
+          "description": "Untuk toko berkembang yang butuh analitik real-time dan akses tim.",
+          "cta": "Coba 14 Hari Gratis",
+          "features": [
+            "5 terminal kasir",
+            "Produk tanpa batas",
+            "Analitik real-time",
+            "Notifikasi stok rendah",
+            "Akses multi-pengguna",
+            "Mode offline",
+            "Dukungan prioritas"
+          ]
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "price": "Kustom",
+          "priceNote": "disesuaikan dengan skala Anda",
+          "description": "Untuk jaringan dan perusahaan yang mengelola banyak lokasi toko.",
+          "cta": "Hubungi Sales",
+          "features": [
+            "Terminal tanpa batas",
+            "Dasbor multi-toko",
+            "Integrasi kustom",
+            "Account manager khusus",
+            "Jaminan SLA 99,9%",
+            "Dukungan telepon 24/7"
+          ]
+        }
+      }
+    },
     "cta": {
       "title": "Siap mentransformasi toko Anda?",
       "description": "Bergabunglah dengan ribuan pedagang Indonesia yang menjalankan bisnis mereka di CloudPOS. Tanpa kartu kredit.",

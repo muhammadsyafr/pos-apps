@@ -278,6 +278,60 @@
         }
       }
     },
+    "pricing": {
+      "eyebrow": "Simple, transparent pricing",
+      "title": "Plans that grow with your business",
+      "subtitle": "Start free, upgrade when you're ready. No hidden fees.",
+      "monthly": "/ month",
+      "mostPopular": "Most Popular",
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "price": "Free",
+          "priceNote": "Free forever",
+          "description": "Perfect for solo merchants and small shops just getting started.",
+          "cta": "Get Started Free",
+          "features": [
+            "1 cashier terminal",
+            "Up to 100 products",
+            "Basic sales reports",
+            "QRIS & cash payments",
+            "Email support"
+          ]
+        },
+        "pro": {
+          "name": "Pro",
+          "price": "Rp 299.000",
+          "priceNote": "per store / month",
+          "description": "For growing stores that need real-time analytics and team access.",
+          "cta": "Start 14-day Trial",
+          "features": [
+            "5 cashier terminals",
+            "Unlimited products",
+            "Real-time analytics",
+            "Low-stock alerts",
+            "Multi-user access",
+            "Offline mode",
+            "Priority support"
+          ]
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "price": "Custom",
+          "priceNote": "tailored to your scale",
+          "description": "For chains and enterprises managing multiple store locations.",
+          "cta": "Contact Sales",
+          "features": [
+            "Unlimited terminals",
+            "Multi-store dashboard",
+            "Custom integrations",
+            "Dedicated account manager",
+            "99.9% SLA guarantee",
+            "24/7 phone support"
+          ]
+        }
+      }
+    },
     "cta": {
       "title": "Ready to transform your store?",
       "description": "Join thousands of Indonesian merchants who run their business on CloudPOS. No credit card required.",
