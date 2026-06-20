@@ -30,7 +30,11 @@
     "email": "Email",
     "password": "Kata Sandi",
     "signIn": "Masuk",
-    "invalidCredentials": "Email atau kata sandi tidak valid"
+    "invalidCredentials": "Email atau kata sandi tidak valid",
+    "continueTo": "Lanjut ke {brand}",
+    "forgotPassword": "Lupa kata sandi?",
+    "noAccount": "Baru di {brand}?",
+    "signUp": "Daftar"
   },
   "nav": {
     "overview": "Dasbor",
