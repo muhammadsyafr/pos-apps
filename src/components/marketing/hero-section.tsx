@@ -47,11 +47,11 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-canvas-cream pt-24 lg:pt-28">
+    <section className="relative flex min-h-screen items-center overflow-hidden bg-canvas-cream pt-24 pb-12 lg:pt-28 lg:pb-16">
       <div className="absolute inset-0 bg-[radial-gradient(80%_55%_at_88%_8%,rgba(0,128,96,0.12),transparent_70%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.55),rgba(255,255,255,0.96))]" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16 pb-14 lg:pb-20">
+      <div className="relative mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16">
         <div className="grid items-center gap-10 lg:gap-14 lg:grid-cols-[1.02fr_1fr]">
           <div className="max-w-2xl reveal-up stagger-1">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#bddfcc] bg-white px-3 py-1 text-[11px] font-[600] uppercase tracking-[0.12em] text-[#007a5a]">

@@ -218,7 +218,7 @@
     "navAbout": "Tentang",
     "merchant": {
       "eyebrow": "Dipercaya oleh ribuan bisnis",
-      "title": "Dari Jakarta sampai Papua, CloudPOS mendukung toko-toko Indonesia yang tumbuh paling cepat",
+      "title": "Mendukung toko di seluruh Indonesia",
       "note": "500+ toko di seluruh Indonesia memproses 2.4M+ transaksi"
     },
     "features": {
@@ -331,6 +331,37 @@
           ]
         }
       }
+    },
+    "faq": {
+      "eyebrow": "Pertanyaan yang sering diajukan",
+      "title": "Semua yang perlu Anda tahu",
+      "subtitle": "Tidak menemukan jawaban? Hubungi tim kami kapan saja.",
+      "items": [
+        {
+          "q": "Apakah saya perlu kartu kredit untuk memulai?",
+          "a": "Tidak. Anda bisa langsung memakai paket gratis tanpa kartu kredit. Upgrade hanya saat Anda siap berkembang."
+        },
+        {
+          "q": "Apakah CloudPOS bisa dipakai offline?",
+          "a": "Ya. Paket Pro dan Enterprise tetap bisa berjualan tanpa internet. Transaksi tersinkron otomatis saat kembali online."
+        },
+        {
+          "q": "Metode pembayaran apa saja yang didukung?",
+          "a": "QRIS, tunai, kartu debit dan kredit, serta e-wallet utama. Semua pembayaran terekonsiliasi dalam satu dasbor."
+        },
+        {
+          "q": "Bisakah saya mengelola banyak toko?",
+          "a": "Tentu. Paket Enterprise memberi dasbor terpadu untuk semua lokasi dengan laporan dan peran per toko."
+        },
+        {
+          "q": "Bagaimana harga saat bisnis saya berkembang?",
+          "a": "Tagihan dihitung per toko, per bulan. Tambah terminal atau toko kapan saja — bayar sesuai pemakaian."
+        },
+        {
+          "q": "Apakah data saya aman?",
+          "a": "Ya. Data dienkripsi saat transit dan saat disimpan, didukung jaminan uptime 99.9% pada paket Enterprise."
+        }
+      ]
     },
     "cta": {
       "title": "Siap mentransformasi toko Anda?",

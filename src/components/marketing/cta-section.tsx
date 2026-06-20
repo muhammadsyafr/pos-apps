@@ -5,7 +5,7 @@ export function CTASection({ locale }: { locale: string }) {
   const t = useTranslations("marketing")
 
   return (
-    <section className="relative overflow-hidden py-24 bg-[#121416] border-y border-black/35 dark:bg-[#080a0b] dark:border-white/14">
+    <section className="relative overflow-hidden py-24 bg-[#0b0d0e] border-t border-black/35 dark:bg-[#080a0b] dark:border-white/14">
       <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_0%,rgba(0,128,96,0.16),transparent_75%)] dark:bg-[radial-gradient(70%_65%_at_50%_0%,rgba(0,128,96,0.10),transparent_75%)]" />
       <div className="relative mx-auto max-w-4xl px-8 sm:px-12 text-center rounded-3xl border border-transparent dark:border-white/18 dark:bg-white/[0.02] py-10 sm:py-12">
         <h2 className="font-display font-[600] text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.05] tracking-[-0.02em] text-white mb-5">

@@ -8,6 +8,7 @@ import { FeatureSection } from "@/components/marketing/feature-section"
 import { StatsSection } from "@/components/marketing/stats-section"
 import { Testimonials } from "@/components/marketing/testimonials"
 import { PricingSection } from "@/components/marketing/pricing-section"
+import { FaqSection } from "@/components/marketing/faq-section"
 import { CTASection } from "@/components/marketing/cta-section"
 import { Footer } from "@/components/marketing/footer"
 
@@ -42,6 +43,7 @@ export default async function MarketingPage({ params }: Props) {
       <StatsSection />
       <Testimonials />
       <PricingSection locale={locale} />
+      <FaqSection />
       <CTASection locale={locale} />
       <Footer locale={locale} />
     </div>

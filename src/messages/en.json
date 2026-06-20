@@ -218,7 +218,7 @@
     "navAbout": "About",
     "merchant": {
       "eyebrow": "Trusted by thousands of businesses",
-      "title": "From Jakarta to Papua, CloudPOS powers Indonesia's fastest growing stores",
+      "title": "Powering stores across Indonesia",
       "note": "500+ stores across Indonesia processing 2.4M+ transactions"
     },
     "features": {
@@ -331,6 +331,37 @@
           ]
         }
       }
+    },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "Everything you need to know",
+      "subtitle": "Can't find what you're looking for? Reach out to our team anytime.",
+      "items": [
+        {
+          "q": "Do I need a credit card to start?",
+          "a": "No. You can start on the free plan instantly — no credit card required. Upgrade only when you're ready to scale."
+        },
+        {
+          "q": "Does CloudPOS work offline?",
+          "a": "Yes. Pro and Enterprise plans keep selling even without internet. Transactions sync automatically once you're back online."
+        },
+        {
+          "q": "Which payment methods are supported?",
+          "a": "QRIS, cash, debit and credit cards, and major e-wallets. All payments reconcile into a single dashboard."
+        },
+        {
+          "q": "Can I manage multiple stores?",
+          "a": "Absolutely. The Enterprise plan gives you a unified dashboard across all locations with per-store reports and roles."
+        },
+        {
+          "q": "How does pricing work as I grow?",
+          "a": "Plans are billed per store, per month. Add terminals or stores anytime — you only pay for what you use."
+        },
+        {
+          "q": "Is my data secure?",
+          "a": "Yes. Data is encrypted in transit and at rest, backed by a 99.9% uptime SLA on Enterprise plans."
+        }
+      ]
     },
     "cta": {
       "title": "Ready to transform your store?",
